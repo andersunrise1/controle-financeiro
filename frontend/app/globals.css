@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --bg-dark: #2d2d2d;
+  --bg-card: #3a3a3a;
+  --bg-card-hover: #454545;
+  --text-primary: #f3f4f6;
+  --text-muted: #9ca3af;
+  --neon-green: #39ff14;
+  --neon-red: #ff073a;
+  --neon-green-dim: #2ecc0f;
+  --neon-red-dim: #cc0530;
+}
+
+@theme inline {
+  --color-bg-dark: var(--bg-dark);
+  --color-bg-card: var(--bg-card);
+  --color-neon-green: var(--neon-green);
+  --color-neon-red: var(--neon-red);
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.neon-green {
+  color: var(--neon-green);
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.5);
+}
+
+.neon-red {
+  color: var(--neon-red);
+  text-shadow: 0 0 8px rgba(255, 7, 58, 0.5);
+}
+
+.card-dark {
+  background: var(--bg-card);
+  border: 1px solid #4a4a4a;
+}
+
+.input-dark {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  color: var(--text-primary);
+}
+
+.input-dark:focus {
+  border-color: #6b7280;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.3);
+}
+
+.input-dark::placeholder {
+  color: #6b7280;
+}
