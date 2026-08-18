@@ -1,0 +1,66 @@
+<svg width="640" height="690" viewBox="0 0 640 690" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Takenote</title>
+  <desc>Logotipo Takenote: emblema circular cinza escuro com borda azul neon, contendo um carrinho de supermercado com cesta em malha, etiqueta de preco com sinal de smart e rodas, e o nome Takenote escrito abaixo em texto simples.</desc>
+  <defs>
+    <filter id="glowStrong" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowSoft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="basketClip" clipPathUnits="userSpaceOnUse">
+      <path d="M305,269 L485,249 L455,389 L345,399 Z"/>
+    </clipPath>
+  </defs>
+
+  <circle cx="320" cy="290" r="270" fill="#3a3a3a" stroke="#00e5ff" stroke-width="16" filter="url(#glowStrong)"/>
+
+  <g transform="rotate(-15 320 290)">
+    <path d="M305,269 C270,254 250,224 230,199" fill="none" stroke="#00e5ff" stroke-width="6"
+          stroke-linecap="round" filter="url(#glowSoft)"/>
+
+    <path d="M230,144 Q250,124 275,134" fill="none" stroke="#00e5ff" stroke-width="4"
+          stroke-linecap="round" filter="url(#glowSoft)"/>
+    <path d="M240,129 Q265,104 295,117" fill="none" stroke="#00e5ff" stroke-width="4"
+          stroke-linecap="round" filter="url(#glowSoft)"/>
+
+    <g transform="translate(195,159) rotate(-35)" filter="url(#glowStrong)">
+      <rect x="-28" y="-18" width="56" height="36" rx="8" fill="#3a3a3a" stroke="#00e5ff" stroke-width="4"/>
+      <circle cx="18" cy="0" r="5" fill="none" stroke="#00e5ff" stroke-width="3"/>
+    </g>
+
+    <path d="M305,269 L485,249 L455,389 L345,399 Z" fill="#3a3a3a" stroke="#00e5ff" stroke-width="7"
+          stroke-linejoin="round" filter="url(#glowStrong)"/>
+
+    <g clip-path="url(#basketClip)" stroke="#00e5ff" stroke-width="3" opacity="0.7" filter="url(#glowSoft)">
+      <line x1="355" y1="254" x2="355" y2="397"/>
+      <line x1="395" y1="252" x2="385" y2="398"/>
+      <line x1="435" y1="250" x2="415" y2="396"/>
+      <line x1="310" y1="309" x2="475" y2="299"/>
+      <line x1="325" y1="354" x2="460" y2="347"/>
+    </g>
+
+    <g stroke="#00e5ff" stroke-width="5" stroke-linecap="round" filter="url(#glowSoft)">
+      <line x1="345" y1="399" x2="355" y2="429"/>
+      <line x1="455" y1="389" x2="435" y2="429"/>
+    </g>
+
+    <g filter="url(#glowStrong)">
+      <circle cx="355" cy="454" r="22" fill="#3a3a3a" stroke="#00e5ff" stroke-width="5"/>
+      <circle cx="355" cy="454" r="7" fill="#00e5ff" opacity="0.55"/>
+      <circle cx="435" cy="449" r="22" fill="#3a3a3a" stroke="#00e5ff" stroke-width="5"/>
+      <circle cx="435" cy="449" r="7" fill="#00e5ff" opacity="0.55"/>
+    </g>
+  </g>
+
+  <text x="320" y="650" text-anchor="middle" font-family="system-ui, Arial, sans-serif" font-size="60" font-weight="800" letter-spacing="4" fill="#f3f4f6">Takenote</text>
+</svg>

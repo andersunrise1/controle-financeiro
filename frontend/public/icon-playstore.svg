@@ -1,0 +1,21 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Icone da loja de apps</title>
+  <desc>Icone para a Play Store: sacola de compras solida em gradiente amarelo, laranja e magenta, com um mini grafico de barras ascendente recortado em negativo dentro da sacola.</desc>
+  <defs>
+    <linearGradient id="bgGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="512" y2="512">
+      <stop offset="0%" stop-color="#ffd93d"/>
+      <stop offset="45%" stop-color="#ff8c42"/>
+      <stop offset="100%" stop-color="#d6249f"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" rx="110" fill="url(#bgGrad)"/>
+
+  <path d="M215,190 Q215,120 256,120 Q297,120 297,190" fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round"/>
+
+  <path d="M170,190 L342,190 L322,388 Q320,400 306,400 L206,400 Q192,400 190,388 Z" fill="#ffffff"/>
+
+  <rect x="205" y="330" width="28" height="60" rx="6" fill="url(#bgGrad)"/>
+  <rect x="245" y="290" width="28" height="100" rx="6" fill="url(#bgGrad)"/>
+  <rect x="285" y="240" width="28" height="150" rx="6" fill="url(#bgGrad)"/>
+</svg>

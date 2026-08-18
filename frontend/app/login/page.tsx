@@ -53,6 +53,11 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-bg-dark px-4">
       <div className="card-dark w-full max-w-md rounded-2xl p-8 shadow-lg">
+        <img
+          src="/logo-takenote.svg"
+          alt="Takenote"
+          className="mx-auto mb-4 h-40 w-auto"
+        />
         <h1 className="text-2xl font-bold text-gray-100">Entrar</h1>
         <p className="mt-1 text-sm text-gray-400">
           Acesse seu painel financeiro

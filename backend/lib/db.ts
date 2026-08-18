@@ -36,6 +36,16 @@ export function getDb(): Database.Database {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
     `);
+
+    const columns = db.prepare("PRAGMA table_info(transactions)").all() as {
+      name: string;
+    }[];
+    const hasCategory = columns.some((c) => c.name === "category");
+    if (!hasCategory) {
+      db.exec(
+        "ALTER TABLE transactions ADD COLUMN category TEXT NOT NULL DEFAULT 'Outros'"
+      );
+    }
   }
 
   return db;
@@ -55,6 +65,7 @@ export interface Transaction {
   type: "income" | "expense";
   amount: number;
   description: string;
+  category: string;
   date: string;
   created_at: string;
 }

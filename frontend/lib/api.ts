@@ -12,6 +12,7 @@ export interface Transaction {
   type: "income" | "expense";
   amount: number;
   description: string;
+  category: string;
   date: string;
   created_at: string;
 }
@@ -113,6 +114,7 @@ export async function createTransaction(data: {
   amount: number;
   description: string;
   date: string;
+  category: string;
 }): Promise<{ transaction: Transaction }> {
   return apiFetch("/api/transactions", {
     method: "POST",

@@ -1,6 +1,7 @@
 "use client";
 
 import { Transaction, formatCurrency, deleteTransaction } from "@/lib/api";
+import { getCategoryColor } from "@/lib/categories";
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -45,9 +46,21 @@ export default function TransactionList({
               <p className="font-medium text-gray-100">
                 {t.description || (t.type === "income" ? "Entrada" : "Saída")}
               </p>
-              <p className="text-xs text-gray-400">
-                {new Date(t.date + "T00:00:00").toLocaleDateString("pt-BR")}
-              </p>
+              <div className="mt-1 flex items-center gap-2">
+                <span
+                  className="rounded-full px-2 py-0.5 text-xs font-semibold"
+                  style={{
+                    color: getCategoryColor(t.category),
+                    backgroundColor: `${getCategoryColor(t.category)}22`,
+                    boxShadow: `0 0 6px ${getCategoryColor(t.category)}66`,
+                  }}
+                >
+                  {t.category}
+                </span>
+                <p className="text-xs text-gray-400">
+                  {new Date(t.date + "T00:00:00").toLocaleDateString("pt-BR")}
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <span

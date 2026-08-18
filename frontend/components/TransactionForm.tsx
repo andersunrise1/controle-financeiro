@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import Button3D from "./Button3D";
 import Alert from "./Alert";
 import { createTransaction } from "@/lib/api";
+import { CATEGORIES, DEFAULT_CATEGORY } from "@/lib/categories";
 
 interface TransactionFormProps {
   onSuccess: () => void;
@@ -13,6 +14,7 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
   const [type, setType] = useState<"income" | "expense">("income");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [category, setCategory] = useState(DEFAULT_CATEGORY);
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -41,6 +43,7 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
         amount: parsedAmount,
         description,
         date,
+        category,
       });
       setSuccess(
         type === "income" ? "Entrada adicionada!" : "Saída adicionada!"
@@ -114,6 +117,23 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
             placeholder="Ex: Salário, Aluguel..."
             className="input-dark w-full rounded-xl px-4 py-3"
           />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-300">
+            Categoria
+          </label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="input-dark w-full rounded-xl px-4 py-3"
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c.name} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>

@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
 import { getDb, Transaction } from "@/lib/db";
+import { DEFAULT_CATEGORY, isValidCategory } from "@/lib/categories";
 
 export async function OPTIONS(request: NextRequest) {
   return corsOptions(request);
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { type, amount, description, date } = body;
+    const { type, amount, description, date, category } = body;
 
     if (!type || !amount || !date) {
       return jsonResponse(
@@ -79,17 +80,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (category !== undefined && !isValidCategory(category)) {
+      return jsonResponse(
+        request,
+        { error: "Categoria inválida." },
+        400
+      );
+    }
+
     const db = getDb();
     const result = db
       .prepare(
-        "INSERT INTO transactions (user_id, type, amount, description, date) VALUES (?, ?, ?, ?, ?)"
+        "INSERT INTO transactions (user_id, type, amount, description, date, category) VALUES (?, ?, ?, ?, ?, ?)"
       )
       .run(
         user.id,
         type,
         parsedAmount,
         description?.trim() || "",
-        date
+        date,
+        category || DEFAULT_CATEGORY
       );
 
     const transaction = db

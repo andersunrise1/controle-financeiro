@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import BalanceCard from "@/components/BalanceCard";
 import ClusteredChart from "@/components/ClusteredChart";
+import CategoryChart from "@/components/CategoryChart";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
 import Button3D from "@/components/Button3D";
@@ -62,10 +63,8 @@ function DashboardContent() {
     <div className="min-h-screen bg-bg-dark">
       <header className="border-b border-[#555] bg-bg-card shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <div>
-            <h1 className="text-xl font-bold text-gray-100">
-              Controle Financeiro
-            </h1>
+          <div className="flex items-center gap-3">
+            <img src="/logo-takenote.svg" alt="Takenote" className="h-14 w-auto" />
             <p className="text-sm text-gray-400">
               Olá, <span className="font-semibold text-gray-200">{user?.name}</span>
             </p>
@@ -84,6 +83,7 @@ function DashboardContent() {
         />
 
         <ClusteredChart transactions={transactions} />
+        <CategoryChart transactions={transactions} />
 
         <div className="grid gap-6 lg:grid-cols-2">
           <TransactionForm onSuccess={loadData} />

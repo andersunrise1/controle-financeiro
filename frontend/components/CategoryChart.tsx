@@ -11,16 +11,15 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Transaction, formatCurrency } from "@/lib/api";
+import { CATEGORIES } from "@/lib/categories";
 
-const NEON_BLUE = "#00e5ff";
-const NEON_RED = "#ff1744";
-
-interface ClusteredChartProps {
+interface CategoryChartProps {
   transactions: Transaction[];
 }
 
-function groupByMonth(transactions: Transaction[]) {
-  const grouped: Record<string, { month: string; entradas: number; saidas: number }> = {};
+function groupByMonthAndCategory(transactions: Transaction[]) {
+  const grouped: Record<string, { month: string } & Record<string, number>> =
+    {};
 
   transactions.forEach((t) => {
     const date = new Date(t.date + "T00:00:00");
@@ -31,14 +30,10 @@ function groupByMonth(transactions: Transaction[]) {
     });
 
     if (!grouped[key]) {
-      grouped[key] = { month: label, entradas: 0, saidas: 0 };
+      grouped[key] = { month: label };
     }
 
-    if (t.type === "income") {
-      grouped[key].entradas += t.amount;
-    } else {
-      grouped[key].saidas += t.amount;
-    }
+    grouped[key][t.category] = (grouped[key][t.category] || 0) + t.amount;
   });
 
   return Object.keys(grouped)
@@ -46,14 +41,18 @@ function groupByMonth(transactions: Transaction[]) {
     .map((key) => grouped[key]);
 }
 
-export default function ClusteredChart({ transactions }: ClusteredChartProps) {
-  const data = groupByMonth(transactions);
+export default function CategoryChart({ transactions }: CategoryChartProps) {
+  const data = groupByMonthAndCategory(transactions);
+
+  const usedCategories = CATEGORIES.filter((c) =>
+    data.some((month) => (month[c.name] || 0) > 0)
+  );
 
   if (data.length === 0) {
     return (
       <div className="card-dark flex h-64 items-center justify-center rounded-2xl p-6 shadow-md">
         <p className="text-gray-400">
-          Adicione transações para visualizar o gráfico.
+          Adicione transações para visualizar os gastos por categoria.
         </p>
       </div>
     );
@@ -62,7 +61,7 @@ export default function ClusteredChart({ transactions }: ClusteredChartProps) {
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
       <h2 className="mb-4 text-lg font-semibold text-gray-100">
-        Entradas vs Saídas por Mês
+        Gastos por Categoria por Mês
       </h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} barGap={4} barCategoryGap="20%">
@@ -88,20 +87,21 @@ export default function ClusteredChart({ transactions }: ClusteredChartProps) {
             labelStyle={{ color: "#f3f4f6" }}
           />
           <Legend wrapperStyle={{ color: "#f3f4f6" }} />
-          <Bar
-            dataKey="entradas"
-            name="Entradas"
-            fill={NEON_BLUE}
-            radius={[4, 4, 0, 0]}
-          />
-          <Bar
-            dataKey="saidas"
-            name="Saídas"
-            fill={NEON_RED}
-            radius={[4, 4, 0, 0]}
-          />
+          {usedCategories.map((c) => (
+            <Bar
+              key={c.name}
+              dataKey={c.name}
+              name={c.name}
+              fill={c.color}
+              radius={[4, 4, 0, 0]}
+            />
+          ))}
         </BarChart>
       </ResponsiveContainer>
+      <p className="mt-3 text-xs text-gray-500">
+        Cada categoria ganha sua própria cor neon — quanto mais categorias
+        você usar, mais cores aparecem no gráfico.
+      </p>
     </div>
   );
 }

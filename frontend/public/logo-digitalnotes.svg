@@ -1,0 +1,58 @@
+<svg width="640" height="620" viewBox="0 0 640 620" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Digital Notes</title>
+  <desc>Logotipo Digital Notes: emblema circular com anel azul escuro neon, contendo um carrinho de compras cuja cesta e formada por tres colunas de grafico ascendente em verde claro, azul neon e azul escuro neon, com rodas neon, e o nome Digital Notes escrito abaixo em texto simples.</desc>
+  <defs>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b9f6ca"/>
+      <stop offset="100%" stop-color="#00e676"/>
+    </linearGradient>
+    <linearGradient id="blueNeonGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#80d8ff"/>
+      <stop offset="100%" stop-color="#00e5ff"/>
+    </linearGradient>
+    <linearGradient id="darkBlueGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2962ff"/>
+      <stop offset="100%" stop-color="#0026ff"/>
+    </linearGradient>
+    <radialGradient id="bgGrad" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+    <filter id="glowStrong" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowSoft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <circle cx="315" cy="285" r="220" fill="url(#bgGrad)"/>
+
+  <g filter="url(#glowSoft)">
+    <rect x="335" y="130" width="110" height="300" rx="16" fill="url(#darkBlueGrad)"/>
+    <rect x="255" y="280" width="100" height="150" rx="14" fill="url(#blueNeonGrad)"/>
+    <rect x="185" y="360" width="90" height="70" rx="12" fill="url(#greenGrad)"/>
+  </g>
+
+  <path d="M175,330 Q155,335 158,365 L168,428 Q168,440 190,442 L440,442 Q460,442 462,424"
+        fill="none" stroke="url(#darkBlueGrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"
+        filter="url(#glowStrong)"/>
+
+  <g filter="url(#glowSoft)">
+    <circle cx="250" cy="455" r="17" fill="#0d0d0d" stroke="url(#darkBlueGrad)" stroke-width="5"/>
+    <circle cx="380" cy="455" r="17" fill="#0d0d0d" stroke="url(#darkBlueGrad)" stroke-width="5"/>
+  </g>
+
+  <circle cx="315" cy="285" r="220" fill="none" stroke="url(#darkBlueGrad)" stroke-width="20" filter="url(#glowStrong)"/>
+
+  <text x="320" y="575" text-anchor="middle" font-family="system-ui, Arial, sans-serif" font-size="56" font-weight="800" letter-spacing="3" fill="#f3f4f6">Digital Notes</text>
+</svg>
