@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Transaction, deleteTransaction } from "@/lib/api";
-import { getCategoryColor } from "@/lib/categories";
+import { CATEGORIES, getCategoryColor } from "@/lib/categories";
 import { formatCurrencyForLocale } from "@/lib/currency";
 import { useI18n } from "@/lib/i18n-context";
 import { translateCategory, translateError } from "@/lib/i18n";
@@ -22,6 +23,8 @@ export default function TransactionList({
   onDelete,
 }: TransactionListProps) {
   const { locale, t: tr } = useI18n();
+  const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
 
   const handleDelete = async (id: number) => {
     try {
@@ -40,60 +43,102 @@ export default function TransactionList({
     );
   }
 
+  const searchLower = search.trim().toLowerCase();
+  const filtered = transactions.filter((item) => {
+    if (categoryFilter && item.category !== categoryFilter) return false;
+    if (!searchLower) return true;
+
+    const formattedDate = new Date(item.date + "T00:00:00").toLocaleDateString(
+      INTL_LOCALE[locale]
+    );
+    const haystack = `${item.description} ${formattedDate} ${translateCategory(item.category, locale)}`
+      .toLowerCase();
+    return haystack.includes(searchLower);
+  });
+
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
       <h2 className="mb-4 text-lg font-semibold text-gray-100">
         {tr("historyTitle")}
       </h2>
-      <div className="space-y-3">
-        {transactions.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center justify-between rounded-xl border border-[#555] bg-[#2a2a2a] px-4 py-3"
-          >
-            <div>
-              <p className="font-medium text-gray-100">
-                {item.description ||
-                  (item.type === "income" ? tr("incomeButton") : tr("expenseButton"))}
-              </p>
-              <div className="mt-1 flex items-center gap-2">
-                <span
-                  className="rounded-full px-2 py-0.5 text-xs font-semibold"
-                  style={{
-                    color: getCategoryColor(item.category),
-                    backgroundColor: `${getCategoryColor(item.category)}22`,
-                    boxShadow: `0 0 6px ${getCategoryColor(item.category)}66`,
-                  }}
-                >
-                  {translateCategory(item.category, locale)}
-                </span>
-                <p className="text-xs text-gray-400">
-                  {new Date(item.date + "T00:00:00").toLocaleDateString(
-                    INTL_LOCALE[locale]
-                  )}
+
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder={tr("searchPlaceholder")}
+          aria-label={tr("searchPlaceholder")}
+          className="input-dark flex-1 rounded-xl px-4 py-2.5 text-sm"
+        />
+        <select
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          aria-label={tr("allCategories")}
+          className="input-dark rounded-xl px-4 py-2.5 text-sm sm:w-56"
+        >
+          <option value="">{tr("allCategories")}</option>
+          {CATEGORIES.map((c) => (
+            <option key={c.name} value={c.name}>
+              {translateCategory(c.name, locale)}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {filtered.length === 0 ? (
+        <p className="text-center text-gray-400">{tr("historyNoResults")}</p>
+      ) : (
+        <div className="scrollbar-neon max-h-[480px] space-y-3 overflow-y-auto pr-2">
+          {filtered.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-between rounded-xl border border-[#555] bg-[#2a2a2a] px-4 py-3"
+            >
+              <div>
+                <p className="font-medium text-gray-100">
+                  {item.description ||
+                    (item.type === "income" ? tr("incomeButton") : tr("expenseButton"))}
                 </p>
+                <div className="mt-1 flex items-center gap-2">
+                  <span
+                    className="rounded-full px-2 py-0.5 text-xs font-semibold"
+                    style={{
+                      color: getCategoryColor(item.category),
+                      backgroundColor: `${getCategoryColor(item.category)}22`,
+                      boxShadow: `0 0 6px ${getCategoryColor(item.category)}66`,
+                    }}
+                  >
+                    {translateCategory(item.category, locale)}
+                  </span>
+                  <p className="text-xs text-gray-400">
+                    {new Date(item.date + "T00:00:00").toLocaleDateString(
+                      INTL_LOCALE[locale]
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span
+                  className={`font-semibold ${
+                    item.type === "income" ? "neon-green" : "neon-red"
+                  }`}
+                >
+                  {item.type === "income" ? "+" : "-"}
+                  {formatCurrencyForLocale(item.amount, locale)}
+                </span>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="text-xs text-gray-500 hover:text-[#ff073a]"
+                  title={tr("removeTitle")}
+                >
+                  ✕
+                </button>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span
-                className={`font-semibold ${
-                  item.type === "income" ? "neon-green" : "neon-red"
-                }`}
-              >
-                {item.type === "income" ? "+" : "-"}
-                {formatCurrencyForLocale(item.amount, locale)}
-              </span>
-              <button
-                onClick={() => handleDelete(item.id)}
-                className="text-xs text-gray-500 hover:text-[#ff073a]"
-                title={tr("removeTitle")}
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

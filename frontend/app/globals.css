@@ -55,3 +55,33 @@ body {
 .input-dark::placeholder {
   color: #6b7280;
 }
+
+.scrollbar-neon {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-dark) #6b7280;
+}
+
+.scrollbar-neon::-webkit-scrollbar {
+  width: 14px;
+}
+
+.scrollbar-neon::-webkit-scrollbar-track {
+  background: #6b7280;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(156, 163, 175, 0.6);
+}
+
+.scrollbar-neon::-webkit-scrollbar-thumb {
+  background: var(--bg-dark);
+  border-radius: 8px;
+  border: 2px solid #6b7280;
+}
+
+.scrollbar-neon::-webkit-scrollbar-thumb:hover {
+  background: #1a1a1a;
+}
+
+.scrollbar-neon::-webkit-scrollbar-button {
+  background: var(--bg-dark);
+  height: 14px;
+}

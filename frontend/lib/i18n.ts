@@ -66,6 +66,9 @@ const pt = {
 
   historyTitle: "Histórico",
   historyEmpty: "Nenhuma transação registrada ainda.",
+  historyNoResults: "Nenhuma transação encontrada para essa busca.",
+  searchPlaceholder: "Buscar por descrição ou data...",
+  allCategories: "Todas as categorias",
   removeTitle: "Remover",
 
   yearlyChartTitle: "Gastos por Ano",
@@ -126,6 +129,9 @@ const en: Dictionary = {
 
   historyTitle: "History",
   historyEmpty: "No transactions recorded yet.",
+  historyNoResults: "No transactions found for this search.",
+  searchPlaceholder: "Search by description or date...",
+  allCategories: "All categories",
   removeTitle: "Remove",
 
   yearlyChartTitle: "Spending by Year",
@@ -184,6 +190,9 @@ const es: Dictionary = {
 
   historyTitle: "Historial",
   historyEmpty: "Aún no hay transacciones registradas.",
+  historyNoResults: "No se encontraron transacciones para esta búsqueda.",
+  searchPlaceholder: "Buscar por descripción o fecha...",
+  allCategories: "Todas las categorías",
   removeTitle: "Eliminar",
 
   yearlyChartTitle: "Gastos por Año",
