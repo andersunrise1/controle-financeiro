@@ -62,21 +62,45 @@ Perguntar ao usuário essas 3 decisões (ou confirmar se já decidiu) antes de i
 - Se (2a): novo `packages/mobile`-like app (Expo) reaproveitando o backend Next.js já existente como API.
 - Dashboards: adicionar comparação mês a mês por produto (preço subiu/desceu), não só o gráfico atual de entradas x saídas.
 
-## Identidade visual / logotipo (2026-08-17, em andamento)
+## Identidade visual / logotipo — FECHADO (2026-08-18)
 
-Vários conceitos de logo foram explorados em `frontend/public/`, do mais antigo ao aprovado:
+**Nome definitivo: Divisa** (palavra real pra "moeda estrangeira", idêntica em PT/ES, verificada sem colisão com apps existentes — ver histórico de nomes descartados abaixo). O produto também mudou de escopo nesse meio-tempo: deixou de ser só "controle de compra de mercado" e virou **controle financeiro + conversor de moeda entre 16 países** (Brasil, EUA + 14 países hispanofalantes da América Latina — ver seção "Região/moeda" abaixo).
 
-- `logo-takenote.svg` — emblema circular azul neon com carrinho de compras (réplica de uma referência: cesta em malha + etiqueta de preço com sinal "smart"), fundo cinza escuro. Nome de trabalho "Takenote". **Ainda é o único integrado no app de verdade** (usado em `app/login/page.tsx` e no cabeçalho de `app/dashboard/page.tsx`) — desatualizado frente às decisões abaixo, precisa ser trocado.
-- `logo-digitalnotes.svg` — variação: carrinho cuja cesta é formada por 3 colunas de gráfico ascendente (verde claro, azul neon, azul escuro neon), anel também azul escuro neon, fundo preto. Nome de trabalho "Digital Notes". Não integrado no app.
-- `icon-playstore.svg` — **o aprovado pelo usuário ("isso agora sim")**, pensado especificamente como ícone de loja de apps (sem texto embutido — a Play Store já mostra o nome do app separado do ícone): sacola de compras sólida branca em degradê amarelo→laranja→magenta, com um mini gráfico de barras ascendente recortado em negativo dentro dela (mesma cor do fundo aparecendo "através" da sacola). Ainda não integrado em lugar nenhum do app — só existe como arquivo.
-
-**Nome do app ainda não decidido.** Testados e descartados por colisão real com apps já existentes na Play Store (verificado via busca, 2026-08-17):
+Nomes testados e descartados antes de "Divisa", por colisão real com apps existentes (verificado via busca):
 - "Grana" — já é nome de pelo menos 2 apps financeiros brasileiros reais.
-- "Anotaí" — colide fortemente: já existe "Lista de Compras - Anota Aí!" (app de lista de compras) e "Anota ai, Sô" (assistente financeiro com IA, conceito muito parecido com o deste projeto), além de "Anota AI" (plataforma de gestão pra comércios).
+- "Anotaí" — colide fortemente com "Lista de Compras - Anota Aí!", "Anota ai, Sô" (assistente financeiro com IA) e "Anota AI".
+- "Cartaí" — verificado sem colisão, mas descartado porque o app deixou de ser "sobre carrinho de mercado" e o nome não fazia mais sentido.
 
-**Recomendação em aberto, não confirmada pelo usuário**: **Cartaí** (carrinho + "aí" coloquial brasileiro) — verificado sem colisão na busca, conecta com o elemento "carrinho" presente em todos os logos explorados.
+**Logo atual (em uso de verdade no app)**:
+- `frontend/public/icon-divisa-final.png` — ícone: gráfico de barras ascendente + seta subindo + moeda com cifrão de dólar, em branco, sobre fundo degradê pôr do sol (amarelo→laranja→magenta), cantos arredondados. **Não é um desenho meu — é a imagem de referência exata que o usuário forneceu** (`Downloads/moeda cambio.jpg`), recolorida pixel a pixel com um script Node/Jimp (linework original preservado 1:1, só a cor mudou: cinza → degradê, fundo branco mantido).
+- `frontend/public/logo-divisa-lockup.svg` — versão com "DIVISA" escrito embaixo — **mantida só como referência visual, não é usada diretamente no app** (ver nota técnica abaixo).
+- Usado em `app/login/page.tsx` e no cabeçalho de `app/dashboard/page.tsx` como **dois elementos HTML separados**: `<img src="/icon-divisa-final.png">` + um `<span>` com "DIVISA" em degradê via CSS (`background-clip: text`) — **não** como um único SVG com `<image href>` embutida, porque isso não carrega quando o SVG é usado como `<img src>` dentro do React (o contexto de imagem do navegador não busca recursos externos referenciados dentro do SVG nesse caso).
+- Vários outros conceitos de logo foram explorados e descartados ao longo do caminho (`logo-takenote.svg`, `logo-digitalnotes.svg`, `icon-playstore.svg`) — continuam no repo como histórico, não são usados em lugar nenhum.
 
-Quando retomar esse assunto: (1) fechar o nome definitivo (Cartaí ou outro), (2) trocar `logo-takenote.svg` por `icon-playstore.svg` (ou uma variante com o nome escolhido) no login/dashboard, (3) gerar as variações de tamanho que a Play Store exige (512x512 é o base usado aqui) quando o app mobile existir de fato.
+Pendente: gerar os tamanhos de ícone que a Play Store/App Store exigem (o arquivo atual é 554x554) quando o app mobile existir de fato — ver roteiro abaixo.
+
+## Região / moeda — 16 países (2026-08-18)
+
+O app deixou de ser só sobre "controle de compra de mercado" pra ser **controle financeiro + conversor de câmbio**, com foco em quem viaja entre países da América Latina:
+
+- `frontend/lib/regions.ts` — 16 regiões (Brasil, EUA + Argentina, Paraguai, Uruguai, Chile, Venezuela, Colômbia, Peru, Bolívia, Equador, El Salvador, México, Porto Rico, Honduras, Guatemala), cada uma com moeda, locale ICU (formatação numérica correta por país) e idioma (PT pro Brasil, EN pros EUA, ES pros outros 14 — Equador/El Salvador/Porto Rico usam Dólar de verdade, dolarização real, não erro).
+- `backend/app/api/exchange-rates` + `frontend/lib/exchangeRates.ts` — cotação de câmbio **ao vivo**, buscada de uma API gratuita (open.er-api.com, sem chave), com cache de 12h (backend em memória, frontend em localStorage). Se a API cair, cai pra uma tabela fixa em `regions.ts` (`REGION_EXCHANGE_FROM_BRL`) como último recurso.
+- `frontend/components/CurrencyConverter.tsx` — conversor independente (De/Para, qualquer um dos 16 países), pensado especificamente pro caso de uso "casal viajando de motorhome pela fronteira" que o usuário descreveu.
+- `frontend/components/LanguageSwitcher.tsx` / `RegionSelect.tsx` — seletor de país/moeda (dropdown customizado com bandeiras em SVG próprio — `FlagIcon.tsx` — não emoji, porque o Windows não renderiza emoji de bandeira como imagem, só mostra o código do país em texto).
+
+## Roteiro: transformação em app mobile (React Native/Expo) — planejado em 2026-08-18, ainda não iniciado
+
+Decisão de base: **React Native com Expo**, mesmo caminho já usado no projeto irmão `Audiobooks_business` (`packages/mobile`). O backend Next.js não muda nada — ele já é uma API, o mobile só vira mais um cliente dela.
+
+1. **Fundação (auth + navegação)** — ~2 dias. Projeto Expo, login/cadastro (portar `lib/api.ts`, trocar `localStorage` por `AsyncStorage`), React Navigation.
+2. **Núcleo financeiro** — ~2-3 dias. Saldo, formulário de transação, histórico com busca/filtro, categorias.
+3. **Gráficos** — ~2 dias. Trocar Recharts (só web) por uma lib compatível com RN (ex: Victory Native); portar os 3 gráficos.
+4. **Internacionalização + câmbio** — ~2 dias. Portar traduções e a lógica dos 16 países (é quase copiar/colar, é lógica pura); seletor nativo; conversor + cotação ao vivo.
+5. **Identidade visual** — ~1 dia. Gerar `icon-divisa-final.png` nos tamanhos que iOS/Android exigem; splash screen; adaptar tema escuro pro RN.
+6. **Testes reais** — ~1-2 dias. Expo Go num celular de verdade (sem precisar de conta paga ainda); ajustes de teclado/área segura.
+7. **Publicação** — tempo variável. Configurar EAS Build; **trava até o usuário ter conta de desenvolvedor Apple (paga, ~US$99/ano) e/ou Google Play Console (paga, taxa única ~US$25)** — ação dele, fora do código; preparar ficha da loja.
+
+Total estimado do que depende só de código (etapas 1-6): ~10-12 dias de trabalho focado. Etapa 7 trava em decisão/pagamento do usuário, mesmo padrão já visto nesse projeto (Mercado Pago, hospedagem) e no projeto irmão (contas Apple/Google).
 
 ## Problemas conhecidos
 
