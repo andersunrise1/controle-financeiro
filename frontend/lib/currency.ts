@@ -1,54 +1,42 @@
-import { Locale } from "./i18n";
+import {
+  Region,
+  REGION_CURRENCY,
+  REGION_INTL_LOCALE,
+  REGION_EXCHANGE_FROM_BRL,
+} from "./regions";
 
-// Fixed approximate rates from BRL, for display conversion only — not
-// real-time. The amount stored in the database is always the real BRL
-// value the user spent; switching language only changes how it's shown.
-const EXCHANGE_RATE_FROM_BRL: Record<Locale, number> = {
-  pt: 1,
-  en: 0.18, // BRL -> USD
-  es: 0.17, // BRL -> EUR
-};
-
-const CURRENCY_CODE: Record<Locale, string> = {
-  pt: "BRL",
-  en: "USD",
-  es: "EUR",
-};
-
-const INTL_LOCALE: Record<Locale, string> = {
-  pt: "pt-BR",
-  en: "en-US",
-  es: "es-ES",
-};
-
-export function convertFromBRL(amountInBRL: number, locale: Locale): number {
-  return amountInBRL * EXCHANGE_RATE_FROM_BRL[locale];
+export function convertFromBRL(amountInBRL: number, region: Region): number {
+  return amountInBRL * REGION_EXCHANGE_FROM_BRL[region];
 }
 
 export function formatCompactNumberForLocale(
   amountInBRL: number,
-  locale: Locale
+  region: Region
 ): string {
-  return new Intl.NumberFormat(INTL_LOCALE[locale], {
+  return new Intl.NumberFormat(REGION_INTL_LOCALE[region], {
     notation: "compact",
     compactDisplay: "short",
-  }).format(convertFromBRL(amountInBRL, locale));
+  }).format(convertFromBRL(amountInBRL, region));
 }
 
 export function formatCurrencyForLocale(
   amountInBRL: number,
-  locale: Locale
+  region: Region
 ): string {
-  const converted = amountInBRL * EXCHANGE_RATE_FROM_BRL[locale];
-  return new Intl.NumberFormat(INTL_LOCALE[locale], {
+  const converted = convertFromBRL(amountInBRL, region);
+  return new Intl.NumberFormat(REGION_INTL_LOCALE[region], {
     style: "currency",
-    currency: CURRENCY_CODE[locale],
+    currency: REGION_CURRENCY[region],
   }).format(converted);
 }
 
-export function formatMonthLabel(date: Date, locale: Locale): string {
-  return date.toLocaleDateString(INTL_LOCALE[locale], {
+export function formatMonthLabel(date: Date, region: Region): string {
+  return date.toLocaleDateString(REGION_INTL_LOCALE[region], {
     month: "short",
     year: "2-digit",
   });
+}
+
+export function formatDateForRegion(date: Date, region: Region): string {
+  return date.toLocaleDateString(REGION_INTL_LOCALE[region]);
 }

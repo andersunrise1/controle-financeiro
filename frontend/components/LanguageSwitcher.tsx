@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n-context";
-import { LOCALES, LOCALE_COUNTRY, LOCALE_LABELS } from "@/lib/i18n";
+import { REGIONS, REGION_LABELS } from "@/lib/regions";
 import FlagIcon from "./FlagIcon";
 
 export default function LanguageSwitcher() {
-  const { locale, setLocale } = useI18n();
+  const { region, setRegion } = useI18n();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -27,29 +27,29 @@ export default function LanguageSwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="true"
         aria-expanded={open}
-        aria-label="Trocar idioma"
+        aria-label="Trocar país / moeda"
         className="flex items-center gap-2 rounded-xl border border-[#555] bg-[#2a2a2a] px-3 py-2 text-sm text-gray-200 hover:bg-[#3a3a3a]"
       >
-        <FlagIcon country={LOCALE_COUNTRY[locale]} />
-        <span className="hidden sm:inline">{LOCALE_LABELS[locale]}</span>
+        <FlagIcon country={region} />
+        <span className="hidden sm:inline">{REGION_LABELS[region]}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 z-10 mt-2 w-40 overflow-hidden rounded-xl border border-[#555] bg-[#2a2a2a] shadow-lg">
-          {LOCALES.map((l) => (
+        <div className="scrollbar-neon absolute right-0 z-10 mt-2 max-h-72 w-48 overflow-y-auto rounded-xl border border-[#555] bg-[#2a2a2a] shadow-lg">
+          {REGIONS.map((r) => (
             <button
-              key={l}
+              key={r}
               type="button"
               onClick={() => {
-                setLocale(l);
+                setRegion(r);
                 setOpen(false);
               }}
               className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-[#3a3a3a] ${
-                l === locale ? "text-[#00e5ff]" : "text-gray-200"
+                r === region ? "text-[#00e5ff]" : "text-gray-200"
               }`}
             >
-              <FlagIcon country={LOCALE_COUNTRY[l]} />
-              <span>{LOCALE_LABELS[l]}</span>
+              <FlagIcon country={r} />
+              <span>{REGION_LABELS[r]}</span>
             </button>
           ))}
         </div>

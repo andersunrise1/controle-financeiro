@@ -18,20 +18,21 @@ import {
   formatMonthLabel,
 } from "@/lib/currency";
 import { useI18n } from "@/lib/i18n-context";
-import { translateCategory, Locale } from "@/lib/i18n";
+import { translateCategory } from "@/lib/i18n";
+import { Region } from "@/lib/regions";
 
 interface CategoryChartProps {
   transactions: Transaction[];
 }
 
-function groupByMonthAndCategory(transactions: Transaction[], locale: Locale) {
+function groupByMonthAndCategory(transactions: Transaction[], region: Region) {
   const grouped: Record<string, { month: string } & Record<string, number>> =
     {};
 
   transactions.forEach((t) => {
     const date = new Date(t.date + "T00:00:00");
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-    const label = formatMonthLabel(date, locale);
+    const label = formatMonthLabel(date, region);
 
     if (!grouped[key]) {
       grouped[key] = { month: label };
@@ -46,8 +47,8 @@ function groupByMonthAndCategory(transactions: Transaction[], locale: Locale) {
 }
 
 export default function CategoryChart({ transactions }: CategoryChartProps) {
-  const { locale, t } = useI18n();
-  const data = groupByMonthAndCategory(transactions, locale);
+  const { locale, region, t } = useI18n();
+  const data = groupByMonthAndCategory(transactions, region);
 
   const usedCategories = CATEGORIES.filter((c) =>
     data.some((month) => (month[c.name] || 0) > 0)
@@ -72,10 +73,10 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
           <XAxis dataKey="month" tick={{ fill: "#9ca3af", fontSize: 12 }} />
           <YAxis
             tick={{ fill: "#9ca3af", fontSize: 12 }}
-            tickFormatter={(v) => formatCompactNumberForLocale(v, locale)}
+            tickFormatter={(v) => formatCompactNumberForLocale(v, region)}
           />
           <Tooltip
-            formatter={(value) => formatCurrencyForLocale(Number(value), locale)}
+            formatter={(value) => formatCurrencyForLocale(Number(value), region)}
             contentStyle={{
               borderRadius: "12px",
               border: "1px solid #555",

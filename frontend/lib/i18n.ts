@@ -1,19 +1,5 @@
 export type Locale = "pt" | "en" | "es";
 
-export const LOCALES: Locale[] = ["pt", "en", "es"];
-
-export const LOCALE_COUNTRY: Record<Locale, "BR" | "US" | "ES"> = {
-  pt: "BR",
-  en: "US",
-  es: "ES",
-};
-
-export const LOCALE_LABELS: Record<Locale, string> = {
-  pt: "Português",
-  en: "English",
-  es: "Español",
-};
-
 const pt = {
   logout: "Sair",
   greeting: "Olá,",

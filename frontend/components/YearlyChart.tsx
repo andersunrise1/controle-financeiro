@@ -32,7 +32,7 @@ function groupByYear(transactions: Transaction[]) {
 }
 
 export default function YearlyChart({ transactions }: YearlyChartProps) {
-  const { locale, t } = useI18n();
+  const { region, t } = useI18n();
   const data = groupByYear(transactions);
 
   if (data.length === 0) {
@@ -63,10 +63,10 @@ export default function YearlyChart({ transactions }: YearlyChartProps) {
           <XAxis dataKey="year" tick={{ fill: "#9ca3af", fontSize: 12 }} />
           <YAxis
             tick={{ fill: "#9ca3af", fontSize: 12 }}
-            tickFormatter={(v) => formatCompactNumberForLocale(v, locale)}
+            tickFormatter={(v) => formatCompactNumberForLocale(v, region)}
           />
           <Tooltip
-            formatter={(value) => formatCurrencyForLocale(Number(value), locale)}
+            formatter={(value) => formatCurrencyForLocale(Number(value), region)}
             contentStyle={{
               borderRadius: "12px",
               border: "1px solid #555",
@@ -93,7 +93,7 @@ export default function YearlyChart({ transactions }: YearlyChartProps) {
             WebkitTextFillColor: "transparent",
           }}
         >
-          {topYear.year} ({formatCurrencyForLocale(topYear.total, locale)})
+          {topYear.year} ({formatCurrencyForLocale(topYear.total, region)})
         </span>
       </p>
     </div>

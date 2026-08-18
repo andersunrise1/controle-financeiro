@@ -17,7 +17,7 @@ import {
   formatMonthLabel,
 } from "@/lib/currency";
 import { useI18n } from "@/lib/i18n-context";
-import { Locale } from "@/lib/i18n";
+import { Region } from "@/lib/regions";
 
 const NEON_BLUE = "#00e5ff";
 const NEON_RED = "#ff1744";
@@ -26,13 +26,13 @@ interface ClusteredChartProps {
   transactions: Transaction[];
 }
 
-function groupByMonth(transactions: Transaction[], locale: Locale) {
+function groupByMonth(transactions: Transaction[], region: Region) {
   const grouped: Record<string, { month: string; entradas: number; saidas: number }> = {};
 
   transactions.forEach((t) => {
     const date = new Date(t.date + "T00:00:00");
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-    const label = formatMonthLabel(date, locale);
+    const label = formatMonthLabel(date, region);
 
     if (!grouped[key]) {
       grouped[key] = { month: label, entradas: 0, saidas: 0 };
@@ -51,8 +51,8 @@ function groupByMonth(transactions: Transaction[], locale: Locale) {
 }
 
 export default function ClusteredChart({ transactions }: ClusteredChartProps) {
-  const { locale, t } = useI18n();
-  const data = groupByMonth(transactions, locale);
+  const { region, t } = useI18n();
+  const data = groupByMonth(transactions, region);
 
   if (data.length === 0) {
     return (
@@ -73,10 +73,10 @@ export default function ClusteredChart({ transactions }: ClusteredChartProps) {
           <XAxis dataKey="month" tick={{ fill: "#9ca3af", fontSize: 12 }} />
           <YAxis
             tick={{ fill: "#9ca3af", fontSize: 12 }}
-            tickFormatter={(v) => formatCompactNumberForLocale(v, locale)}
+            tickFormatter={(v) => formatCompactNumberForLocale(v, region)}
           />
           <Tooltip
-            formatter={(value) => formatCurrencyForLocale(Number(value), locale)}
+            formatter={(value) => formatCurrencyForLocale(Number(value), region)}
             contentStyle={{
               borderRadius: "12px",
               border: "1px solid #555",

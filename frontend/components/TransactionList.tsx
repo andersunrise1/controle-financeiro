@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Transaction, deleteTransaction } from "@/lib/api";
 import { CATEGORIES, getCategoryColor } from "@/lib/categories";
-import { formatCurrencyForLocale } from "@/lib/currency";
+import { formatCurrencyForLocale, formatDateForRegion } from "@/lib/currency";
 import { useI18n } from "@/lib/i18n-context";
 import { translateCategory, translateError } from "@/lib/i18n";
 
@@ -12,17 +12,11 @@ interface TransactionListProps {
   onDelete: () => void;
 }
 
-const INTL_LOCALE: Record<string, string> = {
-  pt: "pt-BR",
-  en: "en-US",
-  es: "es-ES",
-};
-
 export default function TransactionList({
   transactions,
   onDelete,
 }: TransactionListProps) {
-  const { locale, t: tr } = useI18n();
+  const { locale, region, t: tr } = useI18n();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
 
@@ -48,8 +42,9 @@ export default function TransactionList({
     if (categoryFilter && item.category !== categoryFilter) return false;
     if (!searchLower) return true;
 
-    const formattedDate = new Date(item.date + "T00:00:00").toLocaleDateString(
-      INTL_LOCALE[locale]
+    const formattedDate = formatDateForRegion(
+      new Date(item.date + "T00:00:00"),
+      region
     );
     const haystack = `${item.description} ${formattedDate} ${translateCategory(item.category, locale)}`
       .toLowerCase();
@@ -112,9 +107,7 @@ export default function TransactionList({
                     {translateCategory(item.category, locale)}
                   </span>
                   <p className="text-xs text-gray-400">
-                    {new Date(item.date + "T00:00:00").toLocaleDateString(
-                      INTL_LOCALE[locale]
-                    )}
+                    {formatDateForRegion(new Date(item.date + "T00:00:00"), region)}
                   </p>
                 </div>
               </div>
@@ -125,7 +118,7 @@ export default function TransactionList({
                   }`}
                 >
                   {item.type === "income" ? "+" : "-"}
-                  {formatCurrencyForLocale(item.amount, locale)}
+                  {formatCurrencyForLocale(item.amount, region)}
                 </span>
                 <button
                   onClick={() => handleDelete(item.id)}
