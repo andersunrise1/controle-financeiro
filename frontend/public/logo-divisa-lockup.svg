@@ -1,0 +1,15 @@
+<svg width="554" height="700" viewBox="0 0 554 700" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Divisa</title>
+  <desc>Logotipo Divisa: icone de linha fina com grafico ascendente, seta e moeda com cifrao de dolar, em branco sobre fundo degrade por do sol com cantos arredondados, com o nome DIVISA escrito abaixo em maiusculas, no mesmo degrade.</desc>
+  <defs>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffd93d"/>
+      <stop offset="45%" stop-color="#ff8c42"/>
+      <stop offset="100%" stop-color="#d6249f"/>
+    </linearGradient>
+  </defs>
+
+  <image href="/icon-divisa-final.png" x="0" y="0" width="554" height="554"/>
+
+  <text x="277" y="650" text-anchor="middle" font-family="system-ui, Arial, sans-serif" font-size="60" font-weight="800" letter-spacing="8" fill="url(#textGrad)">DIVISA</text>
+</svg>

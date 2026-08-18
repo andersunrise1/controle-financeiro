@@ -69,7 +69,17 @@ function DashboardContent() {
       <header className="border-b border-[#555] bg-bg-card shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <div className="flex items-center gap-3">
-            <img src="/logo-lockup.svg" alt="Digital Notes" className="h-14 w-auto" />
+            <img src="/icon-divisa-final.png" alt="Divisa" className="h-12 w-12" />
+            <span
+              className="hidden text-lg font-extrabold tracking-[0.15em] sm:inline"
+              style={{
+                background: "linear-gradient(90deg, #ffd93d, #ff8c42, #d6249f)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              DIVISA
+            </span>
             <p className="text-sm text-gray-400">
               {t("greeting")}{" "}
               <span className="font-semibold text-gray-200">{user?.name}</span>

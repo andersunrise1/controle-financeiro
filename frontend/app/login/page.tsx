@@ -62,11 +62,19 @@ export default function LoginPage() {
           <LanguageSwitcher />
         </div>
         <div className="card-dark rounded-2xl p-8 shadow-lg">
-          <img
-            src="/logo-lockup.svg"
-            alt="Digital Notes"
-            className="mx-auto mb-4 h-40 w-auto"
-          />
+          <div className="mx-auto mb-4 flex flex-col items-center">
+            <img src="/icon-divisa-final.png" alt="Divisa" className="h-28 w-28" />
+            <span
+              className="mt-2 text-2xl font-extrabold tracking-[0.2em]"
+              style={{
+                background: "linear-gradient(90deg, #ffd93d, #ff8c42, #d6249f)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              DIVISA
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-gray-100">{t("loginTitle")}</h1>
           <p className="mt-1 text-sm text-gray-400">{t("loginSubtitle")}</p>
 
