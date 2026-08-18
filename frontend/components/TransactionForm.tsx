@@ -5,12 +5,15 @@ import Button3D from "./Button3D";
 import Alert from "./Alert";
 import { createTransaction } from "@/lib/api";
 import { CATEGORIES, DEFAULT_CATEGORY } from "@/lib/categories";
+import { useI18n } from "@/lib/i18n-context";
+import { translateCategory, translateError } from "@/lib/i18n";
 
 interface TransactionFormProps {
   onSuccess: () => void;
 }
 
 export default function TransactionForm({ onSuccess }: TransactionFormProps) {
+  const { locale, t } = useI18n();
   const [type, setType] = useState<"income" | "expense">("income");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -27,12 +30,12 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
 
     const parsedAmount = parseFloat(amount.replace(",", "."));
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      setError("Informe um valor válido maior que zero.");
+      setError(translateError("Informe um valor válido maior que zero.", locale));
       return;
     }
 
     if (!date) {
-      setError("Informe a data da transação.");
+      setError(translateError("Informe a data da transação.", locale));
       return;
     }
 
@@ -45,14 +48,13 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
         date,
         category,
       });
-      setSuccess(
-        type === "income" ? "Entrada adicionada!" : "Saída adicionada!"
-      );
+      setSuccess(type === "income" ? t("successIncome") : t("successExpense"));
       setAmount("");
       setDescription("");
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao salvar.");
+      const raw = err instanceof Error ? err.message : "Erro ao salvar.";
+      setError(translateError(raw, locale));
     } finally {
       setLoading(false);
     }
@@ -61,7 +63,7 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
       <h2 className="mb-4 text-lg font-semibold text-gray-100">
-        Nova Transação
+        {t("newTransactionTitle")}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -75,7 +77,7 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
                 : "bg-[#2a2a2a] text-gray-400 border border-[#555]"
             }`}
           >
-            Entrada
+            {t("incomeButton")}
           </button>
           <button
             type="button"
@@ -86,13 +88,13 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
                 : "bg-[#2a2a2a] text-gray-400 border border-[#555]"
             }`}
           >
-            Saída
+            {t("expenseButton")}
           </button>
         </div>
 
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-300">
-            Valor (R$)
+            {t("amountLabel")}
           </label>
           <input
             type="number"
@@ -108,20 +110,20 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
 
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-300">
-            Descrição
+            {t("descriptionLabel")}
           </label>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Ex: Salário, Aluguel..."
+            placeholder={t("descriptionPlaceholder")}
             className="input-dark w-full rounded-xl px-4 py-3"
           />
         </div>
 
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-300">
-            Categoria
+            {t("categoryLabel")}
           </label>
           <select
             value={category}
@@ -130,7 +132,7 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
           >
             {CATEGORIES.map((c) => (
               <option key={c.name} value={c.name}>
-                {c.name}
+                {translateCategory(c.name, locale)}
               </option>
             ))}
           </select>
@@ -138,7 +140,7 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
 
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-300">
-            Data
+            {t("dateLabel")}
           </label>
           <input
             type="date"
@@ -153,7 +155,7 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
         {success && <Alert type="success" message={success} />}
 
         <Button3D type="submit" fullWidth disabled={loading}>
-          {loading ? "Salvando..." : "Adicionar"}
+          {loading ? t("addButtonLoading") : t("addButton")}
         </Button3D>
       </form>
     </div>

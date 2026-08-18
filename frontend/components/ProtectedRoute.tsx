@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { useI18n } from "@/lib/i18n-context";
 
 export default function ProtectedRoute({
   children,
@@ -11,6 +12,7 @@ export default function ProtectedRoute({
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -21,7 +23,7 @@ export default function ProtectedRoute({
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg-dark">
-        <p className="text-gray-400">Carregando...</p>
+        <p className="text-gray-400">{t("loading")}</p>
       </div>
     );
   }

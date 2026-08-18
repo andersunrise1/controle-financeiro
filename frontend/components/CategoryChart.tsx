@@ -10,24 +10,28 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Transaction, formatCurrency } from "@/lib/api";
+import { Transaction } from "@/lib/api";
 import { CATEGORIES } from "@/lib/categories";
+import {
+  formatCurrencyForLocale,
+  formatCompactNumberForLocale,
+  formatMonthLabel,
+} from "@/lib/currency";
+import { useI18n } from "@/lib/i18n-context";
+import { translateCategory, Locale } from "@/lib/i18n";
 
 interface CategoryChartProps {
   transactions: Transaction[];
 }
 
-function groupByMonthAndCategory(transactions: Transaction[]) {
+function groupByMonthAndCategory(transactions: Transaction[], locale: Locale) {
   const grouped: Record<string, { month: string } & Record<string, number>> =
     {};
 
   transactions.forEach((t) => {
     const date = new Date(t.date + "T00:00:00");
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-    const label = date.toLocaleDateString("pt-BR", {
-      month: "short",
-      year: "2-digit",
-    });
+    const label = formatMonthLabel(date, locale);
 
     if (!grouped[key]) {
       grouped[key] = { month: label };
@@ -42,7 +46,8 @@ function groupByMonthAndCategory(transactions: Transaction[]) {
 }
 
 export default function CategoryChart({ transactions }: CategoryChartProps) {
-  const data = groupByMonthAndCategory(transactions);
+  const { locale, t } = useI18n();
+  const data = groupByMonthAndCategory(transactions, locale);
 
   const usedCategories = CATEGORIES.filter((c) =>
     data.some((month) => (month[c.name] || 0) > 0)
@@ -51,9 +56,7 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
   if (data.length === 0) {
     return (
       <div className="card-dark flex h-64 items-center justify-center rounded-2xl p-6 shadow-md">
-        <p className="text-gray-400">
-          Adicione transações para visualizar os gastos por categoria.
-        </p>
+        <p className="text-gray-400">{t("categoryChartEmpty")}</p>
       </div>
     );
   }
@@ -61,7 +64,7 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
       <h2 className="mb-4 text-lg font-semibold text-gray-100">
-        Gastos por Categoria por Mês
+        {t("categoryChartTitle")}
       </h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} barGap={4} barCategoryGap="20%">
@@ -69,15 +72,10 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
           <XAxis dataKey="month" tick={{ fill: "#9ca3af", fontSize: 12 }} />
           <YAxis
             tick={{ fill: "#9ca3af", fontSize: 12 }}
-            tickFormatter={(v) =>
-              new Intl.NumberFormat("pt-BR", {
-                notation: "compact",
-                compactDisplay: "short",
-              }).format(v)
-            }
+            tickFormatter={(v) => formatCompactNumberForLocale(v, locale)}
           />
           <Tooltip
-            formatter={(value) => formatCurrency(Number(value))}
+            formatter={(value) => formatCurrencyForLocale(Number(value), locale)}
             contentStyle={{
               borderRadius: "12px",
               border: "1px solid #555",
@@ -91,17 +89,14 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
             <Bar
               key={c.name}
               dataKey={c.name}
-              name={c.name}
+              name={translateCategory(c.name, locale)}
               fill={c.color}
               radius={[4, 4, 0, 0]}
             />
           ))}
         </BarChart>
       </ResponsiveContainer>
-      <p className="mt-3 text-xs text-gray-500">
-        Cada categoria ganha sua própria cor neon — quanto mais categorias
-        você usar, mais cores aparecem no gráfico.
-      </p>
+      <p className="mt-3 text-xs text-gray-500">{t("categoryChartFooter")}</p>
     </div>
   );
 }

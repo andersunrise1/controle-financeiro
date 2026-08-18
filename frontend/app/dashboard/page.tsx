@@ -9,7 +9,9 @@ import CategoryChart from "@/components/CategoryChart";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
 import Button3D from "@/components/Button3D";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useAuth } from "@/lib/auth-context";
+import { useI18n } from "@/lib/i18n-context";
 import {
   getTransactions,
   logout,
@@ -19,6 +21,7 @@ import {
 
 function DashboardContent() {
   const { user, setUser } = useAuth();
+  const { t } = useI18n();
   const router = useRouter();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [summary, setSummary] = useState<Summary>({
@@ -54,7 +57,7 @@ function DashboardContent() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg-dark">
-        <p className="text-gray-400">Carregando dashboard...</p>
+        <p className="text-gray-400">{t("loadingDashboard")}</p>
       </div>
     );
   }
@@ -66,12 +69,16 @@ function DashboardContent() {
           <div className="flex items-center gap-3">
             <img src="/logo-takenote.svg" alt="Takenote" className="h-14 w-auto" />
             <p className="text-sm text-gray-400">
-              Olá, <span className="font-semibold text-gray-200">{user?.name}</span>
+              {t("greeting")}{" "}
+              <span className="font-semibold text-gray-200">{user?.name}</span>
             </p>
           </div>
-          <Button3D variant="secondary" onClick={handleLogout}>
-            Sair
-          </Button3D>
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
+            <Button3D variant="secondary" onClick={handleLogout}>
+              {t("logout")}
+            </Button3D>
+          </div>
         </div>
       </header>
 

@@ -1,32 +1,41 @@
 "use client";
 
-import { Transaction, formatCurrency, deleteTransaction } from "@/lib/api";
+import { Transaction, deleteTransaction } from "@/lib/api";
 import { getCategoryColor } from "@/lib/categories";
+import { formatCurrencyForLocale } from "@/lib/currency";
+import { useI18n } from "@/lib/i18n-context";
+import { translateCategory, translateError } from "@/lib/i18n";
 
 interface TransactionListProps {
   transactions: Transaction[];
   onDelete: () => void;
 }
 
+const INTL_LOCALE: Record<string, string> = {
+  pt: "pt-BR",
+  en: "en-US",
+  es: "es-ES",
+};
+
 export default function TransactionList({
   transactions,
   onDelete,
 }: TransactionListProps) {
+  const { locale, t: tr } = useI18n();
+
   const handleDelete = async (id: number) => {
     try {
       await deleteTransaction(id);
       onDelete();
     } catch {
-      alert("Erro ao remover transação.");
+      alert(translateError("Erro ao remover transação.", locale));
     }
   };
 
   if (transactions.length === 0) {
     return (
       <div className="card-dark rounded-2xl p-6 shadow-md">
-        <p className="text-center text-gray-400">
-          Nenhuma transação registrada ainda.
-        </p>
+        <p className="text-center text-gray-400">{tr("historyEmpty")}</p>
       </div>
     );
   }
@@ -34,47 +43,50 @@ export default function TransactionList({
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
       <h2 className="mb-4 text-lg font-semibold text-gray-100">
-        Histórico
+        {tr("historyTitle")}
       </h2>
       <div className="space-y-3">
-        {transactions.map((t) => (
+        {transactions.map((item) => (
           <div
-            key={t.id}
+            key={item.id}
             className="flex items-center justify-between rounded-xl border border-[#555] bg-[#2a2a2a] px-4 py-3"
           >
             <div>
               <p className="font-medium text-gray-100">
-                {t.description || (t.type === "income" ? "Entrada" : "Saída")}
+                {item.description ||
+                  (item.type === "income" ? tr("incomeButton") : tr("expenseButton"))}
               </p>
               <div className="mt-1 flex items-center gap-2">
                 <span
                   className="rounded-full px-2 py-0.5 text-xs font-semibold"
                   style={{
-                    color: getCategoryColor(t.category),
-                    backgroundColor: `${getCategoryColor(t.category)}22`,
-                    boxShadow: `0 0 6px ${getCategoryColor(t.category)}66`,
+                    color: getCategoryColor(item.category),
+                    backgroundColor: `${getCategoryColor(item.category)}22`,
+                    boxShadow: `0 0 6px ${getCategoryColor(item.category)}66`,
                   }}
                 >
-                  {t.category}
+                  {translateCategory(item.category, locale)}
                 </span>
                 <p className="text-xs text-gray-400">
-                  {new Date(t.date + "T00:00:00").toLocaleDateString("pt-BR")}
+                  {new Date(item.date + "T00:00:00").toLocaleDateString(
+                    INTL_LOCALE[locale]
+                  )}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <span
                 className={`font-semibold ${
-                  t.type === "income" ? "neon-green" : "neon-red"
+                  item.type === "income" ? "neon-green" : "neon-red"
                 }`}
               >
-                {t.type === "income" ? "+" : "-"}
-                {formatCurrency(t.amount)}
+                {item.type === "income" ? "+" : "-"}
+                {formatCurrencyForLocale(item.amount, locale)}
               </span>
               <button
-                onClick={() => handleDelete(t.id)}
+                onClick={() => handleDelete(item.id)}
                 className="text-xs text-gray-500 hover:text-[#ff073a]"
-                title="Remover"
+                title={tr("removeTitle")}
               >
                 ✕
               </button>

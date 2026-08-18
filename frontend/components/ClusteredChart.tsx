@@ -10,7 +10,14 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Transaction, formatCurrency } from "@/lib/api";
+import { Transaction } from "@/lib/api";
+import {
+  formatCurrencyForLocale,
+  formatCompactNumberForLocale,
+  formatMonthLabel,
+} from "@/lib/currency";
+import { useI18n } from "@/lib/i18n-context";
+import { Locale } from "@/lib/i18n";
 
 const NEON_BLUE = "#00e5ff";
 const NEON_RED = "#ff1744";
@@ -19,16 +26,13 @@ interface ClusteredChartProps {
   transactions: Transaction[];
 }
 
-function groupByMonth(transactions: Transaction[]) {
+function groupByMonth(transactions: Transaction[], locale: Locale) {
   const grouped: Record<string, { month: string; entradas: number; saidas: number }> = {};
 
   transactions.forEach((t) => {
     const date = new Date(t.date + "T00:00:00");
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-    const label = date.toLocaleDateString("pt-BR", {
-      month: "short",
-      year: "2-digit",
-    });
+    const label = formatMonthLabel(date, locale);
 
     if (!grouped[key]) {
       grouped[key] = { month: label, entradas: 0, saidas: 0 };
@@ -47,14 +51,13 @@ function groupByMonth(transactions: Transaction[]) {
 }
 
 export default function ClusteredChart({ transactions }: ClusteredChartProps) {
-  const data = groupByMonth(transactions);
+  const { locale, t } = useI18n();
+  const data = groupByMonth(transactions, locale);
 
   if (data.length === 0) {
     return (
       <div className="card-dark flex h-64 items-center justify-center rounded-2xl p-6 shadow-md">
-        <p className="text-gray-400">
-          Adicione transações para visualizar o gráfico.
-        </p>
+        <p className="text-gray-400">{t("chartEmpty")}</p>
       </div>
     );
   }
@@ -62,7 +65,7 @@ export default function ClusteredChart({ transactions }: ClusteredChartProps) {
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
       <h2 className="mb-4 text-lg font-semibold text-gray-100">
-        Entradas vs Saídas por Mês
+        {t("chartTitle")}
       </h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} barGap={4} barCategoryGap="20%">
@@ -70,15 +73,10 @@ export default function ClusteredChart({ transactions }: ClusteredChartProps) {
           <XAxis dataKey="month" tick={{ fill: "#9ca3af", fontSize: 12 }} />
           <YAxis
             tick={{ fill: "#9ca3af", fontSize: 12 }}
-            tickFormatter={(v) =>
-              new Intl.NumberFormat("pt-BR", {
-                notation: "compact",
-                compactDisplay: "short",
-              }).format(v)
-            }
+            tickFormatter={(v) => formatCompactNumberForLocale(v, locale)}
           />
           <Tooltip
-            formatter={(value) => formatCurrency(Number(value))}
+            formatter={(value) => formatCurrencyForLocale(Number(value), locale)}
             contentStyle={{
               borderRadius: "12px",
               border: "1px solid #555",
@@ -90,13 +88,13 @@ export default function ClusteredChart({ transactions }: ClusteredChartProps) {
           <Legend wrapperStyle={{ color: "#f3f4f6" }} />
           <Bar
             dataKey="entradas"
-            name="Entradas"
+            name={t("incomeLabel")}
             fill={NEON_BLUE}
             radius={[4, 4, 0, 0]}
           />
           <Bar
             dataKey="saidas"
-            name="Saídas"
+            name={t("expenseLabel")}
             fill={NEON_RED}
             radius={[4, 4, 0, 0]}
           />
