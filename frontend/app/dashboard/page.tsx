@@ -7,6 +7,7 @@ import BalanceCard from "@/components/BalanceCard";
 import ClusteredChart from "@/components/ClusteredChart";
 import CategoryChart from "@/components/CategoryChart";
 import YearlyChart from "@/components/YearlyChart";
+import CurrencyConverter from "@/components/CurrencyConverter";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
 import Button3D from "@/components/Button3D";
@@ -93,7 +94,10 @@ function DashboardContent() {
             />
             <TransactionForm onSuccess={loadData} />
           </div>
-          <YearlyChart transactions={transactions} />
+          <div className="space-y-6">
+            <YearlyChart transactions={transactions} />
+            <CurrencyConverter />
+          </div>
         </div>
 
         <ClusteredChart transactions={transactions} />

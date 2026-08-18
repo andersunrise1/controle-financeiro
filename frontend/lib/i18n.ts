@@ -60,6 +60,12 @@ const pt = {
   yearlyChartTitle: "Gastos por Ano",
   yearlyChartEmpty: "Adicione transações para visualizar os gastos por ano.",
   mostSpentYearLabel: "Ano que você mais gastou:",
+
+  converterTitle: "Conversor de Moedas",
+  converterSubtitle: "Útil pra quem está viajando entre países",
+  converterFrom: "De",
+  converterTo: "Para",
+  converterAmountLabel: "Valor",
 };
 
 type Dictionary = typeof pt;
@@ -123,6 +129,12 @@ const en: Dictionary = {
   yearlyChartTitle: "Spending by Year",
   yearlyChartEmpty: "Add transactions to see spending by year.",
   mostSpentYearLabel: "Year you spent the most:",
+
+  converterTitle: "Currency Converter",
+  converterSubtitle: "Handy for travelers crossing borders",
+  converterFrom: "From",
+  converterTo: "To",
+  converterAmountLabel: "Amount",
 };
 
 const es: Dictionary = {
@@ -184,6 +196,12 @@ const es: Dictionary = {
   yearlyChartTitle: "Gastos por Año",
   yearlyChartEmpty: "Agrega transacciones para ver los gastos por año.",
   mostSpentYearLabel: "Año en el que más gastaste:",
+
+  converterTitle: "Conversor de Monedas",
+  converterSubtitle: "Útil para quienes están viajando entre países",
+  converterFrom: "De",
+  converterTo: "A",
+  converterAmountLabel: "Monto",
 };
 
 export const dictionaries: Record<Locale, Dictionary> = { pt, en, es };
