@@ -5,25 +5,31 @@ import {
   REGION_EXCHANGE_FROM_BRL,
 } from "./regions";
 
-export function convertFromBRL(amountInBRL: number, region: Region): number {
-  return amountInBRL * REGION_EXCHANGE_FROM_BRL[region];
+export function convertFromBRL(
+  amountInBRL: number,
+  region: Region,
+  rates: Record<Region, number> = REGION_EXCHANGE_FROM_BRL
+): number {
+  return amountInBRL * rates[region];
 }
 
 export function formatCompactNumberForLocale(
   amountInBRL: number,
-  region: Region
+  region: Region,
+  rates: Record<Region, number> = REGION_EXCHANGE_FROM_BRL
 ): string {
   return new Intl.NumberFormat(REGION_INTL_LOCALE[region], {
     notation: "compact",
     compactDisplay: "short",
-  }).format(convertFromBRL(amountInBRL, region));
+  }).format(convertFromBRL(amountInBRL, region, rates));
 }
 
 export function formatCurrencyForLocale(
   amountInBRL: number,
-  region: Region
+  region: Region,
+  rates: Record<Region, number> = REGION_EXCHANGE_FROM_BRL
 ): string {
-  const converted = convertFromBRL(amountInBRL, region);
+  const converted = convertFromBRL(amountInBRL, region, rates);
   return new Intl.NumberFormat(REGION_INTL_LOCALE[region], {
     style: "currency",
     currency: REGION_CURRENCY[region],

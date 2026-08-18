@@ -16,7 +16,7 @@ export default function TransactionList({
   transactions,
   onDelete,
 }: TransactionListProps) {
-  const { locale, region, t: tr } = useI18n();
+  const { locale, region, rates, t: tr } = useI18n();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
 
@@ -118,7 +118,7 @@ export default function TransactionList({
                   }`}
                 >
                   {item.type === "income" ? "+" : "-"}
-                  {formatCurrencyForLocale(item.amount, region)}
+                  {formatCurrencyForLocale(item.amount, region, rates.rates)}
                 </span>
                 <button
                   onClick={() => handleDelete(item.id)}

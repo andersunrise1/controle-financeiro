@@ -6,20 +6,20 @@ import {
   Region,
   REGION_CURRENCY,
   REGION_INTL_LOCALE,
-  REGION_EXCHANGE_FROM_BRL,
+  VOLATILE_REGIONS,
 } from "@/lib/regions";
 import RegionSelect from "./RegionSelect";
 
 export default function CurrencyConverter() {
-  const { region, t } = useI18n();
+  const { region, rates, t } = useI18n();
   const [amount, setAmount] = useState("100");
   const [from, setFrom] = useState<Region>(region);
   const [to, setTo] = useState<Region>(region === "BR" ? "US" : "BR");
 
   const parsedAmount = parseFloat(amount.replace(",", ".")) || 0;
   // pivota pelo BRL, reaproveitando a mesma tabela de taxas do resto do app
-  const inBRL = parsedAmount / REGION_EXCHANGE_FROM_BRL[from];
-  const converted = inBRL * REGION_EXCHANGE_FROM_BRL[to];
+  const inBRL = parsedAmount / rates.rates[from];
+  const converted = inBRL * rates.rates[to];
 
   const resultFormatted = new Intl.NumberFormat(REGION_INTL_LOCALE[to], {
     style: "currency",
@@ -30,6 +30,12 @@ export default function CurrencyConverter() {
     setFrom(to);
     setTo(from);
   };
+
+  const isVolatile = VOLATILE_REGIONS.includes(from) || VOLATILE_REGIONS.includes(to);
+
+  const updatedAtFormatted = rates.updatedAt
+    ? new Date(rates.updatedAt).toLocaleString(REGION_INTL_LOCALE[region])
+    : null;
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
@@ -77,6 +83,26 @@ export default function CurrencyConverter() {
       <p className="mt-5 text-center text-3xl font-bold neon-green">
         {resultFormatted}
       </p>
+
+      <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-gray-500">
+        <span
+          className={`inline-block h-1.5 w-1.5 rounded-full ${
+            rates.isLive ? "bg-[#39ff14]" : "bg-gray-500"
+          }`}
+        />
+        <span>{rates.isLive ? t("ratesLive") : t("ratesFallback")}</span>
+        {updatedAtFormatted && (
+          <span>
+            · {t("ratesUpdatedAt")} {updatedAtFormatted}
+          </span>
+        )}
+      </div>
+
+      {isVolatile && (
+        <p className="mt-2 text-center text-xs text-amber-400">
+          ⚠ {t("volatileCurrencyWarning")}
+        </p>
+      )}
     </div>
   );
 }

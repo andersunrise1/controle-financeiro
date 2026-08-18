@@ -47,7 +47,7 @@ function groupByMonthAndCategory(transactions: Transaction[], region: Region) {
 }
 
 export default function CategoryChart({ transactions }: CategoryChartProps) {
-  const { locale, region, t } = useI18n();
+  const { locale, region, rates, t } = useI18n();
   const data = groupByMonthAndCategory(transactions, region);
 
   const usedCategories = CATEGORIES.filter((c) =>
@@ -73,10 +73,10 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
           <XAxis dataKey="month" tick={{ fill: "#9ca3af", fontSize: 12 }} />
           <YAxis
             tick={{ fill: "#9ca3af", fontSize: 12 }}
-            tickFormatter={(v) => formatCompactNumberForLocale(v, region)}
+            tickFormatter={(v) => formatCompactNumberForLocale(v, region, rates.rates)}
           />
           <Tooltip
-            formatter={(value) => formatCurrencyForLocale(Number(value), region)}
+            formatter={(value) => formatCurrencyForLocale(Number(value), region, rates.rates)}
             contentStyle={{
               borderRadius: "12px",
               border: "1px solid #555",

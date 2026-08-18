@@ -14,7 +14,7 @@ export default function BalanceCard({
   totalIncome,
   totalExpense,
 }: BalanceCardProps) {
-  const { region, t } = useI18n();
+  const { region, rates, t } = useI18n();
   const isPositive = balance >= 0;
 
   return (
@@ -25,19 +25,19 @@ export default function BalanceCard({
       <p
         className={`mt-2 text-4xl font-bold ${isPositive ? "neon-green" : "neon-red"}`}
       >
-        {formatCurrencyForLocale(balance, region)}
+        {formatCurrencyForLocale(balance, region, rates.rates)}
       </p>
       <div className="mt-4 flex flex-wrap gap-6 text-sm">
         <div>
           <span className="text-gray-400">{t("incomeLabel")}: </span>
           <span className="font-semibold neon-green">
-            {formatCurrencyForLocale(totalIncome, region)}
+            {formatCurrencyForLocale(totalIncome, region, rates.rates)}
           </span>
         </div>
         <div>
           <span className="text-gray-400">{t("expenseLabel")}: </span>
           <span className="font-semibold neon-red">
-            {formatCurrencyForLocale(totalExpense, region)}
+            {formatCurrencyForLocale(totalExpense, region, rates.rates)}
           </span>
         </div>
       </div>

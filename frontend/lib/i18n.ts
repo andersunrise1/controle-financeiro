@@ -66,6 +66,11 @@ const pt = {
   converterFrom: "De",
   converterTo: "Para",
   converterAmountLabel: "Valor",
+  ratesLive: "Cotação atualizada",
+  ratesFallback: "Cotação fixa (aproximada)",
+  ratesUpdatedAt: "Atualizada em",
+  volatileCurrencyWarning:
+    "Essa moeda é historicamente volátil — a cotação pode variar bastante de um dia pro outro.",
 };
 
 type Dictionary = typeof pt;
@@ -135,6 +140,11 @@ const en: Dictionary = {
   converterFrom: "From",
   converterTo: "To",
   converterAmountLabel: "Amount",
+  ratesLive: "Live rate",
+  ratesFallback: "Fixed rate (approximate)",
+  ratesUpdatedAt: "Updated",
+  volatileCurrencyWarning:
+    "This currency is historically volatile — the rate can shift a lot day to day.",
 };
 
 const es: Dictionary = {
@@ -202,6 +212,11 @@ const es: Dictionary = {
   converterFrom: "De",
   converterTo: "A",
   converterAmountLabel: "Monto",
+  ratesLive: "Cotización actualizada",
+  ratesFallback: "Cotización fija (aproximada)",
+  ratesUpdatedAt: "Actualizada",
+  volatileCurrencyWarning:
+    "Esta moneda es históricamente volátil — la cotización puede variar mucho de un día para otro.",
 };
 
 export const dictionaries: Record<Locale, Dictionary> = { pt, en, es };
