@@ -11,13 +11,13 @@
 
   <rect x="0" y="0" width="512" height="512" rx="110" fill="url(#bgGrad)"/>
 
-  <path d="M208.9,179.5 Q208.9,99 256,99 Q303.1,99 303.1,179.5" fill="none" stroke="#ffffff" stroke-width="23" stroke-linecap="round"/>
+  <path d="M198.5,161.8 Q198.5,63.6 256,63.6 Q313.5,63.6 313.5,161.8" fill="none" stroke="#ffffff" stroke-width="28" stroke-linecap="round"/>
 
-  <path d="M157.1,179.5 L354.9,179.5 L331.9,407.2 Q329.6,421 313.5,421 L198.5,421 Q182.4,421 180.1,407.2 Z" fill="#ffffff"/>
+  <path d="M135.3,161.8 L376.7,161.8 L348.6,439.6 Q345.8,456.4 326.2,456.4 L185.9,456.4 Q166.2,456.4 163.4,439.6 Z" fill="#ffffff"/>
 
-  <text x="256" y="216" text-anchor="middle" font-family="system-ui, Arial, sans-serif" font-size="23" font-weight="800" fill="url(#bgGrad)">Digital Notes</text>
+  <text x="256" y="208" text-anchor="middle" font-family="system-ui, Arial, sans-serif" font-size="30" font-weight="800" fill="url(#bgGrad)">Digital Notes</text>
 
-  <rect x="197.4" y="340.5" width="32.2" height="69" rx="7" fill="url(#bgGrad)"/>
-  <rect x="243.4" y="294.5" width="32.2" height="115" rx="7" fill="url(#bgGrad)"/>
-  <rect x="289.4" y="237" width="32.2" height="172.5" rx="7" fill="url(#bgGrad)"/>
+  <rect x="184.5" y="358.2" width="39.3" height="84.2" rx="8.5" fill="url(#bgGrad)"/>
+  <rect x="240.6" y="302.1" width="39.3" height="140.3" rx="8.5" fill="url(#bgGrad)"/>
+  <rect x="296.8" y="231.9" width="39.3" height="210.5" rx="8.5" fill="url(#bgGrad)"/>
 </svg>

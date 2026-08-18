@@ -67,6 +67,10 @@ const pt = {
   historyTitle: "Histórico",
   historyEmpty: "Nenhuma transação registrada ainda.",
   removeTitle: "Remover",
+
+  yearlyChartTitle: "Gastos por Ano",
+  yearlyChartEmpty: "Adicione transações para visualizar os gastos por ano.",
+  mostSpentYearLabel: "Ano que você mais gastou:",
 };
 
 type Dictionary = typeof pt;
@@ -123,6 +127,10 @@ const en: Dictionary = {
   historyTitle: "History",
   historyEmpty: "No transactions recorded yet.",
   removeTitle: "Remove",
+
+  yearlyChartTitle: "Spending by Year",
+  yearlyChartEmpty: "Add transactions to see spending by year.",
+  mostSpentYearLabel: "Year you spent the most:",
 };
 
 const es: Dictionary = {
@@ -177,6 +185,10 @@ const es: Dictionary = {
   historyTitle: "Historial",
   historyEmpty: "Aún no hay transacciones registradas.",
   removeTitle: "Eliminar",
+
+  yearlyChartTitle: "Gastos por Año",
+  yearlyChartEmpty: "Agrega transacciones para ver los gastos por año.",
+  mostSpentYearLabel: "Año en el que más gastaste:",
 };
 
 export const dictionaries: Record<Locale, Dictionary> = { pt, en, es };

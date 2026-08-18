@@ -63,8 +63,8 @@ export default function LoginPage() {
         </div>
         <div className="card-dark rounded-2xl p-8 shadow-lg">
           <img
-            src="/logo-takenote.svg"
-            alt="Takenote"
+            src="/logo-lockup.svg"
+            alt="Digital Notes"
             className="mx-auto mb-4 h-40 w-auto"
           />
           <h1 className="text-2xl font-bold text-gray-100">{t("loginTitle")}</h1>

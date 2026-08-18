@@ -6,6 +6,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import BalanceCard from "@/components/BalanceCard";
 import ClusteredChart from "@/components/ClusteredChart";
 import CategoryChart from "@/components/CategoryChart";
+import YearlyChart from "@/components/YearlyChart";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
 import Button3D from "@/components/Button3D";
@@ -67,7 +68,7 @@ function DashboardContent() {
       <header className="border-b border-[#555] bg-bg-card shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <div className="flex items-center gap-3">
-            <img src="/logo-takenote.svg" alt="Takenote" className="h-14 w-auto" />
+            <img src="/logo-lockup.svg" alt="Digital Notes" className="h-14 w-auto" />
             <p className="text-sm text-gray-400">
               {t("greeting")}{" "}
               <span className="font-semibold text-gray-200">{user?.name}</span>
@@ -83,19 +84,22 @@ function DashboardContent() {
       </header>
 
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
-        <BalanceCard
-          balance={summary.balance}
-          totalIncome={summary.totalIncome}
-          totalExpense={summary.totalExpense}
-        />
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="space-y-6">
+            <BalanceCard
+              balance={summary.balance}
+              totalIncome={summary.totalIncome}
+              totalExpense={summary.totalExpense}
+            />
+            <TransactionForm onSuccess={loadData} />
+          </div>
+          <YearlyChart transactions={transactions} />
+        </div>
 
         <ClusteredChart transactions={transactions} />
         <CategoryChart transactions={transactions} />
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <TransactionForm onSuccess={loadData} />
-          <TransactionList transactions={transactions} onDelete={loadData} />
-        </div>
+        <TransactionList transactions={transactions} onDelete={loadData} />
       </main>
     </div>
   );
