@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button3D from "@/components/Button3D";
 import Alert from "@/components/Alert";
+import PasswordInput from "@/components/PasswordInput";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { register, isValidEmail, isValidPassword, setToken } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -104,12 +105,10 @@ export default function RegisterPage() {
               <label className="mb-1 block text-sm font-medium text-gray-300">
                 {t("passwordLabel")}
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("passwordPlaceholder")}
-                className="input-dark w-full rounded-xl px-4 py-3"
                 required
               />
             </div>
