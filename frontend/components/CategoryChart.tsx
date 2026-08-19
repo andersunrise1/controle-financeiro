@@ -20,6 +20,9 @@ import {
 import { useI18n } from "@/lib/i18n-context";
 import { translateCategory } from "@/lib/i18n";
 import { Region } from "@/lib/regions";
+import { sunsetColorAt } from "@/lib/sunsetGradient";
+
+const GRADIENT_SPREAD = 0.07;
 
 interface CategoryChartProps {
   transactions: Transaction[];
@@ -69,6 +72,24 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
       </h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} barGap={4} barCategoryGap="20%">
+          <defs>
+            {CATEGORIES.map((c, i) => {
+              const t = i / (CATEGORIES.length - 1);
+              return (
+                <linearGradient
+                  key={c.name}
+                  id={`cat-grad-${i}`}
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="0%" stopColor={sunsetColorAt(t - GRADIENT_SPREAD)} />
+                  <stop offset="100%" stopColor={sunsetColorAt(t + GRADIENT_SPREAD)} />
+                </linearGradient>
+              );
+            })}
+          </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#555" />
           <XAxis dataKey="month" tick={{ fill: "#9ca3af", fontSize: 12 }} />
           <YAxis
@@ -86,15 +107,18 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
             labelStyle={{ color: "#f3f4f6" }}
           />
           <Legend wrapperStyle={{ color: "#f3f4f6" }} />
-          {usedCategories.map((c) => (
-            <Bar
-              key={c.name}
-              dataKey={c.name}
-              name={translateCategory(c.name, locale)}
-              fill={c.color}
-              radius={[4, 4, 0, 0]}
-            />
-          ))}
+          {usedCategories.map((c) => {
+            const originalIndex = CATEGORIES.findIndex((cat) => cat.name === c.name);
+            return (
+              <Bar
+                key={c.name}
+                dataKey={c.name}
+                name={translateCategory(c.name, locale)}
+                fill={`url(#cat-grad-${originalIndex})`}
+                radius={[4, 4, 0, 0]}
+              />
+            );
+          })}
         </BarChart>
       </ResponsiveContainer>
       <p className="mt-3 text-xs text-gray-500">{t("categoryChartFooter")}</p>

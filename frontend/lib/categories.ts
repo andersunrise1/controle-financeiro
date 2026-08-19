@@ -3,18 +3,20 @@ export interface CategoryDef {
   color: string;
 }
 
+// Cores derivadas do degradê padrão "pôr do sol" da marca (#ffd93d -> #ff8c42 45% -> #d6249f),
+// uma amostra por categoria, da mais clara/amarela à mais escura/magenta.
 export const CATEGORIES: CategoryDef[] = [
-  { name: "Salário", color: "#00e5ff" },
-  { name: "Mercado", color: "#ff8c00" },
-  { name: "Moradia", color: "#b026ff" },
-  { name: "Transporte", color: "#faff00" },
-  { name: "Lazer", color: "#ff2fb0" },
-  { name: "Saúde", color: "#ff1744" },
-  { name: "Outros", color: "#d896ff" },
+  { name: "Salário", color: "#ffd93d" },
+  { name: "Mercado", color: "#ffbc3f" },
+  { name: "Moradia", color: "#ffa041" },
+  { name: "Transporte", color: "#fb834a" },
+  { name: "Lazer", color: "#ef6367" },
+  { name: "Saúde", color: "#e24483" },
+  { name: "Outros", color: "#d6249f" },
 ];
 
 export const DEFAULT_CATEGORY = "Outros";
 
 export function getCategoryColor(name: string): string {
-  return CATEGORIES.find((c) => c.name === name)?.color ?? "#d896ff";
+  return CATEGORIES.find((c) => c.name === name)?.color ?? "#d6249f";
 }

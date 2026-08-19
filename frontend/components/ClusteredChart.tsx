@@ -19,8 +19,8 @@ import {
 import { useI18n } from "@/lib/i18n-context";
 import { Region } from "@/lib/regions";
 
-const NEON_BLUE = "#00e5ff";
-const NEON_RED = "#ff1744";
+const NEON_GREEN = "#39ff14";
+const NEON_RED = "#ff073a";
 
 interface ClusteredChartProps {
   transactions: Transaction[];
@@ -89,7 +89,7 @@ export default function ClusteredChart({ transactions }: ClusteredChartProps) {
           <Bar
             dataKey="entradas"
             name={t("incomeLabel")}
-            fill={NEON_BLUE}
+            fill={NEON_GREEN}
             radius={[4, 4, 0, 0]}
           />
           <Bar

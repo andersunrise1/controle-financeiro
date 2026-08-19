@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import Button3D from "./Button3D";
 import Alert from "./Alert";
 import { createTransaction } from "@/lib/api";
@@ -22,6 +22,12 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!success) return;
+    const timer = setTimeout(() => setSuccess(""), 3000);
+    return () => clearTimeout(timer);
+  }, [success]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

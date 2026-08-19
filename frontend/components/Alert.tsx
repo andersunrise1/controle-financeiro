@@ -8,8 +8,8 @@ export default function Alert({ type, message }: AlertProps) {
 
   const styles =
     type === "error"
-      ? "border-red-300 bg-red-50 text-red-700"
-      : "border-green-300 bg-green-50 text-green-700";
+      ? "border-[#ff073a]/40 bg-[#ff073a]/10 text-[#ff6b85]"
+      : "border-[#39ff14]/40 bg-[#39ff14]/10 text-[#7cff5c]";
 
   return (
     <div
