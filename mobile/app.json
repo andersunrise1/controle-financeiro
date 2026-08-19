@@ -1,24 +1,26 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "Divisa",
+    "slug": "divisa",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/icon-divisa-final.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#2d2d2d",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.divisa.mobile"
     },
     "android": {
+      "package": "com.divisa.mobile",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "backgroundColor": "#2d2d2d",
+        "foregroundImage": "./assets/icon-divisa-final.png"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon-divisa-final.png"
     }
   }
 }
