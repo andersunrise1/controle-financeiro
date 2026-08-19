@@ -94,6 +94,11 @@ export default function TransactionList({
                 <p className="font-medium text-gray-100">
                   {item.description ||
                     (item.type === "income" ? tr("incomeButton") : tr("expenseButton"))}
+                  {item.recurring_id !== null && (
+                    <span className="ml-1.5" title={tr("recurringBadgeTitle")}>
+                      🔁
+                    </span>
+                  )}
                 </p>
                 <div className="mt-1 flex items-center gap-2">
                   <span

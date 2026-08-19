@@ -4,7 +4,7 @@ import { useState, FormEvent, useEffect } from "react";
 import Button3D from "./Button3D";
 import Alert from "./Alert";
 import PriceCameraButton from "./PriceCameraButton";
-import { createTransaction } from "@/lib/api";
+import { createTransaction, createRecurringTransaction, RecurrenceFrequency } from "@/lib/api";
 import { CATEGORIES, DEFAULT_CATEGORY } from "@/lib/categories";
 import { useI18n } from "@/lib/i18n-context";
 import { translateCategory, translateError } from "@/lib/i18n";
@@ -20,6 +20,8 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(DEFAULT_CATEGORY);
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [frequency, setFrequency] = useState<RecurrenceFrequency>("monthly");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -67,16 +69,29 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
 
     setLoading(true);
     try {
-      await createTransaction({
-        type,
-        amount: parsedAmount,
-        description,
-        date,
-        category,
-      });
+      if (isRecurring) {
+        await createRecurringTransaction({
+          type,
+          amount: parsedAmount,
+          description,
+          date,
+          category,
+          frequency,
+        });
+      } else {
+        await createTransaction({
+          type,
+          amount: parsedAmount,
+          description,
+          date,
+          category,
+        });
+      }
       setSuccess(type === "income" ? t("successIncome") : t("successExpense"));
       setAmount("");
       setDescription("");
+      setIsRecurring(false);
+      setFrequency("monthly");
       onSuccess();
     } catch (err) {
       const raw = err instanceof Error ? err.message : "Erro ao salvar.";
@@ -188,6 +203,31 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
             className="input-dark w-full rounded-xl px-4 py-3"
             required
           />
+        </div>
+
+        <div>
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+            <input
+              type="checkbox"
+              checked={isRecurring}
+              onChange={(e) => setIsRecurring(e.target.checked)}
+              className="h-4 w-4 rounded border-[#555] bg-[#2a2a2a] accent-[#39ff14]"
+            />
+            🔁 {t("recurrenceCheckboxLabel")}
+          </label>
+
+          {isRecurring && (
+            <select
+              value={frequency}
+              onChange={(e) => setFrequency(e.target.value as RecurrenceFrequency)}
+              aria-label={t("recurrenceFrequencyLabel")}
+              className="input-dark mt-2 w-full rounded-xl px-4 py-3"
+            >
+              <option value="weekly">{t("recurrenceWeekly")}</option>
+              <option value="monthly">{t("recurrenceMonthly")}</option>
+              <option value="yearly">{t("recurrenceYearly")}</option>
+            </select>
+          )}
         </div>
 
         {error && <Alert type="error" message={error} />}

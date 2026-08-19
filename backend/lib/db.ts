@@ -45,6 +45,20 @@ export function getDb(): Database.Database {
         created_at TEXT NOT NULL DEFAULT (datetime('now')),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
+
+      CREATE TABLE IF NOT EXISTS recurring_transactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        type TEXT NOT NULL CHECK(type IN ('income', 'expense')),
+        amount REAL NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        category TEXT NOT NULL DEFAULT 'Outros',
+        frequency TEXT NOT NULL CHECK(frequency IN ('weekly', 'monthly', 'yearly')),
+        next_run_date TEXT NOT NULL,
+        active INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
     `);
 
     const columns = db.prepare("PRAGMA table_info(transactions)").all() as {
@@ -54,6 +68,13 @@ export function getDb(): Database.Database {
     if (!hasCategory) {
       db.exec(
         "ALTER TABLE transactions ADD COLUMN category TEXT NOT NULL DEFAULT 'Outros'"
+      );
+    }
+
+    const hasRecurringId = columns.some((c) => c.name === "recurring_id");
+    if (!hasRecurringId) {
+      db.exec(
+        "ALTER TABLE transactions ADD COLUMN recurring_id INTEGER REFERENCES recurring_transactions(id)"
       );
     }
   }
@@ -77,6 +98,20 @@ export interface Transaction {
   description: string;
   category: string;
   date: string;
+  created_at: string;
+  recurring_id: number | null;
+}
+
+export interface RecurringTransaction {
+  id: number;
+  user_id: number;
+  type: "income" | "expense";
+  amount: number;
+  description: string;
+  category: string;
+  frequency: "weekly" | "monthly" | "yearly";
+  next_run_date: string;
+  active: number;
   created_at: string;
 }
 

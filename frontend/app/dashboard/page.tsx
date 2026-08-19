@@ -11,15 +11,23 @@ import YearlyChart from "@/components/YearlyChart";
 import CurrencyConverter from "@/components/CurrencyConverter";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
+import RecurringTransactionsList from "@/components/RecurringTransactionsList";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
-import { getTransactions, Transaction, Summary } from "@/lib/api";
+import {
+  getTransactions,
+  getRecurringTransactions,
+  Transaction,
+  RecurringTransaction,
+  Summary,
+} from "@/lib/api";
 
 function DashboardContent() {
   const { setUser } = useAuth();
   const { t } = useI18n();
   const router = useRouter();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [recurring, setRecurring] = useState<RecurringTransaction[]>([]);
   const [summary, setSummary] = useState<Summary>({
     totalIncome: 0,
     totalExpense: 0,
@@ -29,9 +37,13 @@ function DashboardContent() {
 
   const loadData = useCallback(async () => {
     try {
-      const data = await getTransactions();
-      setTransactions(data.transactions);
-      setSummary(data.summary);
+      const [transactionsData, recurringData] = await Promise.all([
+        getTransactions(),
+        getRecurringTransactions(),
+      ]);
+      setTransactions(transactionsData.transactions);
+      setSummary(transactionsData.summary);
+      setRecurring(recurringData.recurring);
     } catch {
       setUser(null);
       router.replace("/login");
@@ -65,6 +77,7 @@ function DashboardContent() {
               totalExpense={summary.totalExpense}
             />
             <TransactionForm onSuccess={loadData} />
+            <RecurringTransactionsList recurring={recurring} onChange={loadData} />
           </div>
           <div className="space-y-6">
             <YearlyChart transactions={transactions} />

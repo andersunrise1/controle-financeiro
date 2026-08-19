@@ -98,6 +98,16 @@ const pt = {
   adminFeedbackReopen: "Reabrir",
   adminFeedbackResolvedBadge: "Resolvido",
   adminAccessDenied: "Esta área é restrita ao administrador.",
+
+  recurrenceCheckboxLabel: "Repetir",
+  recurrenceFrequencyLabel: "Frequência",
+  recurrenceWeekly: "Semanal",
+  recurrenceMonthly: "Mensal",
+  recurrenceYearly: "Anual",
+  recurringBadgeTitle: "Transação recorrente",
+  recurringListTitle: "Recorrências Ativas",
+  recurringNextLabel: "Próxima:",
+  recurringStopButton: "Parar",
 };
 
 type Dictionary = typeof pt;
@@ -199,6 +209,16 @@ const en: Dictionary = {
   adminFeedbackReopen: "Reopen",
   adminFeedbackResolvedBadge: "Resolved",
   adminAccessDenied: "This area is restricted to the admin.",
+
+  recurrenceCheckboxLabel: "Repeat",
+  recurrenceFrequencyLabel: "Frequency",
+  recurrenceWeekly: "Weekly",
+  recurrenceMonthly: "Monthly",
+  recurrenceYearly: "Yearly",
+  recurringBadgeTitle: "Recurring transaction",
+  recurringListTitle: "Active Recurrences",
+  recurringNextLabel: "Next:",
+  recurringStopButton: "Stop",
 };
 
 const es: Dictionary = {
@@ -298,6 +318,16 @@ const es: Dictionary = {
   adminFeedbackReopen: "Reabrir",
   adminFeedbackResolvedBadge: "Resuelto",
   adminAccessDenied: "Esta área es exclusiva del administrador.",
+
+  recurrenceCheckboxLabel: "Repetir",
+  recurrenceFrequencyLabel: "Frecuencia",
+  recurrenceWeekly: "Semanal",
+  recurrenceMonthly: "Mensual",
+  recurrenceYearly: "Anual",
+  recurringBadgeTitle: "Transacción recurrente",
+  recurringListTitle: "Recurrencias Activas",
+  recurringNextLabel: "Próxima:",
+  recurringStopButton: "Detener",
 };
 
 export const dictionaries: Record<Locale, Dictionary> = { pt, en, es };
@@ -370,6 +400,10 @@ const errorTranslations: Record<Exclude<Locale, "pt">, Record<string, string>> =
     "Acesso restrito ao admin.": "This area is restricted to the admin.",
     "ID e status são obrigatórios.": "ID and status are required.",
     "Feedback não encontrado.": "Feedback not found.",
+    "Tipo, valor, data e frequência são obrigatórios.":
+      "Type, amount, date and frequency are required.",
+    "Frequência inválida.": "Invalid frequency.",
+    "Recorrência não encontrada.": "Recurrence not found.",
   },
   es: {
     "Não autenticado.": "No autenticado.",
@@ -399,6 +433,10 @@ const errorTranslations: Record<Exclude<Locale, "pt">, Record<string, string>> =
     "Acesso restrito ao admin.": "Esta área es exclusiva del administrador.",
     "ID e status são obrigatórios.": "El ID y el estado son obligatorios.",
     "Feedback não encontrado.": "Feedback no encontrado.",
+    "Tipo, valor, data e frequência são obrigatórios.":
+      "El tipo, monto, fecha y frecuencia son obligatorios.",
+    "Frequência inválida.": "Frecuencia inválida.",
+    "Recorrência não encontrada.": "Recurrencia no encontrada.",
   },
 };
 

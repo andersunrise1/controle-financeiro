@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
 import { getDb, Transaction } from "@/lib/db";
 import { DEFAULT_CATEGORY, isValidCategory } from "@/lib/categories";
+import { generateDueTransactions } from "@/lib/recurrence";
 
 export async function OPTIONS(request: NextRequest) {
   return corsOptions(request);
@@ -15,6 +16,8 @@ export async function GET(request: NextRequest) {
   if (!user) {
     return jsonResponse(request, { error: "Não autenticado." }, 401);
   }
+
+  generateDueTransactions(user.id);
 
   const db = getDb();
   const transactions = db

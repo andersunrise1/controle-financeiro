@@ -32,6 +32,22 @@ export interface Transaction {
   category: string;
   date: string;
   created_at: string;
+  recurring_id: number | null;
+}
+
+export type RecurrenceFrequency = "weekly" | "monthly" | "yearly";
+
+export interface RecurringTransaction {
+  id: number;
+  user_id: number;
+  type: "income" | "expense";
+  amount: number;
+  description: string;
+  category: string;
+  frequency: RecurrenceFrequency;
+  next_run_date: string;
+  active: number;
+  created_at: string;
 }
 
 export interface Summary {
@@ -141,6 +157,36 @@ export async function createTransaction(data: {
 
 export async function deleteTransaction(id: number): Promise<void> {
   await apiFetch(`/api/transactions?id=${id}`, { method: "DELETE" });
+}
+
+export async function createRecurringTransaction(data: {
+  type: "income" | "expense";
+  amount: number;
+  description: string;
+  date: string;
+  category: string;
+  frequency: RecurrenceFrequency;
+}): Promise<{ recurring: RecurringTransaction }> {
+  return apiFetch("/api/recurring", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getRecurringTransactions(): Promise<{
+  recurring: RecurringTransaction[];
+}> {
+  return apiFetch("/api/recurring");
+}
+
+export async function setRecurringActive(
+  id: number,
+  active: boolean
+): Promise<void> {
+  await apiFetch("/api/recurring", {
+    method: "PATCH",
+    body: JSON.stringify({ id, active }),
+  });
 }
 
 export async function submitFeedback(data: {
