@@ -9,6 +9,8 @@ import GradientText from "./GradientText";
 export default function DivisaLogo({ size = "large" }) {
   const iconSize = size === "large" ? 112 : 48;
   const fontSize = size === "large" ? 24 : 18;
+  const wordmarkWidth = size === "large" ? 220 : 170;
+  const wordmarkHeight = size === "large" ? 40 : 30;
 
   return (
     <View style={size === "large" ? styles.stacked : styles.inline}>
@@ -17,17 +19,11 @@ export default function DivisaLogo({ size = "large" }) {
         style={{ width: iconSize, height: iconSize, borderRadius: iconSize * 0.22 }}
       />
       {size !== "compact" && (
-        <GradientText
-          style={{
-            fontSize,
-            fontWeight: "800",
-            letterSpacing: 4,
-            marginTop: size === "large" ? 8 : 0,
-            marginLeft: size === "large" ? 0 : 12,
-          }}
-        >
-          DIVISA
-        </GradientText>
+        <View style={{ marginTop: size === "large" ? 8 : 0, marginLeft: size === "large" ? 0 : 12 }}>
+          <GradientText fontSize={fontSize} width={wordmarkWidth} height={wordmarkHeight}>
+            DIVISA
+          </GradientText>
+        </View>
       )}
     </View>
   );
