@@ -3,6 +3,7 @@
 import { useState, FormEvent, useEffect } from "react";
 import Button3D from "./Button3D";
 import Alert from "./Alert";
+import PriceCameraButton from "./PriceCameraButton";
 import { createTransaction } from "@/lib/api";
 import { CATEGORIES, DEFAULT_CATEGORY } from "@/lib/categories";
 import { useI18n } from "@/lib/i18n-context";
@@ -22,12 +23,31 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [priceNote, setPriceNote] = useState<{ text: string; found: boolean } | null>(null);
 
   useEffect(() => {
     if (!success) return;
     const timer = setTimeout(() => setSuccess(""), 3000);
     return () => clearTimeout(timer);
   }, [success]);
+
+  useEffect(() => {
+    if (!priceNote) return;
+    const timer = setTimeout(() => setPriceNote(null), 5000);
+    return () => clearTimeout(timer);
+  }, [priceNote]);
+
+  const handlePriceDetected = (value: string, raw: string) => {
+    setAmount(value);
+    setPriceNote({
+      text: `${t("priceDetectedPrefix")} R$ ${raw} — ${t("priceDetectedSuffix")}`,
+      found: true,
+    });
+  };
+
+  const handlePriceNotFound = () => {
+    setPriceNote({ text: t("priceNotFoundNote"), found: false });
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -102,16 +122,29 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
           <label className="mb-1 block text-sm font-medium text-gray-300">
             {t("amountLabel")}
           </label>
-          <input
-            type="number"
-            step="0.01"
-            min="0.01"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0,00"
-            className="input-dark w-full rounded-xl px-4 py-3"
-            required
-          />
+          <div className="flex gap-2">
+            <input
+              type="number"
+              step="0.01"
+              min="0.01"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0,00"
+              className="input-dark w-full rounded-xl px-4 py-3"
+              required
+            />
+            <PriceCameraButton
+              onPriceDetected={handlePriceDetected}
+              onNotFound={handlePriceNotFound}
+            />
+          </div>
+          {priceNote && (
+            <p
+              className={`mt-2 text-xs ${priceNote.found ? "text-[#7cff5c]" : "text-[#ff6b85]"}`}
+            >
+              {priceNote.text}
+            </p>
+          )}
         </div>
 
         <div>

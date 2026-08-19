@@ -49,6 +49,11 @@ const pt = {
   addButtonLoading: "Salvando...",
   successIncome: "Entrada adicionada!",
   successExpense: "Saída adicionada!",
+  scanPriceLabel: "Bater foto do preço",
+  priceDetectedPrefix: "Lido da foto:",
+  priceDetectedSuffix: "confira antes de salvar",
+  priceNotFoundNote:
+    "Não consegui ler um preço nessa foto. Tente de novo ou digite manualmente.",
 
   historyTitle: "Histórico",
   historyEmpty: "Nenhuma transação registrada ainda.",
@@ -123,6 +128,11 @@ const en: Dictionary = {
   addButtonLoading: "Saving...",
   successIncome: "Income added!",
   successExpense: "Expense added!",
+  scanPriceLabel: "Take a price photo",
+  priceDetectedPrefix: "Read from photo:",
+  priceDetectedSuffix: "check before saving",
+  priceNotFoundNote:
+    "Couldn't read a price in that photo. Try again or type it manually.",
 
   historyTitle: "History",
   historyEmpty: "No transactions recorded yet.",
@@ -195,6 +205,11 @@ const es: Dictionary = {
   addButtonLoading: "Guardando...",
   successIncome: "¡Ingreso agregado!",
   successExpense: "¡Gasto agregado!",
+  scanPriceLabel: "Tomar foto del precio",
+  priceDetectedPrefix: "Leído de la foto:",
+  priceDetectedSuffix: "verifica antes de guardar",
+  priceNotFoundNote:
+    "No pude leer un precio en esa foto. Intenta de nuevo o escríbelo manualmente.",
 
   historyTitle: "Historial",
   historyEmpty: "Aún no hay transacciones registradas.",
