@@ -6,7 +6,7 @@ function corsHeaders(origin: string | null) {
   const allowedOrigin = origin === FRONTEND_URL ? FRONTEND_URL : FRONTEND_URL;
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Allow-Credentials": "true",
   };

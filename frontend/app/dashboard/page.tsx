@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import Navbar from "@/components/Navbar";
 import BalanceCard from "@/components/BalanceCard";
 import ClusteredChart from "@/components/ClusteredChart";
 import CategoryChart from "@/components/CategoryChart";
@@ -10,19 +11,12 @@ import YearlyChart from "@/components/YearlyChart";
 import CurrencyConverter from "@/components/CurrencyConverter";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
-import Button3D from "@/components/Button3D";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
-import {
-  getTransactions,
-  logout,
-  Transaction,
-  Summary,
-} from "@/lib/api";
+import { getTransactions, Transaction, Summary } from "@/lib/api";
 
 function DashboardContent() {
-  const { user, setUser } = useAuth();
+  const { setUser } = useAuth();
   const { t } = useI18n();
   const router = useRouter();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -50,12 +44,6 @@ function DashboardContent() {
     loadData();
   }, [loadData]);
 
-  const handleLogout = async () => {
-    await logout();
-    setUser(null);
-    router.replace("/login");
-  };
-
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg-dark">
@@ -66,33 +54,7 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-bg-dark">
-      <header className="border-b border-[#555] bg-bg-card shadow-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
-            <img src="/icon-divisa-final.png" alt="Divisa" className="h-12 w-12" />
-            <span
-              className="hidden text-lg font-extrabold tracking-[0.15em] sm:inline"
-              style={{
-                background: "linear-gradient(90deg, #ffd93d, #ff8c42, #d6249f)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              DIVISA
-            </span>
-            <p className="text-sm text-gray-400">
-              {t("greeting")}{" "}
-              <span className="font-semibold text-gray-200">{user?.name}</span>
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <LanguageSwitcher />
-            <Button3D variant="secondary" onClick={handleLogout}>
-              {t("logout")}
-            </Button3D>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-2">

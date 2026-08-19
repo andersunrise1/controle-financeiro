@@ -7,10 +7,22 @@ const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 const COOKIE_NAME = "auth_token";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
+// The one account that sees the admin area — no separate role stored in the
+// DB, just this email. Set ADMIN_EMAIL in production; this default only
+// matters for local dev.
+const ADMIN_EMAIL = (
+  process.env.ADMIN_EMAIL || "andersunrise1@gmail.com"
+).toLowerCase();
+
+export function isAdminEmail(email: string): boolean {
+  return email.toLowerCase() === ADMIN_EMAIL;
+}
+
 export interface AuthUser {
   id: number;
   name: string;
   email: string;
+  isAdmin: boolean;
 }
 
 export interface TokenPayload {
@@ -79,9 +91,11 @@ export async function getAuthUser(
   const db = getDb();
   const user = db
     .prepare("SELECT id, name, email FROM users WHERE id = ?")
-    .get(payload.userId) as AuthUser | undefined;
+    .get(payload.userId) as Omit<AuthUser, "isAdmin"> | undefined;
 
-  return user ?? null;
+  if (!user) return null;
+
+  return { ...user, isAdmin: isAdminEmail(user.email) };
 }
 
 export function getUserByEmail(email: string): User | undefined {
@@ -103,9 +117,12 @@ export function createUser(
     )
     .run(name.trim(), email.toLowerCase().trim(), passwordHash);
 
+  const normalizedEmail = email.toLowerCase().trim();
+
   return {
     id: Number(result.lastInsertRowid),
     name: name.trim(),
-    email: email.toLowerCase().trim(),
+    email: normalizedEmail,
+    isAdmin: isAdminEmail(normalizedEmail),
   };
 }

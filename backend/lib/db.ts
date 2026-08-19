@@ -35,6 +35,16 @@ export function getDb(): Database.Database {
         created_at TEXT NOT NULL DEFAULT (datetime('now')),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
+
+      CREATE TABLE IF NOT EXISTS feedback (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        category TEXT NOT NULL CHECK(category IN ('bug', 'sugestao', 'outro')),
+        message TEXT NOT NULL,
+        resolved INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
     `);
 
     const columns = db.prepare("PRAGMA table_info(transactions)").all() as {
@@ -68,4 +78,18 @@ export interface Transaction {
   category: string;
   date: string;
   created_at: string;
+}
+
+export interface Feedback {
+  id: number;
+  user_id: number;
+  category: "bug" | "sugestao" | "outro";
+  message: string;
+  resolved: number;
+  created_at: string;
+}
+
+export interface FeedbackWithUser extends Feedback {
+  user_name: string;
+  user_email: string;
 }

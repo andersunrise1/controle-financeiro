@@ -76,6 +76,28 @@ const pt = {
   ratesUpdatedAt: "Atualizada em",
   volatileCurrencyWarning:
     "Essa moeda é historicamente volátil — a cotação pode variar bastante de um dia pro outro.",
+
+  navFeedback: "Feedback",
+  navAdmin: "Admin",
+
+  feedbackPageTitle: "Enviar Feedback",
+  feedbackPageSubtitle: "Encontrou um erro ou tem uma sugestão? Conte pra gente.",
+  feedbackCategoryLabel: "Categoria",
+  feedbackCategoryBug: "Erro / Bug",
+  feedbackCategorySugestao: "Sugestão",
+  feedbackCategoryOutro: "Outro",
+  feedbackMessageLabel: "Mensagem",
+  feedbackMessagePlaceholder: "Descreva o que aconteceu...",
+  feedbackSubmitButton: "Enviar Feedback",
+  feedbackSubmitButtonLoading: "Enviando...",
+  feedbackSuccess: "Feedback enviado! Obrigado.",
+
+  adminFeedbackTitle: "Feedbacks Recebidos",
+  adminFeedbackEmpty: "Nenhum feedback recebido ainda.",
+  adminFeedbackResolve: "Marcar como resolvido",
+  adminFeedbackReopen: "Reabrir",
+  adminFeedbackResolvedBadge: "Resolvido",
+  adminAccessDenied: "Esta área é restrita ao administrador.",
 };
 
 type Dictionary = typeof pt;
@@ -155,6 +177,28 @@ const en: Dictionary = {
   ratesUpdatedAt: "Updated",
   volatileCurrencyWarning:
     "This currency is historically volatile — the rate can shift a lot day to day.",
+
+  navFeedback: "Feedback",
+  navAdmin: "Admin",
+
+  feedbackPageTitle: "Send Feedback",
+  feedbackPageSubtitle: "Found a bug or have a suggestion? Let us know.",
+  feedbackCategoryLabel: "Category",
+  feedbackCategoryBug: "Bug / Error",
+  feedbackCategorySugestao: "Suggestion",
+  feedbackCategoryOutro: "Other",
+  feedbackMessageLabel: "Message",
+  feedbackMessagePlaceholder: "Describe what happened...",
+  feedbackSubmitButton: "Send Feedback",
+  feedbackSubmitButtonLoading: "Sending...",
+  feedbackSuccess: "Feedback sent! Thank you.",
+
+  adminFeedbackTitle: "Received Feedback",
+  adminFeedbackEmpty: "No feedback received yet.",
+  adminFeedbackResolve: "Mark as resolved",
+  adminFeedbackReopen: "Reopen",
+  adminFeedbackResolvedBadge: "Resolved",
+  adminAccessDenied: "This area is restricted to the admin.",
 };
 
 const es: Dictionary = {
@@ -232,6 +276,28 @@ const es: Dictionary = {
   ratesUpdatedAt: "Actualizada",
   volatileCurrencyWarning:
     "Esta moneda es históricamente volátil — la cotización puede variar mucho de un día para otro.",
+
+  navFeedback: "Feedback",
+  navAdmin: "Admin",
+
+  feedbackPageTitle: "Enviar Feedback",
+  feedbackPageSubtitle: "¿Encontraste un error o tienes una sugerencia? Cuéntanos.",
+  feedbackCategoryLabel: "Categoría",
+  feedbackCategoryBug: "Error / Bug",
+  feedbackCategorySugestao: "Sugerencia",
+  feedbackCategoryOutro: "Otro",
+  feedbackMessageLabel: "Mensaje",
+  feedbackMessagePlaceholder: "Describe lo que pasó...",
+  feedbackSubmitButton: "Enviar Feedback",
+  feedbackSubmitButtonLoading: "Enviando...",
+  feedbackSuccess: "¡Feedback enviado! Gracias.",
+
+  adminFeedbackTitle: "Feedbacks Recibidos",
+  adminFeedbackEmpty: "Aún no hay feedback recibido.",
+  adminFeedbackResolve: "Marcar como resuelto",
+  adminFeedbackReopen: "Reabrir",
+  adminFeedbackResolvedBadge: "Resuelto",
+  adminAccessDenied: "Esta área es exclusiva del administrador.",
 };
 
 export const dictionaries: Record<Locale, Dictionary> = { pt, en, es };
@@ -298,6 +364,12 @@ const errorTranslations: Record<Exclude<Locale, "pt">, Record<string, string>> =
     "Erro ao cadastrar.": "Error signing up.",
     "Erro ao salvar.": "Error saving.",
     "Erro ao remover transação.": "Error deleting transaction.",
+    "Categoria e mensagem são obrigatórias.": "Category and message are required.",
+    "Descreva o feedback com pelo menos 5 caracteres.":
+      "Describe the feedback with at least 5 characters.",
+    "Acesso restrito ao admin.": "This area is restricted to the admin.",
+    "ID e status são obrigatórios.": "ID and status are required.",
+    "Feedback não encontrado.": "Feedback not found.",
   },
   es: {
     "Não autenticado.": "No autenticado.",
@@ -321,6 +393,12 @@ const errorTranslations: Record<Exclude<Locale, "pt">, Record<string, string>> =
     "Erro ao cadastrar.": "Error al registrarse.",
     "Erro ao salvar.": "Error al guardar.",
     "Erro ao remover transação.": "Error al eliminar la transacción.",
+    "Categoria e mensagem são obrigatórias.": "La categoría y el mensaje son obligatorios.",
+    "Descreva o feedback com pelo menos 5 caracteres.":
+      "Describe el feedback con al menos 5 caracteres.",
+    "Acesso restrito ao admin.": "Esta área es exclusiva del administrador.",
+    "ID e status são obrigatórios.": "El ID y el estado son obligatorios.",
+    "Feedback não encontrado.": "Feedback no encontrado.",
   },
 };
 

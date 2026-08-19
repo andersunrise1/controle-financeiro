@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import {
   createToken,
   getUserByEmail,
+  isAdminEmail,
   setAuthCookie,
   verifyPassword,
 } from "@/lib/auth";
@@ -59,7 +60,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const authUser = { id: user.id, name: user.name, email: user.email };
+    const authUser = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      isAdmin: isAdminEmail(user.email),
+    };
     const token = createToken(authUser);
 
     await setAuthCookie(token);

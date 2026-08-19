@@ -4,6 +4,23 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  isAdmin: boolean;
+}
+
+export type FeedbackCategory = "bug" | "sugestao" | "outro";
+
+export interface Feedback {
+  id: number;
+  user_id: number;
+  category: FeedbackCategory;
+  message: string;
+  resolved: number;
+  created_at: string;
+}
+
+export interface FeedbackWithUser extends Feedback {
+  user_name: string;
+  user_email: string;
 }
 
 export interface Transaction {
@@ -124,6 +141,32 @@ export async function createTransaction(data: {
 
 export async function deleteTransaction(id: number): Promise<void> {
   await apiFetch(`/api/transactions?id=${id}`, { method: "DELETE" });
+}
+
+export async function submitFeedback(data: {
+  category: FeedbackCategory;
+  message: string;
+}): Promise<{ feedback: Feedback }> {
+  return apiFetch("/api/feedback", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getAdminFeedback(): Promise<{
+  feedback: FeedbackWithUser[];
+}> {
+  return apiFetch("/api/admin/feedback");
+}
+
+export async function setFeedbackResolved(
+  id: number,
+  resolved: boolean
+): Promise<void> {
+  await apiFetch("/api/admin/feedback", {
+    method: "PATCH",
+    body: JSON.stringify({ id, resolved }),
+  });
 }
 
 export function isValidEmail(email: string): boolean {
