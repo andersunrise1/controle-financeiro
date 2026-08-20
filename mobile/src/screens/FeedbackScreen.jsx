@@ -7,16 +7,19 @@ import SelectField from "../components/SelectField";
 import Button3D from "../components/Button3D";
 import Alert from "../components/Alert";
 import { submitFeedback } from "../services/api";
+import { useLocale } from "../context/LocaleContext";
+import { translateError } from "../lib/i18n";
 import { colors } from "../theme";
-
-const CATEGORY_OPTIONS = [
-  { label: "Erro / Bug", value: "bug" },
-  { label: "Sugestão", value: "sugestao" },
-  { label: "Outro", value: "outro" },
-];
 
 // Mirrors app/feedback/page.tsx.
 export default function FeedbackScreen() {
+  const { locale, t } = useLocale();
+  const CATEGORY_OPTIONS = [
+    { label: t("feedbackCategoryBug"), value: "bug" },
+    { label: t("feedbackCategorySugestao"), value: "sugestao" },
+    { label: t("feedbackCategoryOutro"), value: "outro" },
+  ];
+
   const [category, setCategory] = useState("bug");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -35,10 +38,10 @@ export default function FeedbackScreen() {
     setLoading(true);
     try {
       await submitFeedback({ category, message });
-      setSuccess("Feedback enviado! Obrigado.");
+      setSuccess(t("feedbackSuccess"));
       setMessage("");
     } catch (err) {
-      setError(err.message || "Erro ao salvar.");
+      setError(translateError(err.message || "Erro ao salvar.", locale));
     } finally {
       setLoading(false);
     }
@@ -49,16 +52,16 @@ export default function FeedbackScreen() {
       <TopNavBar />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.card}>
-          <Text style={styles.title}>Enviar Feedback</Text>
-          <Text style={styles.subtitle}>Encontrou um erro ou tem uma sugestão? Conte pra gente.</Text>
+          <Text style={styles.title}>{t("feedbackPageTitle")}</Text>
+          <Text style={styles.subtitle}>{t("feedbackPageSubtitle")}</Text>
 
           <View style={{ gap: 14, marginTop: 20 }}>
-            <SelectField label="Categoria" value={category} onValueChange={setCategory} options={CATEGORY_OPTIONS} />
+            <SelectField label={t("feedbackCategoryLabel")} value={category} onValueChange={setCategory} options={CATEGORY_OPTIONS} />
             <TextField
-              label="Mensagem"
+              label={t("feedbackMessageLabel")}
               value={message}
               onChangeText={setMessage}
-              placeholder="Descreva o que aconteceu..."
+              placeholder={t("feedbackMessagePlaceholder")}
               multiline
               numberOfLines={5}
             />
@@ -67,7 +70,7 @@ export default function FeedbackScreen() {
             {success ? <Alert type="success" message={success} /> : null}
 
             <Button3D fullWidth loading={loading} onPress={handleSubmit}>
-              Enviar Feedback
+              {t("feedbackSubmitButton")}
             </Button3D>
           </View>
         </View>

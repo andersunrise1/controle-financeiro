@@ -4,8 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TextField from "../components/TextField";
 import Button3D from "../components/Button3D";
 import Alert from "../components/Alert";
+import RegionPicker from "../components/RegionPicker";
 import { register, setToken, isValidEmail, isValidPassword } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { useLocale } from "../context/LocaleContext";
+import { translateError } from "../lib/i18n";
 import { colors } from "../theme";
 
 export default function RegisterScreen({ navigation }) {
@@ -15,22 +18,23 @@ export default function RegisterScreen({ navigation }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { setUser } = useAuth();
+  const { region, setRegion, locale, t } = useLocale();
 
   const handleSubmit = async () => {
     setError("");
 
     if (name.trim().length < 2) {
-      setError("Nome deve ter pelo menos 2 caracteres.");
+      setError(translateError("Nome deve ter pelo menos 2 caracteres.", locale));
       return;
     }
 
     if (!isValidEmail(email)) {
-      setError("Informe um e-mail válido.");
+      setError(translateError("Informe um e-mail válido.", locale));
       return;
     }
 
     if (!isValidPassword(password)) {
-      setError("A senha deve ter no mínimo 6 caracteres.");
+      setError(translateError("A senha deve ter no mínimo 6 caracteres.", locale));
       return;
     }
 
@@ -40,7 +44,7 @@ export default function RegisterScreen({ navigation }) {
       await setToken(data.token);
       setUser(data.user);
     } catch (err) {
-      setError(err.message || "Erro ao cadastrar.");
+      setError(translateError(err.message || "Erro ao cadastrar.", locale));
     } finally {
       setLoading(false);
     }
@@ -53,48 +57,52 @@ export default function RegisterScreen({ navigation }) {
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+          <View style={styles.switcherRow}>
+            <RegionPicker value={region} onChange={setRegion} compact />
+          </View>
+
           <View style={styles.card}>
-            <Text style={styles.title}>Cadastro</Text>
-            <Text style={styles.subtitle}>Crie sua conta gratuitamente</Text>
+            <Text style={styles.title}>{t("registerTitle")}</Text>
+            <Text style={styles.subtitle}>{t("registerSubtitle")}</Text>
 
             <View style={styles.form}>
               <TextField
-                label="Nome"
+                label={t("nameLabel")}
                 value={name}
                 onChangeText={setName}
-                placeholder="Seu nome"
+                placeholder={t("namePlaceholder")}
               />
               <TextField
-                label="E-mail"
+                label={t("emailLabel")}
                 value={email}
                 onChangeText={setEmail}
-                placeholder="seu@email.com"
+                placeholder={t("emailPlaceholder")}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
               />
               <TextField
-                label="Senha"
+                label={t("passwordLabel")}
                 value={password}
                 onChangeText={setPassword}
-                placeholder="Mínimo 6 caracteres"
+                placeholder={t("passwordPlaceholder")}
                 secureTextEntry
               />
 
               {error ? <Alert type="error" message={error} /> : null}
 
               <Button3D fullWidth loading={loading} onPress={handleSubmit}>
-                Cadastrar
+                {t("registerButton")}
               </Button3D>
             </View>
 
             <View style={styles.footer}>
-              <Text style={styles.footerText}>Já tem conta? </Text>
+              <Text style={styles.footerText}>{t("haveAccount")} </Text>
               <Text
                 style={styles.footerLink}
                 onPress={() => navigation.navigate("Login")}
               >
-                Faça login
+                {t("loginLink")}
               </Text>
             </View>
           </View>
@@ -113,6 +121,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     padding: 20,
+  },
+  switcherRow: {
+    alignItems: "flex-end",
+    marginBottom: 12,
   },
   card: {
     backgroundColor: colors.bgCard,

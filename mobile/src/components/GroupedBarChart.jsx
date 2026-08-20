@@ -8,10 +8,6 @@ const AXIS_BOTTOM = 26;
 const TOP_PAD = 14;
 const GROUP_MIN_WIDTH = 60;
 
-function formatCompact(value) {
-  return new Intl.NumberFormat("pt-BR", { notation: "compact", maximumFractionDigits: 1 }).format(value);
-}
-
 // Shared SVG bar-chart primitive behind all 3 charts (Gastos por Ano,
 // Entradas vs Saídas, Gastos por Categoria) — hand-built on react-native-svg
 // rather than a charting library, since this project has already hit two
@@ -23,7 +19,7 @@ function formatCompact(value) {
 // Simplified vs. the web version: no hover/tap tooltip yet (web shows exact
 // values on hover) — values are still readable from the axis and bar
 // height. A real, disclosed simplification, not an oversight.
-export default function GroupedBarChart({ data, barWidth = 18, barGap = 4 }) {
+export default function GroupedBarChart({ data, barWidth = 18, barGap = 4, formatY = (v) => v }) {
   const { width: screenWidth } = useWindowDimensions();
 
   if (data.length === 0) return null;
@@ -67,7 +63,7 @@ export default function GroupedBarChart({ data, barWidth = 18, barGap = 4 }) {
           const y = TOP_PAD + plotHeight - (tick / maxValue) * plotHeight;
           return (
             <SvgText key={i} x={AXIS_LEFT - 8} y={y + 4} fontSize={10} fill={colors.textFaint} textAnchor="end">
-              {formatCompact(tick)}
+              {formatY(tick)}
             </SvgText>
           );
         })}

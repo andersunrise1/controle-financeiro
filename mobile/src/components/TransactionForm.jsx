@@ -7,6 +7,8 @@ import Button3D from "./Button3D";
 import Alert from "./Alert";
 import { createTransaction, createRecurringTransaction } from "../services/api";
 import { CATEGORIES, DEFAULT_CATEGORY } from "../lib/categories";
+import { translateCategory, translateError } from "../lib/i18n";
+import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
 
 function todayStr() {
@@ -14,19 +16,20 @@ function todayStr() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ label: c.name, value: c.name }));
-const FREQUENCY_OPTIONS = [
-  { label: "Semanal", value: "weekly" },
-  { label: "Mensal", value: "monthly" },
-  { label: "Anual", value: "yearly" },
-];
-
 // Mirrors components/TransactionForm.tsx. Deliberately not ported yet: the
 // "Bater foto do preço" camera+OCR button — Tesseract.js (web's zero-cost
 // OCR engine) depends on browser Canvas/WASM APIs this environment can't
 // verify work the same way with React Native's camera stack, and this pass
 // is already large. Flagged as a known gap, not silently skipped.
 export default function TransactionForm({ onSuccess }) {
+  const { locale, t } = useLocale();
+  const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ label: translateCategory(c.name, locale), value: c.name }));
+  const FREQUENCY_OPTIONS = [
+    { label: t("recurrenceWeekly"), value: "weekly" },
+    { label: t("recurrenceMonthly"), value: "monthly" },
+    { label: t("recurrenceYearly"), value: "yearly" },
+  ];
+
   const [type, setType] = useState("income");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -50,7 +53,7 @@ export default function TransactionForm({ onSuccess }) {
 
     const parsedAmount = parseFloat(amount.replace(",", "."));
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      setError("Informe um valor válido maior que zero.");
+      setError(translateError("Informe um valor válido maior que zero.", locale));
       return;
     }
 
@@ -61,14 +64,14 @@ export default function TransactionForm({ onSuccess }) {
       } else {
         await createTransaction({ type, amount: parsedAmount, description, date, category });
       }
-      setSuccess(type === "income" ? "Entrada adicionada!" : "Saída adicionada!");
+      setSuccess(type === "income" ? t("successIncome") : t("successExpense"));
       setAmount("");
       setDescription("");
       setIsRecurring(false);
       setFrequency("monthly");
       onSuccess();
     } catch (err) {
-      setError(err.message || "Erro ao salvar.");
+      setError(translateError(err.message || "Erro ao salvar.", locale));
     } finally {
       setLoading(false);
     }
@@ -76,25 +79,25 @@ export default function TransactionForm({ onSuccess }) {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Nova Transação</Text>
+      <Text style={styles.title}>{t("newTransactionTitle")}</Text>
 
       <View style={styles.typeRow}>
         <Pressable
           onPress={() => setType("income")}
           style={[styles.typeButton, type === "income" ? styles.typeIncomeActive : styles.typeInactive]}
         >
-          <Text style={type === "income" ? styles.typeTextActiveDark : styles.typeTextInactive}>Entrada</Text>
+          <Text style={type === "income" ? styles.typeTextActiveDark : styles.typeTextInactive}>{t("incomeButton")}</Text>
         </Pressable>
         <Pressable
           onPress={() => setType("expense")}
           style={[styles.typeButton, type === "expense" ? styles.typeExpenseActive : styles.typeInactive]}
         >
-          <Text style={type === "expense" ? styles.typeTextActiveLight : styles.typeTextInactive}>Saída</Text>
+          <Text style={type === "expense" ? styles.typeTextActiveLight : styles.typeTextInactive}>{t("expenseButton")}</Text>
         </Pressable>
       </View>
 
       <TextField
-        label="Valor (R$)"
+        label={t("amountLabel")}
         value={amount}
         onChangeText={setAmount}
         placeholder="0,00"
@@ -102,21 +105,21 @@ export default function TransactionForm({ onSuccess }) {
       />
 
       <TextField
-        label="Descrição"
+        label={t("descriptionLabel")}
         value={description}
         onChangeText={setDescription}
-        placeholder="Ex: Salário, Aluguel..."
+        placeholder={t("descriptionPlaceholder")}
       />
 
-      <SelectField label="Categoria" value={category} onValueChange={setCategory} options={CATEGORY_OPTIONS} />
+      <SelectField label={t("categoryLabel")} value={category} onValueChange={setCategory} options={CATEGORY_OPTIONS} />
 
-      <DateField label="Data" value={date} onChange={setDate} />
+      <DateField label={t("dateLabel")} value={date} onChange={setDate} />
 
       <Pressable style={styles.checkboxRow} onPress={() => setIsRecurring((v) => !v)}>
         <View style={[styles.checkbox, isRecurring && styles.checkboxChecked]}>
           {isRecurring && <Text style={styles.checkmark}>✓</Text>}
         </View>
-        <Text style={styles.checkboxLabel}>🔁 Repetir</Text>
+        <Text style={styles.checkboxLabel}>🔁 {t("recurrenceCheckboxLabel")}</Text>
       </Pressable>
 
       {isRecurring && (
@@ -127,7 +130,7 @@ export default function TransactionForm({ onSuccess }) {
       {success ? <Alert type="success" message={success} /> : null}
 
       <Button3D fullWidth loading={loading} onPress={handleSubmit}>
-        Adicionar
+        {t("addButton")}
       </Button3D>
     </View>
   );

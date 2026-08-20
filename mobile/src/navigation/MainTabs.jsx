@@ -4,6 +4,7 @@ import DashboardScreen from "../screens/DashboardScreen";
 import FeedbackScreen from "../screens/FeedbackScreen";
 import AdminScreen from "../screens/AdminScreen";
 import { useAuth } from "../context/AuthContext";
+import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
 
 const Tab = createBottomTabNavigator();
@@ -17,6 +18,7 @@ function TabIcon({ symbol, focused }) {
 // email matches ADMIN_EMAIL (the backend enforces this regardless).
 export default function MainTabs() {
   const { user } = useAuth();
+  const { t } = useLocale();
 
   return (
     <Tab.Navigator
@@ -30,18 +32,18 @@ export default function MainTabs() {
       <Tab.Screen
         name="Dashboard"
         component={DashboardScreen}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon symbol="🏠" focused={focused} /> }}
+        options={{ tabBarLabel: t("navDashboard"), tabBarIcon: ({ focused }) => <TabIcon symbol="🏠" focused={focused} /> }}
       />
       <Tab.Screen
         name="Feedback"
         component={FeedbackScreen}
-        options={{ tabBarIcon: ({ focused }) => <TabIcon symbol="💬" focused={focused} /> }}
+        options={{ tabBarLabel: t("navFeedback"), tabBarIcon: ({ focused }) => <TabIcon symbol="💬" focused={focused} /> }}
       />
       {user?.isAdmin && (
         <Tab.Screen
           name="Admin"
           component={AdminScreen}
-          options={{ tabBarIcon: ({ focused }) => <TabIcon symbol="🛠️" focused={focused} /> }}
+          options={{ tabBarLabel: t("navAdmin"), tabBarIcon: ({ focused }) => <TabIcon symbol="🛠️" focused={focused} /> }}
         />
       )}
     </Tab.Navigator>

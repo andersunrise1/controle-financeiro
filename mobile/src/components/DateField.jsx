@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { formatDateBR } from "../lib/currency";
+import { formatDateForRegion } from "../lib/currency";
+import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
 
 // value/onChange use the same "YYYY-MM-DD" string shape the web app and the
 // backend both use (see TransactionForm.tsx's date input, api routes).
 export default function DateField({ label, value, onChange }) {
+  const { region } = useLocale();
   const [showPicker, setShowPicker] = useState(false);
   const dateObj = new Date(`${value}T00:00:00`);
 
@@ -23,7 +25,7 @@ export default function DateField({ label, value, onChange }) {
     <View style={styles.wrapper}>
       {label && <Text style={styles.label}>{label}</Text>}
       <Pressable style={styles.field} onPress={() => setShowPicker(true)}>
-        <Text style={styles.value}>{formatDateBR(value)}</Text>
+        <Text style={styles.value}>{formatDateForRegion(new Date(`${value}T00:00:00`), region)}</Text>
       </Pressable>
       {showPicker && (
         <DateTimePicker

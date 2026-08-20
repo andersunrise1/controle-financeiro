@@ -1,12 +1,15 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { setRecurringActive } from "../services/api";
-import { formatBRL, formatDateBR } from "../lib/currency";
+import { translateCategory } from "../lib/i18n";
+import { formatCurrencyForLocale, formatDateForRegion } from "../lib/currency";
+import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
 
-const FREQUENCY_LABEL = { weekly: "Semanal", monthly: "Mensal", yearly: "Anual" };
+const FREQUENCY_KEY = { weekly: "recurrenceWeekly", monthly: "recurrenceMonthly", yearly: "recurrenceYearly" };
 
 // Mirrors components/RecurringTransactionsList.tsx.
 export default function RecurringTransactionsList({ recurring, onChange }) {
+  const { locale, region, rates, t } = useLocale();
   const active = recurring.filter((r) => r.active === 1);
   if (active.length === 0) return null;
 
@@ -17,23 +20,23 @@ export default function RecurringTransactionsList({ recurring, onChange }) {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Recorrências Ativas</Text>
+      <Text style={styles.title}>{t("recurringListTitle")}</Text>
       <View style={{ gap: 10 }}>
         {active.map((item) => (
           <View key={item.id} style={styles.row}>
             <View style={{ flex: 1 }}>
               <Text style={styles.itemTitle}>
-                🔁 {item.description || (item.type === "income" ? "Entrada" : "Saída")} · {FREQUENCY_LABEL[item.frequency]}
+                🔁 {item.description || (item.type === "income" ? t("incomeButton") : t("expenseButton"))} · {t(FREQUENCY_KEY[item.frequency])}
               </Text>
               <Text style={styles.itemMeta}>
-                {item.category} · Próxima: {formatDateBR(item.next_run_date)}
+                {translateCategory(item.category, locale)} · {t("recurringNextLabel")} {formatDateForRegion(new Date(`${item.next_run_date}T00:00:00`), region)}
               </Text>
             </View>
             <Text style={[styles.amount, { color: item.type === "income" ? colors.neonGreen : colors.neonRed }]}>
-              {item.type === "income" ? "+" : "-"}{formatBRL(item.amount)}
+              {item.type === "income" ? "+" : "-"}{formatCurrencyForLocale(item.amount, region, rates.rates)}
             </Text>
             <Pressable style={styles.stopButton} onPress={() => handleStop(item.id)}>
-              <Text style={styles.stopText}>Parar</Text>
+              <Text style={styles.stopText}>{t("recurringStopButton")}</Text>
             </Pressable>
           </View>
         ))}

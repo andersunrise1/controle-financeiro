@@ -2,23 +2,25 @@ import { View, Text, StyleSheet } from "react-native";
 import GroupedBarChart from "./GroupedBarChart";
 import GradientText from "./GradientText";
 import { groupByYear } from "../lib/chartGrouping";
-import { formatBRL } from "../lib/currency";
+import { formatCurrencyForLocale, formatCompactNumberForLocale } from "../lib/currency";
+import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
 
 // Mirrors components/YearlyChart.tsx.
 export default function YearlyChart({ transactions }) {
+  const { region, rates, t } = useLocale();
   const yearly = groupByYear(transactions);
 
   if (yearly.length === 0) {
     return (
       <View style={styles.card}>
-        <Text style={styles.empty}>Adicione transações para visualizar os gastos por ano.</Text>
+        <Text style={styles.empty}>{t("yearlyChartEmpty")}</Text>
       </View>
     );
   }
 
   const topYear = yearly.reduce((max, d) => (d.total > max.total ? d : max), yearly[0]);
-  const highlightText = `${topYear.year} (${formatBRL(topYear.total)})`;
+  const highlightText = `${topYear.year} (${formatCurrencyForLocale(topYear.total, region, rates.rates)})`;
 
   const data = yearly.map((d) => ({
     label: d.year,
@@ -27,10 +29,14 @@ export default function YearlyChart({ transactions }) {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Gastos por Ano</Text>
-      <GroupedBarChart data={data} barWidth={28} />
+      <Text style={styles.title}>{t("yearlyChartTitle")}</Text>
+      <GroupedBarChart
+        data={data}
+        barWidth={28}
+        formatY={(v) => formatCompactNumberForLocale(v, region, rates.rates)}
+      />
       <View style={styles.footer}>
-        <Text style={styles.footerLabel}>Ano que você mais gastou: </Text>
+        <Text style={styles.footerLabel}>{t("mostSpentYearLabel")} </Text>
         <GradientText fontSize={15} fontWeight="700" width={Math.max(120, highlightText.length * 10)} height={22} letterSpacing={0}>
           {highlightText}
         </GradientText>

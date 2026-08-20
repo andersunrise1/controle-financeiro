@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopNavBar from "../components/TopNavBar";
 import BalanceCard from "../components/BalanceCard";
@@ -9,12 +9,14 @@ import TransactionList from "../components/TransactionList";
 import YearlyChart from "../components/YearlyChart";
 import ClusteredChart from "../components/ClusteredChart";
 import CategoryChart from "../components/CategoryChart";
+import CurrencyConverter from "../components/CurrencyConverter";
 import { getTransactions, getRecurringTransactions } from "../services/api";
+import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
 
-// Mirrors app/dashboard/page.tsx's finance-core sections. The currency
-// converter (Etapa 4) is deliberately not here yet, not an oversight.
+// Mirrors app/dashboard/page.tsx's finance-core sections.
 export default function DashboardScreen() {
+  const { t } = useLocale();
   const [transactions, setTransactions] = useState([]);
   const [recurring, setRecurring] = useState([]);
   const [summary, setSummary] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 });
@@ -44,6 +46,7 @@ export default function DashboardScreen() {
       {loading ? (
         <View style={styles.loading}>
           <ActivityIndicator color={colors.neonGreen} size="large" />
+          <Text style={styles.loadingText}>{t("loadingDashboard")}</Text>
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.content}>
@@ -55,6 +58,7 @@ export default function DashboardScreen() {
           <TransactionForm onSuccess={loadData} />
           <RecurringTransactionsList recurring={recurring} onChange={loadData} />
           <YearlyChart transactions={transactions} />
+          <CurrencyConverter />
           <ClusteredChart transactions={transactions} />
           <CategoryChart transactions={transactions} />
           <TransactionList transactions={transactions} onDelete={loadData} />
@@ -73,6 +77,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    gap: 10,
+  },
+  loadingText: {
+    color: colors.textMuted,
+    fontSize: 13,
   },
   content: {
     padding: 16,

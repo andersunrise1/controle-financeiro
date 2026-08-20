@@ -3,10 +3,10 @@ import { View, Text, ScrollView, Pressable, ActivityIndicator, StyleSheet } from
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopNavBar from "../components/TopNavBar";
 import { useAuth } from "../context/AuthContext";
+import { useLocale } from "../context/LocaleContext";
 import { getAdminFeedback, setFeedbackResolved } from "../services/api";
 import { colors } from "../theme";
 
-const CATEGORY_LABEL = { bug: "Erro / Bug", sugestao: "Sugestão", outro: "Outro" };
 const CATEGORY_COLOR = {
   bug: { border: "rgba(255,7,58,0.4)", bg: "rgba(255,7,58,0.1)", text: "#ff6b85" },
   sugestao: { border: "rgba(255,217,61,0.4)", bg: "rgba(255,217,61,0.1)", text: "#ffd93d" },
@@ -17,6 +17,8 @@ const CATEGORY_COLOR = {
 // matches ADMIN_EMAIL server-side; the backend enforces this on every
 // request regardless of what this screen shows.
 function AdminContent() {
+  const { t } = useLocale();
+  const CATEGORY_LABEL = { bug: t("feedbackCategoryBug"), sugestao: t("feedbackCategorySugestao"), outro: t("feedbackCategoryOutro") };
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,9 +50,9 @@ function AdminContent() {
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Feedbacks Recebidos</Text>
+      <Text style={styles.title}>{t("adminFeedbackTitle")}</Text>
       {feedback.length === 0 ? (
-        <Text style={styles.empty}>Nenhum feedback recebido ainda.</Text>
+        <Text style={styles.empty}>{t("adminFeedbackEmpty")}</Text>
       ) : (
         <View style={{ gap: 12, marginTop: 12 }}>
           {feedback.map((item) => {
@@ -63,7 +65,7 @@ function AdminContent() {
                   </View>
                   {item.resolved === 1 && (
                     <View style={[styles.badge, { borderColor: "rgba(57,255,20,0.4)", backgroundColor: "rgba(57,255,20,0.1)" }]}>
-                      <Text style={[styles.badgeText, { color: "#7cff5c" }]}>Resolvido</Text>
+                      <Text style={[styles.badgeText, { color: "#7cff5c" }]}>{t("adminFeedbackResolvedBadge")}</Text>
                     </View>
                   )}
                 </View>
@@ -71,7 +73,7 @@ function AdminContent() {
                 <View style={styles.footerRow}>
                   <Text style={styles.meta}>{item.user_name} · {item.user_email}</Text>
                   <Pressable style={styles.resolveButton} onPress={() => toggleResolved(item)}>
-                    <Text style={styles.resolveText}>{item.resolved === 1 ? "Reabrir" : "Marcar como resolvido"}</Text>
+                    <Text style={styles.resolveText}>{item.resolved === 1 ? t("adminFeedbackReopen") : t("adminFeedbackResolve")}</Text>
                   </Pressable>
                 </View>
               </View>
@@ -85,11 +87,12 @@ function AdminContent() {
 
 function AdminGate() {
   const { user } = useAuth();
+  const { t } = useLocale();
 
   if (!user?.isAdmin) {
     return (
       <View style={styles.loading}>
-        <Text style={styles.empty}>Esta área é restrita ao administrador.</Text>
+        <Text style={styles.empty}>{t("adminAccessDenied")}</Text>
       </View>
     );
   }

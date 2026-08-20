@@ -1,16 +1,19 @@
 import { View, Text, StyleSheet } from "react-native";
 import GroupedBarChart from "./GroupedBarChart";
 import { groupByMonth } from "../lib/chartGrouping";
+import { formatCompactNumberForLocale } from "../lib/currency";
+import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
 
 // Mirrors components/ClusteredChart.tsx.
 export default function ClusteredChart({ transactions }) {
-  const data = groupByMonth(transactions);
+  const { region, rates, t } = useLocale();
+  const data = groupByMonth(transactions, region);
 
   if (data.length === 0) {
     return (
       <View style={styles.card}>
-        <Text style={styles.empty}>Adicione transações para visualizar o gráfico.</Text>
+        <Text style={styles.empty}>{t("chartEmpty")}</Text>
       </View>
     );
   }
@@ -25,18 +28,18 @@ export default function ClusteredChart({ transactions }) {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Entradas vs Saídas por Mês</Text>
+      <Text style={styles.title}>{t("chartTitle")}</Text>
       <View style={styles.legend}>
         <View style={styles.legendItem}>
           <View style={[styles.dot, { backgroundColor: colors.neonGreen }]} />
-          <Text style={styles.legendText}>Entradas</Text>
+          <Text style={styles.legendText}>{t("incomeLabel")}</Text>
         </View>
         <View style={styles.legendItem}>
           <View style={[styles.dot, { backgroundColor: colors.neonRed }]} />
-          <Text style={styles.legendText}>Saídas</Text>
+          <Text style={styles.legendText}>{t("expenseLabel")}</Text>
         </View>
       </View>
-      <GroupedBarChart data={chartData} />
+      <GroupedBarChart data={chartData} formatY={(v) => formatCompactNumberForLocale(v, region, rates.rates)} />
     </View>
   );
 }

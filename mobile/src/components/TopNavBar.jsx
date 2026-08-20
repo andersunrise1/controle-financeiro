@@ -1,15 +1,19 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import DivisaLogo from "./DivisaLogo";
+import RegionPicker from "./RegionPicker";
 import { logout } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
 
-// Mirrors components/Navbar.tsx's logo+greeting+logout — the Feedback/Admin
-// links live in the bottom tab bar instead of here, the standard mobile
-// navigation pattern (same choice the sibling TechSpeak project made for
-// its own Audiobooks/Flashcards/Dashboard tabs), not a dropped feature.
+// Mirrors components/Navbar.tsx's logo+greeting+language-switcher+logout —
+// the Feedback/Admin links live in the bottom tab bar instead of here, the
+// standard mobile navigation pattern (same choice the sibling TechSpeak
+// project made for its own Audiobooks/Flashcards/Dashboard tabs), not a
+// dropped feature.
 export default function TopNavBar() {
   const { user, setUser } = useAuth();
+  const { region, setRegion, t } = useLocale();
 
   const handleLogout = async () => {
     await logout();
@@ -21,12 +25,15 @@ export default function TopNavBar() {
       <View style={styles.left}>
         <DivisaLogo size="compact" />
         <Text style={styles.greeting}>
-          Olá, <Text style={styles.name}>{user?.name}</Text>
+          {t("greeting")} <Text style={styles.name}>{user?.name}</Text>
         </Text>
       </View>
-      <Pressable style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Sair</Text>
-      </Pressable>
+      <View style={styles.right}>
+        <RegionPicker value={region} onChange={setRegion} compact />
+        <Pressable style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutText}>{t("logout")}</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -56,6 +63,11 @@ const styles = StyleSheet.create({
   name: {
     fontWeight: "700",
     color: "#e5e7eb",
+  },
+  right: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   logoutButton: {
     backgroundColor: colors.bgCardHover,

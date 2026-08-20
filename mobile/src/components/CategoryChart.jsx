@@ -2,22 +2,25 @@ import { View, Text, StyleSheet } from "react-native";
 import GroupedBarChart from "./GroupedBarChart";
 import { groupByMonthAndCategory } from "../lib/chartGrouping";
 import { CATEGORIES } from "../lib/categories";
+import { translateCategory } from "../lib/i18n";
 import { sunsetColorAt } from "../lib/sunsetGradient";
+import { formatCompactNumberForLocale } from "../lib/currency";
+import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
 
 const GRADIENT_SPREAD = 0.07;
 
 // Mirrors components/CategoryChart.tsx, including its per-bar local-gradient
-// treatment (each category gets its own slice of the sunset spectrum,
-// lighter at the top / darker at the bottom) added on the web side 2026-08-19.
+// treatment (each category gets its own slice of the sunset spectrum).
 export default function CategoryChart({ transactions }) {
-  const data = groupByMonthAndCategory(transactions);
+  const { locale, region, rates, t } = useLocale();
+  const data = groupByMonthAndCategory(transactions, region);
   const usedCategories = CATEGORIES.filter((c) => data.some((month) => (month[c.name] || 0) > 0));
 
   if (data.length === 0) {
     return (
       <View style={styles.card}>
-        <Text style={styles.empty}>Adicione transações para visualizar os gastos por categoria.</Text>
+        <Text style={styles.empty}>{t("categoryChartEmpty")}</Text>
       </View>
     );
   }
@@ -25,31 +28,29 @@ export default function CategoryChart({ transactions }) {
   const chartData = data.map((month) => ({
     label: month.month,
     bars: usedCategories.map((c, i) => {
-      const t = i / (CATEGORIES.length - 1);
+      const tPos = i / (CATEGORIES.length - 1);
       return {
         key: c.name,
         value: month[c.name] || 0,
         gradientId: `catGrad-${i}`,
-        gradient: [sunsetColorAt(t - GRADIENT_SPREAD), sunsetColorAt(t + GRADIENT_SPREAD)],
+        gradient: [sunsetColorAt(tPos - GRADIENT_SPREAD), sunsetColorAt(tPos + GRADIENT_SPREAD)],
       };
     }),
   }));
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Gastos por Categoria por Mês</Text>
+      <Text style={styles.title}>{t("categoryChartTitle")}</Text>
       <View style={styles.legend}>
         {usedCategories.map((c) => (
           <View key={c.name} style={styles.legendItem}>
             <View style={[styles.dot, { backgroundColor: c.color }]} />
-            <Text style={styles.legendText}>{c.name}</Text>
+            <Text style={styles.legendText}>{translateCategory(c.name, locale)}</Text>
           </View>
         ))}
       </View>
-      <GroupedBarChart data={chartData} barWidth={14} />
-      <Text style={styles.footer}>
-        Cada categoria ganha sua própria cor — quanto mais categorias você usar, mais cores aparecem no gráfico.
-      </Text>
+      <GroupedBarChart data={chartData} barWidth={14} formatY={(v) => formatCompactNumberForLocale(v, region, rates.rates)} />
+      <Text style={styles.footer}>{t("categoryChartFooter")}</Text>
     </View>
   );
 }

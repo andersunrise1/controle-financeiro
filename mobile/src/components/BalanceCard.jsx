@@ -1,23 +1,25 @@
 import { View, Text, StyleSheet } from "react-native";
-import { formatBRL } from "../lib/currency";
+import { formatCurrencyForLocale } from "../lib/currency";
+import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
 
 // Mirrors components/BalanceCard.tsx.
 export default function BalanceCard({ balance, totalIncome, totalExpense }) {
+  const { region, rates, t } = useLocale();
   const isPositive = balance >= 0;
 
   return (
     <View style={styles.card}>
-      <Text style={styles.label}>SALDO ATUAL</Text>
+      <Text style={styles.label}>{t("balanceLabel").toUpperCase()}</Text>
       <Text style={[styles.balance, { color: isPositive ? colors.neonGreen : colors.neonRed }]}>
-        {formatBRL(balance)}
+        {formatCurrencyForLocale(balance, region, rates.rates)}
       </Text>
       <View style={styles.row}>
         <Text style={styles.muted}>
-          Entradas: <Text style={{ color: colors.neonGreen, fontWeight: "700" }}>{formatBRL(totalIncome)}</Text>
+          {t("incomeLabel")}: <Text style={{ color: colors.neonGreen, fontWeight: "700" }}>{formatCurrencyForLocale(totalIncome, region, rates.rates)}</Text>
         </Text>
         <Text style={styles.muted}>
-          Saídas: <Text style={{ color: colors.neonRed, fontWeight: "700" }}>{formatBRL(totalExpense)}</Text>
+          {t("expenseLabel")}: <Text style={{ color: colors.neonRed, fontWeight: "700" }}>{formatCurrencyForLocale(totalExpense, region, rates.rates)}</Text>
         </Text>
       </View>
     </View>
@@ -37,7 +39,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     letterSpacing: 1,
     color: colors.textMuted,
-    textTransform: "uppercase",
   },
   balance: {
     marginTop: 8,
