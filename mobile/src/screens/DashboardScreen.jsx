@@ -6,12 +6,14 @@ import BalanceCard from "../components/BalanceCard";
 import TransactionForm from "../components/TransactionForm";
 import RecurringTransactionsList from "../components/RecurringTransactionsList";
 import TransactionList from "../components/TransactionList";
+import YearlyChart from "../components/YearlyChart";
+import ClusteredChart from "../components/ClusteredChart";
+import CategoryChart from "../components/CategoryChart";
 import { getTransactions, getRecurringTransactions } from "../services/api";
 import { colors } from "../theme";
 
-// Mirrors app/dashboard/page.tsx's finance-core sections. The 4 charts and
-// the currency converter are Etapa 3/4 of the mobile roadmap — deliberately
-// not here yet, not an oversight.
+// Mirrors app/dashboard/page.tsx's finance-core sections. The currency
+// converter (Etapa 4) is deliberately not here yet, not an oversight.
 export default function DashboardScreen() {
   const [transactions, setTransactions] = useState([]);
   const [recurring, setRecurring] = useState([]);
@@ -52,6 +54,9 @@ export default function DashboardScreen() {
           />
           <TransactionForm onSuccess={loadData} />
           <RecurringTransactionsList recurring={recurring} onChange={loadData} />
+          <YearlyChart transactions={transactions} />
+          <ClusteredChart transactions={transactions} />
+          <CategoryChart transactions={transactions} />
           <TransactionList transactions={transactions} onDelete={loadData} />
         </ScrollView>
       )}
