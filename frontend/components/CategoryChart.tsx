@@ -33,6 +33,8 @@ function groupByMonthAndCategory(transactions: Transaction[], region: Region) {
     {};
 
   transactions.forEach((t) => {
+    if (t.type !== "expense") return;
+
     const date = new Date(t.date + "T00:00:00");
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
     const label = formatMonthLabel(date, region);
