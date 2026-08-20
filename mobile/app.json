@@ -21,6 +21,9 @@
     },
     "web": {
       "favicon": "./assets/icon-divisa-final.png"
-    }
+    },
+    "plugins": [
+      "@react-native-community/datetimepicker"
+    ]
   }
 }

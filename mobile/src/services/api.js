@@ -79,3 +79,54 @@ export function isValidEmail(email) {
 export function isValidPassword(password) {
   return password.length >= 6;
 }
+
+export async function getTransactions() {
+  return apiFetch("/api/transactions");
+}
+
+export async function createTransaction(data) {
+  return apiFetch("/api/transactions", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteTransaction(id) {
+  await apiFetch(`/api/transactions?id=${id}`, { method: "DELETE" });
+}
+
+export async function createRecurringTransaction(data) {
+  return apiFetch("/api/recurring", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getRecurringTransactions() {
+  return apiFetch("/api/recurring");
+}
+
+export async function setRecurringActive(id, active) {
+  await apiFetch("/api/recurring", {
+    method: "PATCH",
+    body: JSON.stringify({ id, active }),
+  });
+}
+
+export async function submitFeedback(data) {
+  return apiFetch("/api/feedback", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getAdminFeedback() {
+  return apiFetch("/api/admin/feedback");
+}
+
+export async function setFeedbackResolved(id, resolved) {
+  await apiFetch("/api/admin/feedback", {
+    method: "PATCH",
+    body: JSON.stringify({ id, resolved }),
+  });
+}
