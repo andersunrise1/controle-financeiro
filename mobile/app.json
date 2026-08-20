@@ -4,7 +4,7 @@
     "slug": "divisa",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon-divisa-final.png",
+    "icon": "./assets/icon-divisa-1024.png",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#2d2d2d",
     "ios": {
@@ -16,14 +16,23 @@
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#2d2d2d",
-        "foregroundImage": "./assets/icon-divisa-final.png"
+        "foregroundImage": "./assets/adaptive-icon-foreground.png"
       }
     },
     "web": {
-      "favicon": "./assets/icon-divisa-final.png"
+      "favicon": "./assets/favicon-divisa.png"
     },
     "plugins": [
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon-divisa.png",
+          "imageWidth": 220,
+          "resizeMode": "contain",
+          "backgroundColor": "#2d2d2d"
+        }
+      ]
     ]
   }
 }

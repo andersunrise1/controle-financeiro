@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:\\Users\\ander\\OneDrive\\Desktop\\Controle Financeiro\\frontend", "run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "backend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:\\Users\\ander\\OneDrive\\Desktop\\Controle Financeiro\\backend", "run", "dev"],
+      "port": 3001
+    },
+    {
+      "name": "mobile-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:\\Users\\ander\\OneDrive\\Desktop\\Controle Financeiro\\mobile", "exec", "--", "expo", "start", "--web", "--port", "8082"],
+      "port": 8082
+    }
+  ]
+}
