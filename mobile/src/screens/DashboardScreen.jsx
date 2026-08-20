@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text, ScrollView, ActivityIndicator, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopNavBar from "../components/TopNavBar";
 import BalanceCard from "../components/BalanceCard";
@@ -49,20 +49,25 @@ export default function DashboardScreen() {
           <Text style={styles.loadingText}>{t("loadingDashboard")}</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.content}>
-          <BalanceCard
-            balance={summary.balance}
-            totalIncome={summary.totalIncome}
-            totalExpense={summary.totalExpense}
-          />
-          <TransactionForm onSuccess={loadData} />
-          <RecurringTransactionsList recurring={recurring} onChange={loadData} />
-          <YearlyChart transactions={transactions} />
-          <CurrencyConverter />
-          <ClusteredChart transactions={transactions} />
-          <CategoryChart transactions={transactions} />
-          <TransactionList transactions={transactions} onDelete={loadData} />
-        </ScrollView>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ flex: 1 }}
+        >
+          <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+            <BalanceCard
+              balance={summary.balance}
+              totalIncome={summary.totalIncome}
+              totalExpense={summary.totalExpense}
+            />
+            <TransactionForm onSuccess={loadData} />
+            <RecurringTransactionsList recurring={recurring} onChange={loadData} />
+            <YearlyChart transactions={transactions} />
+            <CurrencyConverter />
+            <ClusteredChart transactions={transactions} />
+            <CategoryChart transactions={transactions} />
+            <TransactionList transactions={transactions} onDelete={loadData} />
+          </ScrollView>
+        </KeyboardAvoidingView>
       )}
     </SafeAreaView>
   );

@@ -9,7 +9,7 @@
       "distribution": "internal",
       "channel": "development",
       "env": {
-        "EXPO_PUBLIC_API_URL": "http://192.168.0.65:3001"
+        "EXPO_PUBLIC_API_URL": "http://192.168.0.75:3001"
       }
     },
     "preview": {
@@ -18,7 +18,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "http://192.168.0.65:3001"
+        "EXPO_PUBLIC_API_URL": "http://192.168.0.75:3001"
       },
       "channel": "preview"
     },

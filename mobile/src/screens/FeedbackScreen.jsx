@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopNavBar from "../components/TopNavBar";
 import TextField from "../components/TextField";
@@ -50,31 +50,36 @@ export default function FeedbackScreen() {
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <TopNavBar />
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.card}>
-          <Text style={styles.title}>{t("feedbackPageTitle")}</Text>
-          <Text style={styles.subtitle}>{t("feedbackPageSubtitle")}</Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+      >
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          <View style={styles.card}>
+            <Text style={styles.title}>{t("feedbackPageTitle")}</Text>
+            <Text style={styles.subtitle}>{t("feedbackPageSubtitle")}</Text>
 
-          <View style={{ gap: 14, marginTop: 20 }}>
-            <SelectField label={t("feedbackCategoryLabel")} value={category} onValueChange={setCategory} options={CATEGORY_OPTIONS} />
-            <TextField
-              label={t("feedbackMessageLabel")}
-              value={message}
-              onChangeText={setMessage}
-              placeholder={t("feedbackMessagePlaceholder")}
-              multiline
-              numberOfLines={5}
-            />
+            <View style={{ gap: 14, marginTop: 20 }}>
+              <SelectField label={t("feedbackCategoryLabel")} value={category} onValueChange={setCategory} options={CATEGORY_OPTIONS} />
+              <TextField
+                label={t("feedbackMessageLabel")}
+                value={message}
+                onChangeText={setMessage}
+                placeholder={t("feedbackMessagePlaceholder")}
+                multiline
+                numberOfLines={5}
+              />
 
-            {error ? <Alert type="error" message={error} /> : null}
-            {success ? <Alert type="success" message={success} /> : null}
+              {error ? <Alert type="error" message={error} /> : null}
+              {success ? <Alert type="success" message={success} /> : null}
 
-            <Button3D fullWidth loading={loading} onPress={handleSubmit}>
-              {t("feedbackSubmitButton")}
-            </Button3D>
+              <Button3D fullWidth loading={loading} onPress={handleSubmit}>
+                {t("feedbackSubmitButton")}
+              </Button3D>
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
