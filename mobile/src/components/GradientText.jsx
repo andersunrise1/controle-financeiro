@@ -25,16 +25,15 @@ export default function GradientText({
         </LinearGradient>
       </Defs>
       {/*
-        textAnchor="middle" alone centers the text's geometric advance box,
-        but letter-spacing is added after every character including the
-        last one — that trailing gap has no glyph to balance it, so the
-        visible letters end up shifted left of true center (confirmed on
-        a real device: the D lined up with the icon, the trailing A did
-        not). Shifting the anchor left by half a letter-spacing unit
-        compensates for that phantom trailing space.
+        textAnchor="middle" alone centers the text's geometric advance box.
+        A first attempt assumed trailing letter-spacing after the last
+        character pushed the visible glyphs left of center and compensated
+        by shifting the anchor left — but on a real Android device the
+        wordmark actually renders shifted left of the icon above it, the
+        opposite of that assumption. Shifting the anchor right instead.
       */}
       <SvgText
-        x={width / 2 - letterSpacing / 2}
+        x={width / 2 + letterSpacing / 2}
         y={height * 0.72}
         textAnchor="middle"
         fontSize={fontSize}

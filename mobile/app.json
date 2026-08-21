@@ -32,7 +32,21 @@
           "resizeMode": "contain",
           "backgroundColor": "#2d2d2d"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7e2e167c-81ab-4a6d-b32d-c36ae03a9310"
+      }
+    },
+    "owner": "techspeaking"
   }
 }
