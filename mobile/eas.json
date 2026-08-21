@@ -9,7 +9,7 @@
       "distribution": "internal",
       "channel": "development",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://major-amend-servers-combo.trycloudflare.com"
+        "EXPO_PUBLIC_API_URL": "https://controle-financeiro-production-da55.up.railway.app"
       }
     },
     "preview": {
@@ -18,13 +18,16 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://major-amend-servers-combo.trycloudflare.com"
+        "EXPO_PUBLIC_API_URL": "https://controle-financeiro-production-da55.up.railway.app"
       },
       "channel": "preview"
     },
     "production": {
       "autoIncrement": true,
-      "channel": "production"
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://controle-financeiro-production-da55.up.railway.app"
+      }
     }
   }
 }

@@ -143,7 +143,23 @@ Decisão de base: **React Native com Expo**, mesmo caminho já usado no projeto 
    Verificado de ponta a ponta, de verdade, num Samsung Android real: cadastro, login (inclusive resetando a senha da conta real do usuário direto no SQLite quando a senha original foi esquecida — só a hash, sem tocar em nenhuma outra coluna/transação), dashboard carregando saldo e transações reais, teclado não cobrindo mais os campos de email/senha, e o wordmark "DIVISA" centralizado sob o ícone. Confirmado no log do backend: `POST /api/auth/login 200`, seguido de `GET /api/transactions 200` e `GET /api/recurring 200` reais.
 7. **Publicação** — tempo variável. Configurar EAS Build; **trava até o usuário ter conta de desenvolvedor Apple (paga, ~US$99/ano) e/ou Google Play Console (paga, taxa única ~US$25)** — ação dele, fora do código; preparar ficha da loja.
 
-Total estimado do que depende só de código (etapas 1-6): ~10-12 dias de trabalho focado. Etapa 7 trava em decisão/pagamento do usuário, mesmo padrão já visto nesse projeto (Mercado Pago, hospedagem) e no projeto irmão (contas Apple/Google).
+Total estimado do que depende só de código (etapas 1-6): ~10-12 dias de trabalho focado. Etapa 7 trava em decisão/pagamento do usuário (contas Apple/Google), mesmo padrão já visto no projeto irmão.
+
+## Hospedagem real do backend (Railway) — 2026-08-21
+
+Motivada por uma pergunta direta do usuário: por que o app parava de funcionar no celular sempre que ele fechava o notebook? Resposta honesta — o backend era só um `next dev` local, e o túnel usado pra testar no celular (ver Etapa 6) também rodava na mesma máquina; os dois morriam junto com o notebook. A solução real não é a Etapa 7 (publicação nas lojas, que trava em conta paga) — é hospedar o backend em algo que fique de pé sozinho, o que não precisa de conta paga nenhuma.
+
+Configurado no Railway (mesma conta/serviço já usado pelo projeto irmão TechSpeak), pelo painel web, não CLI — a instalação do `@railway/cli` via npm falhou hoje (erro de resolução de versão) e o script oficial de instalação (`railway.app/install.ps1`) redirecionou pra uma página 404, então ficou mais rápido configurar direto pelo dashboard:
+
+- **Root Directory**: `/backend` (o repo tem `frontend`, `backend` e `mobile` juntos; sem isso o build falha tentando entender as 3 pastas juntas).
+- **Branch**: `feature/mvp-controle-financeiro`, não `main` — a `main` está dezenas de commits atrás (nunca recebeu nada das Etapas 1-6 do mobile). Decisão consciente de não mergear pra `main` só pra isso; é um passo separado.
+- **Variáveis**: `JWT_SECRET` (novo valor gerado só pra produção, diferente do de desenvolvimento) e `FRONTEND_URL`.
+- **Volume persistente** montado em `/app/data` — o banco é um arquivo SQLite (`better-sqlite3`) via caminho relativo (`process.cwd() + "/data/finance.db"`); sem volume, cada novo deploy apagaria todas as transações reais do usuário.
+- **`backend/package.json`**: o script `start` tinha a porta fixa em `next start -p 3001` — corrigido pra `next start -p ${PORT:-3001}`, já que o Railway atribui a porta dele dinamicamente via `$PORT` (com `-p 3001` fixo, o servidor subia mas o proxy do Railway nunca achava ele).
+
+URL real: `https://controle-financeiro-production-da55.up.railway.app`. Auto-deploy already ativado por padrão (todo push na branch conectada reimplanta sozinho). `mobile/eas.json` (todos os 3 perfis, incluindo `production` que antes não tinha nenhum `EXPO_PUBLIC_API_URL` e cairia no fallback `localhost`) e `mobile/.env.example` atualizados pra essa URL definitiva.
+
+Verificado com curl real contra a URL de produção: `POST /api/auth/login` respondendo 400 corretamente (validação real rodando, não um erro de infraestrutura). Não verificado ainda: um redeploy de verdade confirmando que o volume realmente preserva os dados entre deploys (a lógica está certa — mesmo path usado localmente — mas só um redeploy real confirma na prática).
 
 ## Problemas conhecidos
 
