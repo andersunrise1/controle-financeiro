@@ -39,6 +39,26 @@ export function groupByMonthAndCategory(transactions, region) {
     .map((key) => grouped[key]);
 }
 
+const MERCADO_CATEGORY = "Mercado";
+
+// Mirrors MercadoChart.tsx's groupByProduct — normalized (trim + lowercase)
+// key so "Leite"/"leite" count as the same product, displayed with the
+// casing the user actually typed.
+export function groupByProduct(transactions) {
+  const counts = {};
+
+  transactions.forEach((t) => {
+    if (t.category !== MERCADO_CATEGORY) return;
+    const name = t.description.trim();
+    if (!name) return;
+    const key = name.toLowerCase();
+    if (!counts[key]) counts[key] = { product: name, count: 0 };
+    counts[key].count += 1;
+  });
+
+  return Object.values(counts).sort((a, b) => b.count - a.count);
+}
+
 export function groupByYear(transactions) {
   const grouped = {};
 

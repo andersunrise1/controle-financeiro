@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Text } from "react-native";
 import DashboardScreen from "../screens/DashboardScreen";
+import MercadoScreen from "../screens/MercadoScreen";
 import FeedbackScreen from "../screens/FeedbackScreen";
 import AdminScreen from "../screens/AdminScreen";
 import { useAuth } from "../context/AuthContext";
@@ -33,6 +34,11 @@ export default function MainTabs() {
         name="Dashboard"
         component={DashboardScreen}
         options={{ tabBarLabel: t("navDashboard"), tabBarIcon: ({ focused }) => <TabIcon symbol="🏠" focused={focused} /> }}
+      />
+      <Tab.Screen
+        name="Mercado"
+        component={MercadoScreen}
+        options={{ tabBarLabel: t("navMercado"), tabBarIcon: ({ focused }) => <TabIcon symbol="🛒" focused={focused} /> }}
       />
       <Tab.Screen
         name="Feedback"

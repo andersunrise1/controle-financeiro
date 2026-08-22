@@ -76,6 +76,7 @@ const pt = {
   navFeedback: "Feedback",
   navAdmin: "Admin",
   navDashboard: "Dashboard",
+  navMercado: "Mercado",
 
   feedbackPageTitle: "Enviar Feedback",
   feedbackPageSubtitle: "Encontrou um erro ou tem uma sugestão? Conte pra gente.",
@@ -105,6 +106,23 @@ const pt = {
   recurringListTitle: "Recorrências Ativas",
   recurringNextLabel: "Próxima:",
   recurringStopButton: "Parar",
+
+  mercadoPageTitle: "Mercado",
+  mercadoPageSubtitle: "Anote o que você comprou — o valor já sai do seu saldo, igual uma Saída.",
+  mercadoButtonFirst: "O que vamos comprar?",
+  mercadoButtonNext: "Qual próxima compra?",
+  mercadoProductLabel: "Produto",
+  mercadoProductPlaceholder: "Ex: Leite, Café, Arroz...",
+  mercadoPriceLabel: "Preço (R$)",
+  mercadoSaveButton: "Salvar compra",
+  mercadoSaveButtonLoading: "Salvando...",
+  mercadoCancelButton: "Cancelar",
+  mercadoSuccessMessage: "Compra registrada!",
+  mercadoChartTitle: "Produtos que você mais compra",
+  mercadoChartEmpty: "Registre suas compras pra ver quais produtos aparecem mais.",
+  mercadoChartFooter: "Contagem de vezes que cada produto foi comprado — quanto mais alto, mais frequente.",
+  mercadoHistoryTitle: "Histórico de Compras",
+  mercadoHistoryEmpty: "Nenhuma compra registrada ainda.",
 };
 
 const en = {
@@ -183,6 +201,7 @@ const en = {
   navFeedback: "Feedback",
   navAdmin: "Admin",
   navDashboard: "Dashboard",
+  navMercado: "Groceries",
 
   feedbackPageTitle: "Send Feedback",
   feedbackPageSubtitle: "Found a bug or have a suggestion? Let us know.",
@@ -212,6 +231,23 @@ const en = {
   recurringListTitle: "Active Recurrences",
   recurringNextLabel: "Next:",
   recurringStopButton: "Stop",
+
+  mercadoPageTitle: "Groceries",
+  mercadoPageSubtitle: "Log what you bought — the amount comes out of your balance, just like an Expense.",
+  mercadoButtonFirst: "What are we buying?",
+  mercadoButtonNext: "What's the next purchase?",
+  mercadoProductLabel: "Product",
+  mercadoProductPlaceholder: "e.g. Milk, Coffee, Rice...",
+  mercadoPriceLabel: "Price",
+  mercadoSaveButton: "Save purchase",
+  mercadoSaveButtonLoading: "Saving...",
+  mercadoCancelButton: "Cancel",
+  mercadoSuccessMessage: "Purchase logged!",
+  mercadoChartTitle: "Products you buy the most",
+  mercadoChartEmpty: "Log your purchases to see which products show up most.",
+  mercadoChartFooter: "How many times each product was bought — the higher, the more frequent.",
+  mercadoHistoryTitle: "Purchase History",
+  mercadoHistoryEmpty: "No purchases logged yet.",
 };
 
 const es = {
@@ -290,6 +326,7 @@ const es = {
   navFeedback: "Feedback",
   navAdmin: "Admin",
   navDashboard: "Dashboard",
+  navMercado: "Mercado",
 
   feedbackPageTitle: "Enviar Feedback",
   feedbackPageSubtitle: "¿Encontraste un error o tienes una sugerencia? Cuéntanos.",
@@ -319,6 +356,23 @@ const es = {
   recurringListTitle: "Recurrencias Activas",
   recurringNextLabel: "Próxima:",
   recurringStopButton: "Detener",
+
+  mercadoPageTitle: "Mercado",
+  mercadoPageSubtitle: "Anota lo que compraste — el valor ya sale de tu saldo, igual que un Gasto.",
+  mercadoButtonFirst: "¿Qué vamos a comprar?",
+  mercadoButtonNext: "¿Cuál es la próxima compra?",
+  mercadoProductLabel: "Producto",
+  mercadoProductPlaceholder: "Ej: Leche, Café, Arroz...",
+  mercadoPriceLabel: "Precio",
+  mercadoSaveButton: "Guardar compra",
+  mercadoSaveButtonLoading: "Guardando...",
+  mercadoCancelButton: "Cancelar",
+  mercadoSuccessMessage: "¡Compra registrada!",
+  mercadoChartTitle: "Productos que más compras",
+  mercadoChartEmpty: "Registra tus compras para ver qué productos aparecen más.",
+  mercadoChartFooter: "Cuántas veces se compró cada producto — cuanto más alto, más frecuente.",
+  mercadoHistoryTitle: "Historial de Compras",
+  mercadoHistoryEmpty: "Ninguna compra registrada todavía.",
 };
 
 export const dictionaries = { pt, en, es };

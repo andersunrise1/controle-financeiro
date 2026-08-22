@@ -14,7 +14,12 @@ import { colors } from "../theme";
 // earlier version of this screen added a confirm dialog the web doesn't
 // have; removed for fidelity, which also sidesteps Alert.alert's total
 // lack of a react-native-web implementation).
-export default function TransactionList({ transactions, onDelete }) {
+export default function TransactionList({
+  transactions,
+  onDelete,
+  titleKey = "historyTitle",
+  emptyKey = "historyEmpty",
+}) {
   const { locale, region, rates, t } = useLocale();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -32,7 +37,7 @@ export default function TransactionList({ transactions, onDelete }) {
   if (transactions.length === 0) {
     return (
       <View style={styles.card}>
-        <Text style={styles.empty}>{t("historyEmpty")}</Text>
+        <Text style={styles.empty}>{t(emptyKey)}</Text>
       </View>
     );
   }
@@ -47,7 +52,7 @@ export default function TransactionList({ transactions, onDelete }) {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>{t("historyTitle")}</Text>
+      <Text style={styles.title}>{t(titleKey)}</Text>
 
       <TextField value={search} onChangeText={setSearch} placeholder={t("searchPlaceholder")} />
       <SelectField value={categoryFilter} onValueChange={setCategoryFilter} options={CATEGORY_FILTER_OPTIONS} />

@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { View, Text, ScrollView, ActivityIndicator, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "@react-navigation/native";
 import TopNavBar from "../components/TopNavBar";
 import BalanceCard from "../components/BalanceCard";
 import TransactionForm from "../components/TransactionForm";
@@ -36,9 +37,15 @@ export default function DashboardScreen() {
     }
   }, []);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  // useFocusEffect (not a plain useEffect) — bottom-tab screens stay
+  // mounted when you switch tabs, so a plain mount-only effect would leave
+  // this screen showing a stale balance after adding a Mercado purchase on
+  // the other tab. Refetching on every focus keeps the two in sync.
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [loadData])
+  );
 
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
