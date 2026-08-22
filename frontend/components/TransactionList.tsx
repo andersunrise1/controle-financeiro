@@ -10,11 +10,15 @@ import { translateCategory, translateError } from "@/lib/i18n";
 interface TransactionListProps {
   transactions: Transaction[];
   onDelete: () => void;
+  titleKey?: "historyTitle" | "mercadoHistoryTitle";
+  emptyKey?: "historyEmpty" | "mercadoHistoryEmpty";
 }
 
 export default function TransactionList({
   transactions,
   onDelete,
+  titleKey = "historyTitle",
+  emptyKey = "historyEmpty",
 }: TransactionListProps) {
   const { locale, region, rates, t: tr } = useI18n();
   const [search, setSearch] = useState("");
@@ -32,7 +36,7 @@ export default function TransactionList({
   if (transactions.length === 0) {
     return (
       <div className="card-dark rounded-2xl p-6 shadow-md">
-        <p className="text-center text-gray-400">{tr("historyEmpty")}</p>
+        <p className="text-center text-gray-400">{tr(emptyKey)}</p>
       </div>
     );
   }
@@ -54,7 +58,7 @@ export default function TransactionList({
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
       <h2 className="mb-4 text-lg font-semibold text-gray-100">
-        {tr("historyTitle")}
+        {tr(titleKey)}
       </h2>
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">

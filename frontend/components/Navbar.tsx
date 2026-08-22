@@ -45,6 +45,12 @@ export default function Navbar() {
         </div>
         <div className="flex items-center gap-4">
           <Link
+            href="/mercado"
+            className="text-sm font-medium text-gray-300 transition hover:text-white"
+          >
+            {t("navMercado")}
+          </Link>
+          <Link
             href="/feedback"
             className="text-sm font-medium text-gray-300 transition hover:text-white"
           >
