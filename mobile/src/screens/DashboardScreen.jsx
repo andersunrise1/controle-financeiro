@@ -3,6 +3,7 @@ import { View, Text, ScrollView, ActivityIndicator, StyleSheet, KeyboardAvoiding
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import TopNavBar from "../components/TopNavBar";
+import TopTabBar from "../components/TopTabBar";
 import BalanceCard from "../components/BalanceCard";
 import TransactionForm from "../components/TransactionForm";
 import RecurringTransactionsList from "../components/RecurringTransactionsList";
@@ -50,6 +51,7 @@ export default function DashboardScreen() {
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <TopNavBar />
+      <TopTabBar active="Dashboard" />
       {loading ? (
         <View style={styles.loading}>
           <ActivityIndicator color={colors.neonGreen} size="large" />

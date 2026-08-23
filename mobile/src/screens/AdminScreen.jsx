@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { View, Text, ScrollView, Pressable, ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopNavBar from "../components/TopNavBar";
+import TopTabBar from "../components/TopTabBar";
 import { useAuth } from "../context/AuthContext";
 import { useLocale } from "../context/LocaleContext";
 import { getAdminFeedback, setFeedbackResolved } from "../services/api";
@@ -104,6 +105,7 @@ export default function AdminScreen() {
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <TopNavBar />
+      <TopTabBar active="Admin" />
       <AdminGate />
     </SafeAreaView>
   );

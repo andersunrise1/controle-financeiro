@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { View, Text, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopNavBar from "../components/TopNavBar";
+import TopTabBar from "../components/TopTabBar";
 import TextField from "../components/TextField";
 import SelectField from "../components/SelectField";
 import Button3D from "../components/Button3D";
@@ -50,6 +51,7 @@ export default function FeedbackScreen() {
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <TopNavBar />
+      <TopTabBar active="Feedback" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}

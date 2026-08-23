@@ -3,6 +3,7 @@ import { View, Text, ScrollView, ActivityIndicator, StyleSheet, KeyboardAvoiding
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import TopNavBar from "../components/TopNavBar";
+import TopTabBar from "../components/TopTabBar";
 import MercadoQuickAdd from "../components/MercadoQuickAdd";
 import MercadoChart from "../components/MercadoChart";
 import TransactionList from "../components/TransactionList";
@@ -41,6 +42,7 @@ export default function MercadoScreen() {
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <TopNavBar />
+      <TopTabBar active="Mercado" />
       {loading ? (
         <View style={styles.loading}>
           <ActivityIndicator color={colors.neonGreen} size="large" />
