@@ -46,14 +46,14 @@ export default function MercadoChart({ transactions }: MercadoChartProps) {
   if (data.length === 0) {
     return (
       <div className="card-dark flex h-64 items-center justify-center rounded-2xl p-6 shadow-md">
-        <p className="text-gray-400">{t("mercadoChartEmpty")}</p>
+        <p className="text-[color:var(--text-muted)]">{t("mercadoChartEmpty")}</p>
       </div>
     );
   }
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
-      <h2 className="mb-4 text-lg font-semibold text-gray-100">{t("mercadoChartTitle")}</h2>
+      <h2 className="mb-4 text-lg font-semibold text-[color:var(--text-primary)]">{t("mercadoChartTitle")}</h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} barCategoryGap="20%">
           <defs>
@@ -84,7 +84,7 @@ export default function MercadoChart({ transactions }: MercadoChartProps) {
           <Bar dataKey="count" name={t("mercadoChartTitle")} fill="url(#mercadoGrad)" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
-      <p className="mt-3 text-xs text-gray-500">{t("mercadoChartFooter")}</p>
+      <p className="mt-3 text-xs text-[color:var(--text-faint)]">{t("mercadoChartFooter")}</p>
     </div>
   );
 }

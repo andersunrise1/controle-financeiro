@@ -38,7 +38,7 @@ export default function YearlyChart({ transactions }: YearlyChartProps) {
   if (data.length === 0) {
     return (
       <div className="card-dark flex h-64 items-center justify-center rounded-2xl p-6 shadow-md">
-        <p className="text-gray-400">{t("yearlyChartEmpty")}</p>
+        <p className="text-[color:var(--text-muted)]">{t("yearlyChartEmpty")}</p>
       </div>
     );
   }
@@ -47,7 +47,7 @@ export default function YearlyChart({ transactions }: YearlyChartProps) {
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
-      <h2 className="mb-4 text-lg font-semibold text-gray-100">
+      <h2 className="mb-4 text-lg font-semibold text-[color:var(--text-primary)]">
         {t("yearlyChartTitle")}
       </h2>
       <ResponsiveContainer width="100%" height={300}>
@@ -83,7 +83,7 @@ export default function YearlyChart({ transactions }: YearlyChartProps) {
           />
         </BarChart>
       </ResponsiveContainer>
-      <p className="mt-3 text-sm text-gray-300">
+      <p className="mt-3 text-sm text-[color:var(--text-secondary)]">
         {t("mostSpentYearLabel")}{" "}
         <span
           className="font-semibold"

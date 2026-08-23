@@ -28,14 +28,14 @@ export default function LanguageSwitcher() {
         aria-haspopup="true"
         aria-expanded={open}
         aria-label="Trocar país / moeda"
-        className="flex items-center gap-2 rounded-xl border border-[#555] bg-[#2a2a2a] px-3 py-2 text-sm text-gray-200 hover:bg-[#3a3a3a]"
+        className="flex items-center gap-2 rounded-xl border border-[color:var(--border-color)] bg-[color:var(--bg-input)] px-3 py-2 text-sm text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-card)]"
       >
         <FlagIcon country={region} />
         <span className="hidden sm:inline">{REGION_LABELS[region]}</span>
       </button>
 
       {open && (
-        <div className="scrollbar-neon absolute right-0 z-10 mt-2 max-h-72 w-48 overflow-y-auto rounded-xl border border-[#555] bg-[#2a2a2a] shadow-lg">
+        <div className="scrollbar-neon absolute right-0 z-10 mt-2 max-h-72 w-48 overflow-y-auto rounded-xl border border-[color:var(--border-color)] bg-[color:var(--bg-input)] shadow-lg">
           {REGIONS.map((r) => (
             <button
               key={r}
@@ -44,8 +44,8 @@ export default function LanguageSwitcher() {
                 setRegion(r);
                 setOpen(false);
               }}
-              className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-[#3a3a3a] ${
-                r === region ? "text-[#00e5ff]" : "text-gray-200"
+              className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-[color:var(--bg-card)] ${
+                r === region ? "text-[color:var(--text-accent-cyan)]" : "text-[color:var(--text-secondary)]"
               }`}
             >
               <FlagIcon country={r} />

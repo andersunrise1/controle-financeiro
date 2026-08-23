@@ -47,14 +47,14 @@ function FeedbackContent() {
 
       <main className="mx-auto max-w-xl px-4 py-8">
         <div className="card-dark rounded-2xl p-6 shadow-md">
-          <h1 className="text-lg font-semibold text-gray-100">
+          <h1 className="text-lg font-semibold text-[color:var(--text-primary)]">
             {t("feedbackPageTitle")}
           </h1>
-          <p className="mt-1 text-sm text-gray-400">{t("feedbackPageSubtitle")}</p>
+          <p className="mt-1 text-sm text-[color:var(--text-muted)]">{t("feedbackPageSubtitle")}</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-300">
+              <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
                 {t("feedbackCategoryLabel")}
               </label>
               <select
@@ -69,7 +69,7 @@ function FeedbackContent() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-300">
+              <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
                 {t("feedbackMessageLabel")}
               </label>
               <textarea

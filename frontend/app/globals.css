@@ -1,15 +1,60 @@
 @import "tailwindcss";
 
+/* Structural/chrome colors (background, cards, text, borders) are
+   theme-aware via these variables. Brand accent colors (neon green/red,
+   the sunset gradient, category colors) deliberately stay the same in
+   both themes — they're identity, not chrome, and the neon glow effect
+   specifically depends on a dark backdrop to read as "neon" at all. */
 :root {
   --bg-dark: #2d2d2d;
   --bg-card: #3a3a3a;
   --bg-card-hover: #454545;
+  --bg-input: #2a2a2a;
+  --border-color: #555555;
+  --border-color-strong: #4a4a4a;
   --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
   --text-muted: #9ca3af;
+  --text-faint: #6b7280;
   --neon-green: #39ff14;
   --neon-red: #ff073a;
   --neon-green-dim: #2ecc0f;
   --neon-red-dim: #cc0530;
+  /* Alert.tsx's light-on-dark tints (#7cff5c/#ff6b85) only clear WCAG
+     contrast against a dark tinted background — on light theme's near-white
+     tinted background they need a much darker shade of the same hue. */
+  --alert-success-text: #7cff5c;
+  --alert-error-text: #ff6b85;
+  --alert-warning-text: #ffd93d;
+  --hover-border: #6b7280;
+  --hover-text: #ffffff;
+  /* Same "readable against a plain page background" problem as the alert
+     tokens above, for neon links/icons/active-state text sitting directly
+     on body/card backgrounds rather than on their own tinted chip. */
+  --text-accent-green: #39ff14;
+  --text-accent-red: #ff073a;
+  --text-accent-cyan: #00e5ff;
+}
+
+[data-theme="light"] {
+  --bg-dark: #faf7f2;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f3efe8;
+  --bg-input: #ffffff;
+  --border-color: #d9d2c5;
+  --border-color-strong: #c7bfae;
+  --text-primary: #211f1c;
+  --text-secondary: #4b473f;
+  --text-muted: #756f63;
+  --text-faint: #948d7f;
+  --alert-success-text: #1a7a0e;
+  --alert-error-text: #c81e3a;
+  --alert-warning-text: #97710a;
+  --hover-border: #948d7f;
+  --hover-text: #211f1c;
+  --text-accent-green: #1a7a0e;
+  --text-accent-red: #c81e3a;
+  --text-accent-cyan: #0086a3;
 }
 
 @theme inline {
@@ -25,24 +70,31 @@ body {
   font-family: system-ui, -apple-system, sans-serif;
 }
 
+/* Pure neon (#39ff14/#ff073a) only clears ~1.3:1 against the light theme's
+   near-white background — nowhere near WCAG's 3:1 floor for large text, and
+   these classes carry the app's most important numbers (balance, amounts).
+   Fill color goes through the theme-aware accent tokens; the glow stays the
+   literal neon color since a decorative shadow doesn't need to pass contrast
+   and dropping it in light mode would look like the glow was forgotten
+   there, not a deliberate choice. */
 .neon-green {
-  color: var(--neon-green);
+  color: var(--text-accent-green);
   text-shadow: 0 0 8px rgba(57, 255, 20, 0.5);
 }
 
 .neon-red {
-  color: var(--neon-red);
+  color: var(--text-accent-red);
   text-shadow: 0 0 8px rgba(255, 7, 58, 0.5);
 }
 
 .card-dark {
   background: var(--bg-card);
-  border: 1px solid #4a4a4a;
+  border: 1px solid var(--border-color-strong);
 }
 
 .input-dark {
-  background: #2a2a2a;
-  border: 1px solid #555;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
   color: var(--text-primary);
 }
 
@@ -53,7 +105,7 @@ body {
 }
 
 .input-dark::placeholder {
-  color: #6b7280;
+  color: var(--text-faint);
 }
 
 .scrollbar-neon {

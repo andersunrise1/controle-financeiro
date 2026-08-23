@@ -42,7 +42,7 @@ function MercadoContent() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg-dark">
-        <p className="text-gray-400">{t("loading")}</p>
+        <p className="text-[color:var(--text-muted)]">{t("loading")}</p>
       </div>
     );
   }

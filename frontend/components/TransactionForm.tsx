@@ -131,7 +131,7 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
-      <h2 className="mb-4 text-lg font-semibold text-gray-100">
+      <h2 className="mb-4 text-lg font-semibold text-[color:var(--text-primary)]">
         {isEditing ? t("editingTitle") : t("newTransactionTitle")}
       </h2>
 
@@ -143,7 +143,7 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
             className={`flex-1 rounded-xl py-2 text-sm font-semibold transition ${
               type === "income"
                 ? "bg-[#39ff14] text-gray-900 shadow-[0_3px_0_#2ecc0f,0_0_12px_rgba(57,255,20,0.4)]"
-                : "bg-[#2a2a2a] text-gray-400 border border-[#555]"
+                : "bg-[color:var(--bg-input)] text-[color:var(--text-muted)] border border-[color:var(--border-color)]"
             }`}
           >
             {t("incomeButton")}
@@ -154,7 +154,7 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
             className={`flex-1 rounded-xl py-2 text-sm font-semibold transition ${
               type === "expense"
                 ? "bg-[#ff073a] text-white shadow-[0_3px_0_#cc0530,0_0_12px_rgba(255,7,58,0.4)]"
-                : "bg-[#2a2a2a] text-gray-400 border border-[#555]"
+                : "bg-[color:var(--bg-input)] text-[color:var(--text-muted)] border border-[color:var(--border-color)]"
             }`}
           >
             {t("expenseButton")}
@@ -162,7 +162,7 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-300">
+          <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
             {t("amountLabel")}
           </label>
           <div className="flex gap-2">
@@ -183,7 +183,8 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
           </div>
           {priceNote && (
             <p
-              className={`mt-2 text-xs ${priceNote.found ? "text-[#7cff5c]" : "text-[#ff6b85]"}`}
+              className="mt-2 text-xs"
+              style={{ color: priceNote.found ? "var(--alert-success-text)" : "var(--alert-error-text)" }}
             >
               {priceNote.text}
             </p>
@@ -191,7 +192,7 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-300">
+          <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
             {t("descriptionLabel")}
           </label>
           <input
@@ -204,7 +205,7 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-300">
+          <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
             {t("categoryLabel")}
           </label>
           <select
@@ -221,7 +222,7 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-300">
+          <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
             {t("dateLabel")}
           </label>
           <input
@@ -235,12 +236,12 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
 
         {!isEditing && (
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+            <label className="flex items-center gap-2 text-sm font-medium text-[color:var(--text-secondary)]">
               <input
                 type="checkbox"
                 checked={isRecurring}
                 onChange={(e) => setIsRecurring(e.target.checked)}
-                className="h-4 w-4 rounded border-[#555] bg-[#2a2a2a] accent-[#39ff14]"
+                className="h-4 w-4 rounded border-[color:var(--border-color)] bg-[color:var(--bg-input)] accent-[#39ff14]"
               />
               🔁 {t("recurrenceCheckboxLabel")}
             </label>

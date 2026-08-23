@@ -33,7 +33,7 @@ export default function RecurringTransactionsList({
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
-      <h2 className="mb-4 text-lg font-semibold text-gray-100">
+      <h2 className="mb-4 text-lg font-semibold text-[color:var(--text-primary)]">
         {t("recurringListTitle")}
       </h2>
 
@@ -41,10 +41,10 @@ export default function RecurringTransactionsList({
         {active.map((item) => (
           <div
             key={item.id}
-            className="flex items-center justify-between rounded-xl border border-[#555] bg-[#2a2a2a] px-4 py-3"
+            className="flex items-center justify-between rounded-xl border border-[color:var(--border-color)] bg-[color:var(--bg-input)] px-4 py-3"
           >
             <div>
-              <p className="font-medium text-gray-100">
+              <p className="font-medium text-[color:var(--text-primary)]">
                 🔁{" "}
                 {item.description ||
                   (item.type === "income" ? t("incomeButton") : t("expenseButton"))}
@@ -52,10 +52,10 @@ export default function RecurringTransactionsList({
                 {t(FREQUENCY_KEY[item.frequency])}
               </p>
               <div className="mt-1 flex items-center gap-2">
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-[color:var(--text-muted)]">
                   {translateCategory(item.category, locale)}
                 </span>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-[color:var(--text-faint)]">
                   {t("recurringNextLabel")}{" "}
                   {formatDateForRegion(
                     new Date(item.next_run_date + "T00:00:00"),
@@ -76,7 +76,7 @@ export default function RecurringTransactionsList({
               <button
                 type="button"
                 onClick={() => handleStop(item.id)}
-                className="rounded-lg border border-[#555] bg-[#1a1a1a] px-3 py-1.5 text-xs font-semibold text-gray-300 transition hover:border-[#ff073a]/50 hover:text-[#ff6b85]"
+                className="rounded-lg border border-[color:var(--border-color)] bg-[color:var(--bg-input)] px-3 py-1.5 text-xs font-semibold text-[color:var(--text-secondary)] transition hover:border-[#ff073a]/50 hover:text-[color:var(--alert-error-text)]"
               >
                 {t("recurringStopButton")}
               </button>

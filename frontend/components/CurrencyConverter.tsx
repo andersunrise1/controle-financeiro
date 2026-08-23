@@ -39,11 +39,11 @@ export default function CurrencyConverter() {
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
-      <h2 className="text-lg font-semibold text-gray-100">{t("converterTitle")}</h2>
-      <p className="mb-4 text-sm text-gray-400">{t("converterSubtitle")}</p>
+      <h2 className="text-lg font-semibold text-[color:var(--text-primary)]">{t("converterTitle")}</h2>
+      <p className="mb-4 text-sm text-[color:var(--text-muted)]">{t("converterSubtitle")}</p>
 
       <div className="mb-4">
-        <label className="mb-1 block text-sm font-medium text-gray-300">
+        <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
           {t("converterAmountLabel")}
         </label>
         <input
@@ -57,7 +57,7 @@ export default function CurrencyConverter() {
 
       <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2">
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-300">
+          <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
             {t("converterFrom")}
           </label>
           <RegionSelect value={from} onChange={setFrom} label={t("converterFrom")} />
@@ -67,13 +67,13 @@ export default function CurrencyConverter() {
           type="button"
           onClick={handleSwap}
           aria-label="Inverter"
-          className="mb-0.5 rounded-full border border-[#555] bg-[#2a2a2a] p-2.5 text-gray-300 hover:bg-[#3a3a3a]"
+          className="mb-0.5 rounded-full border border-[color:var(--border-color)] bg-[color:var(--bg-input)] p-2.5 text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-card)]"
         >
           ⇄
         </button>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-300">
+          <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
             {t("converterTo")}
           </label>
           <RegionSelect value={to} onChange={setTo} label={t("converterTo")} />
@@ -84,7 +84,7 @@ export default function CurrencyConverter() {
         {resultFormatted}
       </p>
 
-      <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-gray-500">
+      <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-[color:var(--text-faint)]">
         <span
           className={`inline-block h-1.5 w-1.5 rounded-full ${
             rates.isLive ? "bg-[#39ff14]" : "bg-gray-500"

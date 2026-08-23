@@ -54,7 +54,7 @@ export default function PriceCameraButton({
         disabled={reading}
         aria-label={t("scanPriceLabel")}
         title={t("scanPriceLabel")}
-        className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl border border-[#555] bg-[#2a2a2a] text-gray-300 transition hover:border-[#6b7280] hover:text-white disabled:opacity-60"
+        className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl border border-[color:var(--border-color)] bg-[color:var(--bg-input)] text-[color:var(--text-secondary)] transition hover:border-[color:var(--hover-border)] hover:text-[color:var(--hover-text)] disabled:opacity-60"
       >
         {reading ? (
           <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">

@@ -32,15 +32,15 @@ export default function RegionSelect({ value, onChange, label }: RegionSelectPro
         aria-haspopup="true"
         aria-expanded={open}
         aria-label={label}
-        className="input-dark flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm text-gray-100"
+        className="input-dark flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm text-[color:var(--text-primary)]"
       >
         <FlagIcon country={value} />
         <span className="flex-1 truncate text-left">{REGION_LABELS[value]}</span>
-        <span className="text-gray-400">▾</span>
+        <span className="text-[color:var(--text-muted)]">▾</span>
       </button>
 
       {open && (
-        <div className="scrollbar-neon absolute left-0 right-0 z-10 mt-2 max-h-60 overflow-y-auto rounded-xl border border-[#555] bg-[#2a2a2a] shadow-lg">
+        <div className="scrollbar-neon absolute left-0 right-0 z-10 mt-2 max-h-60 overflow-y-auto rounded-xl border border-[color:var(--border-color)] bg-[color:var(--bg-input)] shadow-lg">
           {REGIONS.map((r) => (
             <button
               key={r}
@@ -49,8 +49,8 @@ export default function RegionSelect({ value, onChange, label }: RegionSelectPro
                 onChange(r);
                 setOpen(false);
               }}
-              className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-[#3a3a3a] ${
-                r === value ? "text-[#00e5ff]" : "text-gray-200"
+              className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-[color:var(--bg-card)] ${
+                r === value ? "text-[color:var(--text-accent-cyan)]" : "text-[color:var(--text-secondary)]"
               }`}
             >
               <FlagIcon country={r} />

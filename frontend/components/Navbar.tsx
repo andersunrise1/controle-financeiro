@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button3D from "./Button3D";
 import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
 import { logout } from "@/lib/api";
@@ -28,7 +29,7 @@ export default function Navbar() {
   if (!user) return null;
 
   return (
-    <header className="border-b border-[#555] bg-bg-card shadow-sm">
+    <header className="border-b shadow-sm" style={{ borderColor: "var(--border-color)", background: "var(--bg-card)" }}>
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
         <div className="flex items-center gap-3">
           <Link href="/dashboard" className="flex items-center gap-3">
@@ -40,9 +41,9 @@ export default function Navbar() {
               DIVISA
             </span>
           </Link>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             {t("greeting")}{" "}
-            <span className="font-semibold text-gray-200">{user.name}</span>
+            <span className="font-semibold" style={{ color: "var(--text-secondary)" }}>{user.name}</span>
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -57,6 +58,7 @@ export default function Navbar() {
               {t("navAdmin")}
             </Link>
           )}
+          <ThemeToggle />
           <LanguageSwitcher />
           <Button3D variant="secondary" onClick={handleLogout}>
             {t("logout")}

@@ -38,7 +38,7 @@ export default function TransactionList({
   if (transactions.length === 0) {
     return (
       <div className="card-dark rounded-2xl p-6 shadow-md">
-        <p className="text-center text-gray-400">{tr(emptyKey)}</p>
+        <p className="text-center text-[color:var(--text-muted)]">{tr(emptyKey)}</p>
       </div>
     );
   }
@@ -59,7 +59,7 @@ export default function TransactionList({
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
-      <h2 className="mb-4 text-lg font-semibold text-gray-100">
+      <h2 className="mb-4 text-lg font-semibold text-[color:var(--text-primary)]">
         {tr(titleKey)}
       </h2>
 
@@ -88,16 +88,16 @@ export default function TransactionList({
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-center text-gray-400">{tr("historyNoResults")}</p>
+        <p className="text-center text-[color:var(--text-muted)]">{tr("historyNoResults")}</p>
       ) : (
         <div className="scrollbar-neon max-h-[480px] space-y-3 overflow-y-auto pr-2">
           {filtered.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between rounded-xl border border-[#555] bg-[#2a2a2a] px-4 py-3"
+              className="flex items-center justify-between rounded-xl border border-[color:var(--border-color)] bg-[color:var(--bg-input)] px-4 py-3"
             >
               <div>
-                <p className="font-medium text-gray-100">
+                <p className="font-medium text-[color:var(--text-primary)]">
                   {item.description ||
                     (item.type === "income" ? tr("incomeButton") : tr("expenseButton"))}
                   {item.recurring_id !== null && (
@@ -117,7 +117,7 @@ export default function TransactionList({
                   >
                     {translateCategory(item.category, locale)}
                   </span>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-[color:var(--text-muted)]">
                     {formatDateForRegion(new Date(item.date + "T00:00:00"), region)}
                   </p>
                 </div>
@@ -134,7 +134,7 @@ export default function TransactionList({
                 {onEdit && (
                   <button
                     onClick={() => onEdit(item)}
-                    className="text-xs text-gray-500 hover:text-[#39ff14]"
+                    className="text-xs text-[color:var(--text-faint)] hover:text-[color:var(--text-accent-green)]"
                     title={tr("editTitle")}
                   >
                     ✎
@@ -142,7 +142,7 @@ export default function TransactionList({
                 )}
                 <button
                   onClick={() => handleDelete(item.id)}
-                  className="text-xs text-gray-500 hover:text-[#ff073a]"
+                  className="text-xs text-[color:var(--text-faint)] hover:text-[color:var(--text-accent-red)]"
                   title={tr("removeTitle")}
                 >
                   ✕

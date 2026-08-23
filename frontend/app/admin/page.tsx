@@ -8,9 +8,9 @@ import { useI18n } from "@/lib/i18n-context";
 import { getAdminFeedback, setFeedbackResolved, FeedbackWithUser } from "@/lib/api";
 
 const CATEGORY_STYLES: Record<string, string> = {
-  bug: "bg-[#ff073a]/10 text-[#ff6b85] border-[#ff073a]/40",
-  sugestao: "bg-[#ffd93d]/10 text-[#ffd93d] border-[#ffd93d]/40",
-  outro: "bg-gray-500/10 text-gray-300 border-gray-500/40",
+  bug: "bg-[#ff073a]/10 text-[color:var(--alert-error-text)] border-[#ff073a]/40",
+  sugestao: "bg-[#ffd93d]/10 text-[color:var(--alert-warning-text)] border-[#ffd93d]/40",
+  outro: "bg-gray-500/10 text-[color:var(--text-secondary)] border-gray-500/40",
 };
 
 function AdminContent() {
@@ -47,14 +47,14 @@ function AdminContent() {
       <Navbar />
 
       <main className="mx-auto max-w-3xl px-4 py-8">
-        <h1 className="text-lg font-semibold text-gray-100">
+        <h1 className="text-lg font-semibold text-[color:var(--text-primary)]">
           {t("adminFeedbackTitle")}
         </h1>
 
         {loading ? (
-          <p className="mt-4 text-gray-400">{t("loading")}</p>
+          <p className="mt-4 text-[color:var(--text-muted)]">{t("loading")}</p>
         ) : feedback.length === 0 ? (
-          <p className="mt-4 text-gray-400">{t("adminFeedbackEmpty")}</p>
+          <p className="mt-4 text-[color:var(--text-muted)]">{t("adminFeedbackEmpty")}</p>
         ) : (
           <div className="mt-4 space-y-3">
             {feedback.map((item) => (
@@ -70,30 +70,30 @@ function AdminContent() {
                       {categoryLabel(item.category)}
                     </span>
                     {item.resolved === 1 && (
-                      <span className="rounded-full border border-[#39ff14]/40 bg-[#39ff14]/10 px-3 py-1 text-xs font-semibold text-[#7cff5c]">
+                      <span className="rounded-full border border-[#39ff14]/40 bg-[#39ff14]/10 px-3 py-1 text-xs font-semibold text-[color:var(--alert-success-text)]">
                         {t("adminFeedbackResolvedBadge")}
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-[color:var(--text-faint)]">
                     {new Date(item.created_at).toLocaleString(
                       locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US"
                     )}
                   </span>
                 </div>
 
-                <p className="mt-3 whitespace-pre-wrap text-gray-100">
+                <p className="mt-3 whitespace-pre-wrap text-[color:var(--text-primary)]">
                   {item.message}
                 </p>
 
                 <div className="mt-3 flex items-center justify-between gap-2">
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-[color:var(--text-faint)]">
                     {item.user_name} · {item.user_email}
                   </p>
                   <button
                     type="button"
                     onClick={() => toggleResolved(item)}
-                    className="rounded-lg border border-[#555] bg-[#2a2a2a] px-3 py-1.5 text-xs font-semibold text-gray-300 transition hover:border-[#6b7280] hover:text-white"
+                    className="rounded-lg border border-[color:var(--border-color)] bg-[color:var(--bg-input)] px-3 py-1.5 text-xs font-semibold text-[color:var(--text-secondary)] transition hover:border-[color:var(--hover-border)] hover:text-[color:var(--hover-text)]"
                   >
                     {item.resolved === 1
                       ? t("adminFeedbackReopen")
@@ -116,7 +116,7 @@ function AdminGate() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg-dark">
-        <p className="text-gray-400">{t("loading")}</p>
+        <p className="text-[color:var(--text-muted)]">{t("loading")}</p>
       </div>
     );
   }
@@ -126,7 +126,7 @@ function AdminGate() {
       <div className="min-h-screen bg-bg-dark">
         <Navbar />
         <main className="mx-auto max-w-xl px-4 py-16 text-center">
-          <p className="text-gray-400">{t("adminAccessDenied")}</p>
+          <p className="text-[color:var(--text-muted)]">{t("adminAccessDenied")}</p>
         </main>
       </div>
     );

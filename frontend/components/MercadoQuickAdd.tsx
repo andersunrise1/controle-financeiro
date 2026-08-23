@@ -109,8 +109,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
-      <h2 className="mb-1 text-lg font-semibold text-gray-100">{t("mercadoPageTitle")}</h2>
-      <p className="mb-4 text-sm text-gray-400">{t("mercadoPageSubtitle")}</p>
+      <h2 className="mb-1 text-lg font-semibold text-[color:var(--text-primary)]">{t("mercadoPageTitle")}</h2>
+      <p className="mb-4 text-sm text-[color:var(--text-muted)]">{t("mercadoPageSubtitle")}</p>
 
       {!expanded ? (
         <Button3D fullWidth onClick={() => setExpanded(true)}>
@@ -119,7 +119,7 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-300">
+            <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
               {t("mercadoProductLabel")}
             </label>
             <input
@@ -134,7 +134,7 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-300">
+            <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
               {t("mercadoPriceLabel")}
             </label>
             <input

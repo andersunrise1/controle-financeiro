@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-bg-dark">
       <div className="text-center">
-        <p className="text-gray-400">Redirecionando...</p>
+        <p className="text-[color:var(--text-muted)]">Redirecionando...</p>
         <div className="mt-4 flex justify-center gap-4">
           <Link href="/login">
             <Button3D>Login</Button3D>

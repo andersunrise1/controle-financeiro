@@ -76,12 +76,12 @@ export default function LoginPage() {
               DIVISA
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-100">{t("loginTitle")}</h1>
-          <p className="mt-1 text-sm text-gray-400">{t("loginSubtitle")}</p>
+          <h1 className="text-2xl font-bold text-[color:var(--text-primary)]">{t("loginTitle")}</h1>
+          <p className="mt-1 text-sm text-[color:var(--text-muted)]">{t("loginSubtitle")}</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-300">
+              <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
                 {t("emailLabel")}
               </label>
               <input
@@ -95,7 +95,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-300">
+              <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
                 {t("passwordLabel")}
               </label>
               <PasswordInput
@@ -114,9 +114,9 @@ export default function LoginPage() {
             </Button3D>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-400">
+          <p className="mt-6 text-center text-sm text-[color:var(--text-muted)]">
             {t("noAccount")}{" "}
-            <Link href="/register" className="font-semibold text-[#39ff14] hover:underline">
+            <Link href="/register" className="font-semibold text-[color:var(--text-accent-green)] hover:underline">
               {t("signUpLink")}
             </Link>
           </p>

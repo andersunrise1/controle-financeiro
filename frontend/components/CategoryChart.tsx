@@ -62,14 +62,14 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
   if (data.length === 0) {
     return (
       <div className="card-dark flex h-64 items-center justify-center rounded-2xl p-6 shadow-md">
-        <p className="text-gray-400">{t("categoryChartEmpty")}</p>
+        <p className="text-[color:var(--text-muted)]">{t("categoryChartEmpty")}</p>
       </div>
     );
   }
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
-      <h2 className="mb-4 text-lg font-semibold text-gray-100">
+      <h2 className="mb-4 text-lg font-semibold text-[color:var(--text-primary)]">
         {t("categoryChartTitle")}
       </h2>
       <ResponsiveContainer width="100%" height={300}>
@@ -123,7 +123,7 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
           })}
         </BarChart>
       </ResponsiveContainer>
-      <p className="mt-3 text-xs text-gray-500">{t("categoryChartFooter")}</p>
+      <p className="mt-3 text-xs text-[color:var(--text-faint)]">{t("categoryChartFooter")}</p>
     </div>
   );
 }

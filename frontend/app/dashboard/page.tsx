@@ -60,7 +60,7 @@ function DashboardContent() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg-dark">
-        <p className="text-gray-400">{t("loadingDashboard")}</p>
+        <p className="text-[color:var(--text-muted)]">{t("loadingDashboard")}</p>
       </div>
     );
   }

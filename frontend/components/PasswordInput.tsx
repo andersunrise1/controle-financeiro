@@ -20,7 +20,7 @@ export default function PasswordInput(props: PasswordInputProps) {
         type="button"
         onClick={() => setVisible((v) => !v)}
         aria-label={visible ? t("hidePasswordLabel") : t("showPasswordLabel")}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition hover:text-gray-200"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--text-muted)] transition hover:text-[color:var(--text-secondary)]"
       >
         {visible ? (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

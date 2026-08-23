@@ -69,12 +69,12 @@ export default function RegisterPage() {
           <LanguageSwitcher />
         </div>
         <div className="card-dark rounded-2xl p-8 shadow-lg">
-          <h1 className="text-2xl font-bold text-gray-100">{t("registerTitle")}</h1>
-          <p className="mt-1 text-sm text-gray-400">{t("registerSubtitle")}</p>
+          <h1 className="text-2xl font-bold text-[color:var(--text-primary)]">{t("registerTitle")}</h1>
+          <p className="mt-1 text-sm text-[color:var(--text-muted)]">{t("registerSubtitle")}</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-300">
+              <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
                 {t("nameLabel")}
               </label>
               <input
@@ -88,7 +88,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-300">
+              <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
                 {t("emailLabel")}
               </label>
               <input
@@ -102,7 +102,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-300">
+              <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
                 {t("passwordLabel")}
               </label>
               <PasswordInput
@@ -121,9 +121,9 @@ export default function RegisterPage() {
             </Button3D>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-400">
+          <p className="mt-6 text-center text-sm text-[color:var(--text-muted)]">
             {t("haveAccount")}{" "}
-            <Link href="/login" className="font-semibold text-[#39ff14] hover:underline">
+            <Link href="/login" className="font-semibold text-[color:var(--text-accent-green)] hover:underline">
               {t("loginLink")}
             </Link>
           </p>

@@ -19,7 +19,7 @@ export default function BalanceCard({
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-lg ring-2 ring-[#555]">
-      <p className="text-sm font-medium uppercase tracking-wide text-gray-400">
+      <p className="text-sm font-medium uppercase tracking-wide text-[color:var(--text-muted)]">
         {t("balanceLabel")}
       </p>
       <p
@@ -29,13 +29,13 @@ export default function BalanceCard({
       </p>
       <div className="mt-4 flex flex-wrap gap-6 text-sm">
         <div>
-          <span className="text-gray-400">{t("incomeLabel")}: </span>
+          <span className="text-[color:var(--text-muted)]">{t("incomeLabel")}: </span>
           <span className="font-semibold neon-green">
             {formatCurrencyForLocale(totalIncome, region, rates.rates)}
           </span>
         </div>
         <div>
-          <span className="text-gray-400">{t("expenseLabel")}: </span>
+          <span className="text-[color:var(--text-muted)]">{t("expenseLabel")}: </span>
           <span className="font-semibold neon-red">
             {formatCurrencyForLocale(totalExpense, region, rates.rates)}
           </span>
