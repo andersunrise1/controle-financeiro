@@ -9,12 +9,14 @@ import Button3D from "../components/Button3D";
 import Alert from "../components/Alert";
 import { submitFeedback } from "../services/api";
 import { useLocale } from "../context/LocaleContext";
+import { useTheme } from "../context/ThemeContext";
 import { translateError } from "../lib/i18n";
-import { colors } from "../theme";
 
 // Mirrors app/feedback/page.tsx.
 export default function FeedbackScreen() {
   const { locale, t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const CATEGORY_OPTIONS = [
     { label: t("feedbackCategoryBug"), value: "bug" },
     { label: t("feedbackCategorySugestao"), value: "sugestao" },
@@ -86,27 +88,29 @@ export default function FeedbackScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.bgDark,
-  },
-  content: {
-    padding: 16,
-  },
-  card: {
-    backgroundColor: colors.bgCard,
-    borderRadius: 16,
-    padding: 20,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: colors.textPrimary,
-  },
-  subtitle: {
-    marginTop: 4,
-    fontSize: 13,
-    color: colors.textMuted,
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.bgDark,
+    },
+    content: {
+      padding: 16,
+    },
+    card: {
+      backgroundColor: colors.bgCard,
+      borderRadius: 16,
+      padding: 20,
+    },
+    title: {
+      fontSize: 17,
+      fontWeight: "700",
+      color: colors.textPrimary,
+    },
+    subtitle: {
+      marginTop: 4,
+      fontSize: 13,
+      color: colors.textMuted,
+    },
+  });
+}

@@ -1,14 +1,16 @@
 import { View, Text, StyleSheet } from "react-native";
+import { useTheme } from "../context/ThemeContext";
 
-// Mirrors components/Alert.tsx's dark-theme translucent styling exactly
-// (fixed on web on 2026-08-19 after it originally used near-white colors
-// that clashed with the dark theme) — mobile gets the corrected version
-// from day one, no equivalent bug to repeat.
+// Mirrors components/Alert.tsx's translucent styling. The text color goes
+// through accentRedText/accentGreenText (not a fixed light-on-dark tint) —
+// same fix web needed on 2026-08-22, since the pure tint only clears WCAG
+// contrast against a dark tinted background, not light theme's near-white one.
 export default function Alert({ type, message }) {
+  const { colors } = useTheme();
   if (!message) return null;
 
   const isError = type === "error";
-  const color = isError ? "#ff6b85" : "#7cff5c";
+  const color = isError ? colors.accentRedText : colors.accentGreenText;
   const bg = isError ? "rgba(255, 7, 58, 0.1)" : "rgba(57, 255, 20, 0.1)";
   const border = isError ? "rgba(255, 7, 58, 0.4)" : "rgba(57, 255, 20, 0.4)";
 

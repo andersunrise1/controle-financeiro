@@ -6,7 +6,7 @@ import { translateCategory } from "../lib/i18n";
 import { sunsetColorAt } from "../lib/sunsetGradient";
 import { formatCompactNumberForLocale } from "../lib/currency";
 import { useLocale } from "../context/LocaleContext";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 const GRADIENT_SPREAD = 0.07;
 
@@ -14,6 +14,8 @@ const GRADIENT_SPREAD = 0.07;
 // treatment (each category gets its own slice of the sunset spectrum).
 export default function CategoryChart({ transactions }) {
   const { locale, region, rates, t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const data = groupByMonthAndCategory(transactions, region);
   const usedCategories = CATEGORIES.filter((c) => data.some((month) => (month[c.name] || 0) > 0));
 
@@ -55,46 +57,48 @@ export default function CategoryChart({ transactions }) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.bgCard,
-    borderRadius: 16,
-    padding: 20,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: colors.textPrimary,
-  },
-  empty: {
-    color: colors.textMuted,
-    textAlign: "center",
-    paddingVertical: 20,
-  },
-  legend: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-    marginTop: 10,
-    marginBottom: 4,
-  },
-  legendItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  legendText: {
-    fontSize: 11,
-    color: colors.textMuted,
-  },
-  footer: {
-    marginTop: 10,
-    fontSize: 11,
-    color: colors.textFaint,
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    card: {
+      backgroundColor: colors.bgCard,
+      borderRadius: 16,
+      padding: 20,
+    },
+    title: {
+      fontSize: 17,
+      fontWeight: "700",
+      color: colors.textPrimary,
+    },
+    empty: {
+      color: colors.textMuted,
+      textAlign: "center",
+      paddingVertical: 20,
+    },
+    legend: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 12,
+      marginTop: 10,
+      marginBottom: 4,
+    },
+    legendItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+    },
+    dot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+    },
+    legendText: {
+      fontSize: 11,
+      color: colors.textMuted,
+    },
+    footer: {
+      marginTop: 10,
+      fontSize: 11,
+      color: colors.textFaint,
+    },
+  });
+}

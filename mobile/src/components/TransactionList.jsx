@@ -7,7 +7,7 @@ import { CATEGORIES, getCategoryColor } from "../lib/categories";
 import { translateCategory } from "../lib/i18n";
 import { formatCurrencyForLocale, formatDateForRegion } from "../lib/currency";
 import { useLocale } from "../context/LocaleContext";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 // Mirrors components/TransactionList.tsx — including deleting immediately
 // on tap with no confirmation step, matching the web behavior exactly (an
@@ -22,6 +22,8 @@ export default function TransactionList({
   emptyKey = "historyEmpty",
 }) {
   const { locale, region, rates, t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
 
@@ -78,7 +80,7 @@ export default function TransactionList({
                   <Text style={styles.itemDate}>{formatDateForRegion(new Date(`${item.date}T00:00:00`), region)}</Text>
                 </View>
               </View>
-              <Text style={[styles.amount, { color: item.type === "income" ? colors.neonGreen : colors.neonRed }]}>
+              <Text style={[styles.amount, { color: item.type === "income" ? colors.accentGreenText : colors.accentRedText }]}>
                 {item.type === "income" ? "+" : "-"}{formatCurrencyForLocale(item.amount, region, rates.rates)}
               </Text>
               {onEdit && (
@@ -97,68 +99,70 @@ export default function TransactionList({
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.bgCard,
-    borderRadius: 16,
-    padding: 20,
-    gap: 12,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: colors.textPrimary,
-  },
-  empty: {
-    color: colors.textMuted,
-    textAlign: "center",
-    paddingVertical: 8,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    backgroundColor: colors.inputBg,
-    borderRadius: 12,
-    padding: 12,
-  },
-  itemTitle: {
-    color: colors.textPrimary,
-    fontWeight: "600",
-    fontSize: 14,
-  },
-  itemMetaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 4,
-  },
-  badge: {
-    borderWidth: 1,
-    borderRadius: 100,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  badgeText: {
-    fontSize: 10,
-    fontWeight: "700",
-  },
-  itemDate: {
-    color: colors.textFaint,
-    fontSize: 11,
-  },
-  amount: {
-    fontWeight: "700",
-    fontSize: 13,
-  },
-  removeIcon: {
-    color: colors.textFaint,
-    fontSize: 16,
-  },
-  editIcon: {
-    color: colors.textFaint,
-    fontSize: 15,
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    card: {
+      backgroundColor: colors.bgCard,
+      borderRadius: 16,
+      padding: 20,
+      gap: 12,
+    },
+    title: {
+      fontSize: 17,
+      fontWeight: "700",
+      color: colors.textPrimary,
+    },
+    empty: {
+      color: colors.textMuted,
+      textAlign: "center",
+      paddingVertical: 8,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      backgroundColor: colors.inputBg,
+      borderRadius: 12,
+      padding: 12,
+    },
+    itemTitle: {
+      color: colors.textPrimary,
+      fontWeight: "600",
+      fontSize: 14,
+    },
+    itemMetaRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      marginTop: 4,
+    },
+    badge: {
+      borderWidth: 1,
+      borderRadius: 100,
+      paddingHorizontal: 8,
+      paddingVertical: 2,
+    },
+    badgeText: {
+      fontSize: 10,
+      fontWeight: "700",
+    },
+    itemDate: {
+      color: colors.textFaint,
+      fontSize: 11,
+    },
+    amount: {
+      fontWeight: "700",
+      fontSize: 13,
+    },
+    removeIcon: {
+      color: colors.textFaint,
+      fontSize: 16,
+    },
+    editIcon: {
+      color: colors.textFaint,
+      fontSize: 15,
+    },
+  });
+}

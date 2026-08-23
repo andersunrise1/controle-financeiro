@@ -14,11 +14,13 @@ import CategoryChart from "../components/CategoryChart";
 import CurrencyConverter from "../components/CurrencyConverter";
 import { getTransactions, getRecurringTransactions } from "../services/api";
 import { useLocale } from "../context/LocaleContext";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 // Mirrors app/dashboard/page.tsx's finance-core sections.
 export default function DashboardScreen() {
   const { t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const scrollRef = useRef(null);
   const [transactions, setTransactions] = useState([]);
   const [recurring, setRecurring] = useState([]);
@@ -95,23 +97,25 @@ export default function DashboardScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.bgDark,
-  },
-  loading: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-  },
-  loadingText: {
-    color: colors.textMuted,
-    fontSize: 13,
-  },
-  content: {
-    padding: 16,
-    gap: 16,
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.bgDark,
+    },
+    loading: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 10,
+    },
+    loadingText: {
+      color: colors.textMuted,
+      fontSize: 13,
+    },
+    content: {
+      padding: 16,
+      gap: 16,
+    },
+  });
+}

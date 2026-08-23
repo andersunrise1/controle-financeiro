@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import GradientText from "./GradientText";
 import { useAuth } from "../context/AuthContext";
 import { useLocale } from "../context/LocaleContext";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 const TABS = [
   { name: "Dashboard", symbol: "🏠", labelKey: "navDashboard" },
@@ -24,6 +24,8 @@ export default function TopTabBar({ active }) {
   const navigation = useNavigation();
   const { user } = useAuth();
   const { t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   return (
     <View style={styles.bar}>
@@ -49,20 +51,22 @@ export default function TopTabBar({ active }) {
   );
 }
 
-const styles = StyleSheet.create({
-  bar: {
-    flexDirection: "row",
-    backgroundColor: colors.bgCard,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
-  },
-  tab: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 8,
-    gap: 2,
-  },
-  symbol: {
-    fontSize: 18,
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    bar: {
+      flexDirection: "row",
+      backgroundColor: colors.bgCard,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.cardBorder,
+    },
+    tab: {
+      flex: 1,
+      alignItems: "center",
+      paddingVertical: 8,
+      gap: 2,
+    },
+    symbol: {
+      fontSize: 18,
+    },
+  });
+}

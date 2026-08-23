@@ -1,6 +1,6 @@
 import { ScrollView, useWindowDimensions } from "react-native";
 import Svg, { G, Rect, Text as SvgText, Line, Defs, LinearGradient, Stop } from "react-native-svg";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 const CHART_HEIGHT = 220;
 const AXIS_LEFT = 44;
@@ -21,6 +21,7 @@ const GROUP_MIN_WIDTH = 60;
 // height. A real, disclosed simplification, not an oversight.
 export default function GroupedBarChart({ data, barWidth = 18, barGap = 4, formatY = (v) => v }) {
   const { width: screenWidth } = useWindowDimensions();
+  const { colors } = useTheme();
 
   if (data.length === 0) return null;
 

@@ -9,7 +9,7 @@ import { createTransaction, updateTransaction, createRecurringTransaction } from
 import { CATEGORIES, DEFAULT_CATEGORY } from "../lib/categories";
 import { translateCategory, translateError } from "../lib/i18n";
 import { useLocale } from "../context/LocaleContext";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 function todayStr() {
   const d = new Date();
@@ -23,6 +23,8 @@ function todayStr() {
 // is already large. Flagged as a known gap, not silently skipped.
 export default function TransactionForm({ onSuccess, editingTransaction, onCancelEdit }) {
   const { locale, t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ label: translateCategory(c.name, locale), value: c.name }));
   const FREQUENCY_OPTIONS = [
     { label: t("recurrenceWeekly"), value: "weekly" },
@@ -167,84 +169,86 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.bgCard,
-    borderRadius: 16,
-    padding: 20,
-    gap: 14,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: colors.textPrimary,
-    marginBottom: 2,
-  },
-  typeRow: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    gap: 8,
-    alignItems: "center",
-  },
-  typeButton: {
-    flex: 1,
-    borderRadius: 12,
-    paddingVertical: 10,
-    alignItems: "center",
-  },
-  typeIncomeActive: {
-    backgroundColor: colors.neonGreen,
-  },
-  typeExpenseActive: {
-    backgroundColor: colors.neonRed,
-  },
-  typeInactive: {
-    backgroundColor: colors.inputBg,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-  },
-  typeTextActiveDark: {
-    fontWeight: "700",
-    color: "#111827",
-  },
-  typeTextActiveLight: {
-    fontWeight: "700",
-    color: "#ffffff",
-  },
-  typeTextInactive: {
-    fontWeight: "700",
-    color: colors.textMuted,
-  },
-  checkboxRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    backgroundColor: colors.inputBg,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  checkboxChecked: {
-    backgroundColor: colors.neonGreen,
-    borderColor: colors.neonGreen,
-  },
-  checkmark: {
-    color: "#111827",
-    fontSize: 13,
-    fontWeight: "800",
-  },
-  checkboxLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#d1d5db",
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    card: {
+      backgroundColor: colors.bgCard,
+      borderRadius: 16,
+      padding: 20,
+      gap: 14,
+    },
+    title: {
+      fontSize: 17,
+      fontWeight: "700",
+      color: colors.textPrimary,
+      marginBottom: 2,
+    },
+    typeRow: {
+      flexDirection: "row",
+      gap: 8,
+    },
+    buttonRow: {
+      flexDirection: "row",
+      gap: 8,
+      alignItems: "center",
+    },
+    typeButton: {
+      flex: 1,
+      borderRadius: 12,
+      paddingVertical: 10,
+      alignItems: "center",
+    },
+    typeIncomeActive: {
+      backgroundColor: colors.neonGreen,
+    },
+    typeExpenseActive: {
+      backgroundColor: colors.neonRed,
+    },
+    typeInactive: {
+      backgroundColor: colors.inputBg,
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+    },
+    typeTextActiveDark: {
+      fontWeight: "700",
+      color: "#111827",
+    },
+    typeTextActiveLight: {
+      fontWeight: "700",
+      color: "#ffffff",
+    },
+    typeTextInactive: {
+      fontWeight: "700",
+      color: colors.textMuted,
+    },
+    checkboxRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+    },
+    checkbox: {
+      width: 20,
+      height: 20,
+      borderRadius: 5,
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      backgroundColor: colors.inputBg,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    checkboxChecked: {
+      backgroundColor: colors.neonGreen,
+      borderColor: colors.neonGreen,
+    },
+    checkmark: {
+      color: "#111827",
+      fontSize: 13,
+      fontWeight: "800",
+    },
+    checkboxLabel: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: colors.textSecondary,
+    },
+  });
+}

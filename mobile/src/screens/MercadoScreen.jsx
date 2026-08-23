@@ -9,13 +9,15 @@ import MercadoChart from "../components/MercadoChart";
 import TransactionList from "../components/TransactionList";
 import { getTransactions } from "../services/api";
 import { useLocale } from "../context/LocaleContext";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 const MERCADO_CATEGORY = "Mercado";
 
 // Mirrors app/mercado/page.tsx.
 export default function MercadoScreen() {
   const { t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const scrollRef = useRef(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,18 +81,20 @@ export default function MercadoScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.bgDark,
-  },
-  loading: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  content: {
-    padding: 16,
-    gap: 16,
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.bgDark,
+    },
+    loading: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    content: {
+      padding: 16,
+      gap: 16,
+    },
+  });
+}

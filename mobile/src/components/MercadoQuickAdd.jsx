@@ -6,7 +6,7 @@ import Alert from "./Alert";
 import { createTransaction, updateTransaction } from "../services/api";
 import { translateError } from "../lib/i18n";
 import { useLocale } from "../context/LocaleContext";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 const MERCADO_CATEGORY = "Mercado";
 
@@ -31,6 +31,8 @@ function hasPurchaseThisMonth(transactions) {
 
 export default function MercadoQuickAdd({ transactions, onSuccess, editingTransaction, onCancelEdit }) {
   const { locale, t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [expanded, setExpanded] = useState(false);
   const [product, setProduct] = useState("");
   const [price, setPrice] = useState("");
@@ -147,26 +149,28 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.bgCard,
-    borderRadius: 16,
-    padding: 20,
-    gap: 12,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: colors.textPrimary,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginTop: -6,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    gap: 8,
-    alignItems: "center",
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    card: {
+      backgroundColor: colors.bgCard,
+      borderRadius: 16,
+      padding: 20,
+      gap: 12,
+    },
+    title: {
+      fontSize: 17,
+      fontWeight: "700",
+      color: colors.textPrimary,
+    },
+    subtitle: {
+      fontSize: 13,
+      color: colors.textMuted,
+      marginTop: -6,
+    },
+    buttonRow: {
+      flexDirection: "row",
+      gap: 8,
+      alignItems: "center",
+    },
+  });
+}

@@ -10,7 +10,7 @@ import { login, setToken, isValidEmail, isValidPassword } from "../services/api"
 import { useAuth } from "../context/AuthContext";
 import { useLocale } from "../context/LocaleContext";
 import { translateError } from "../lib/i18n";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -19,6 +19,8 @@ export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const { setUser } = useAuth();
   const { region, setRegion, locale, t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   const handleSubmit = async () => {
     setError("");
@@ -105,57 +107,59 @@ export default function LoginScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.bgDark,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: "center",
-    padding: 20,
-  },
-  switcherRow: {
-    alignItems: "flex-end",
-    marginBottom: 12,
-  },
-  card: {
-    backgroundColor: colors.bgCard,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.cardBorder,
-    padding: 28,
-  },
-  logoWrapper: {
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: colors.textPrimary,
-  },
-  subtitle: {
-    marginTop: 4,
-    fontSize: 14,
-    color: colors.textMuted,
-  },
-  form: {
-    marginTop: 24,
-    gap: 16,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 24,
-  },
-  footerText: {
-    fontSize: 14,
-    color: colors.textMuted,
-  },
-  footerLink: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: colors.neonGreen,
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.bgDark,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: "center",
+      padding: 20,
+    },
+    switcherRow: {
+      alignItems: "flex-end",
+      marginBottom: 12,
+    },
+    card: {
+      backgroundColor: colors.bgCard,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: colors.cardBorder,
+      padding: 28,
+    },
+    logoWrapper: {
+      alignItems: "center",
+      marginBottom: 16,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: "700",
+      color: colors.textPrimary,
+    },
+    subtitle: {
+      marginTop: 4,
+      fontSize: 14,
+      color: colors.textMuted,
+    },
+    form: {
+      marginTop: 24,
+      gap: 16,
+    },
+    footer: {
+      flexDirection: "row",
+      justifyContent: "center",
+      marginTop: 24,
+    },
+    footerText: {
+      fontSize: 14,
+      color: colors.textMuted,
+    },
+    footerLink: {
+      fontSize: 14,
+      fontWeight: "700",
+      color: colors.accentGreenText,
+    },
+  });
+}

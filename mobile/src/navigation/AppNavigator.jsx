@@ -1,11 +1,11 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, ActivityIndicator } from "react-native";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import MainTabs from "./MainTabs";
 import { useAuth } from "../context/AuthContext";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +14,7 @@ const Stack = createNativeStackNavigator();
 // never back-navigate into a screen that needed auth.
 export default function AppNavigator() {
   const { user, isReady } = useAuth();
+  const { theme, colors } = useTheme();
 
   if (!isReady) {
     return (
@@ -23,8 +24,22 @@ export default function AppNavigator() {
     );
   }
 
+  // Feeds our own palette into React Navigation's own theme so screen
+  // transitions/edges use the right background instead of its library
+  // defaults (which would otherwise flash white/black during navigation).
+  const navTheme = {
+    ...(theme === "dark" ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(theme === "dark" ? DarkTheme.colors : DefaultTheme.colors),
+      background: colors.bgDark,
+      card: colors.bgCard,
+      text: colors.textPrimary,
+      border: colors.cardBorder,
+    },
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
           <Stack.Screen name="Main" component={MainTabs} />

@@ -5,20 +5,25 @@ import TopNavBar from "../components/TopNavBar";
 import TopTabBar from "../components/TopTabBar";
 import { useAuth } from "../context/AuthContext";
 import { useLocale } from "../context/LocaleContext";
+import { useTheme } from "../context/ThemeContext";
 import { getAdminFeedback, setFeedbackResolved } from "../services/api";
-import { colors } from "../theme";
 
-const CATEGORY_COLOR = {
-  bug: { border: "rgba(255,7,58,0.4)", bg: "rgba(255,7,58,0.1)", text: "#ff6b85" },
-  sugestao: { border: "rgba(255,217,61,0.4)", bg: "rgba(255,217,61,0.1)", text: "#ffd93d" },
-  outro: { border: "rgba(107,114,128,0.4)", bg: "rgba(107,114,128,0.1)", text: "#d1d5db" },
-};
+function getCategoryColors(colors) {
+  return {
+    bug: { border: "rgba(255,7,58,0.4)", bg: "rgba(255,7,58,0.1)", text: colors.accentRedText },
+    sugestao: { border: "rgba(255,217,61,0.4)", bg: "rgba(255,217,61,0.1)", text: colors.warningText },
+    outro: { border: "rgba(107,114,128,0.4)", bg: "rgba(107,114,128,0.1)", text: colors.textSecondary },
+  };
+}
 
 // Mirrors app/admin/page.tsx — visible only to the account whose email
 // matches ADMIN_EMAIL server-side; the backend enforces this on every
 // request regardless of what this screen shows.
 function AdminContent() {
   const { t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
+  const CATEGORY_COLOR = getCategoryColors(colors);
   const CATEGORY_LABEL = { bug: t("feedbackCategoryBug"), sugestao: t("feedbackCategorySugestao"), outro: t("feedbackCategoryOutro") };
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +71,7 @@ function AdminContent() {
                   </View>
                   {item.resolved === 1 && (
                     <View style={[styles.badge, { borderColor: "rgba(57,255,20,0.4)", backgroundColor: "rgba(57,255,20,0.1)" }]}>
-                      <Text style={[styles.badgeText, { color: "#7cff5c" }]}>{t("adminFeedbackResolvedBadge")}</Text>
+                      <Text style={[styles.badgeText, { color: colors.accentGreenText }]}>{t("adminFeedbackResolvedBadge")}</Text>
                     </View>
                   )}
                 </View>
@@ -89,6 +94,8 @@ function AdminContent() {
 function AdminGate() {
   const { user } = useAuth();
   const { t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   if (!user?.isAdmin) {
     return (
@@ -102,6 +109,8 @@ function AdminGate() {
 }
 
 export default function AdminScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <TopNavBar />
@@ -111,76 +120,78 @@ export default function AdminScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.bgDark,
-  },
-  loading: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-  },
-  content: {
-    padding: 16,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: colors.textPrimary,
-  },
-  empty: {
-    color: colors.textMuted,
-    textAlign: "center",
-  },
-  card: {
-    backgroundColor: colors.bgCard,
-    borderRadius: 14,
-    padding: 16,
-  },
-  badgeRow: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  badge: {
-    borderWidth: 1,
-    borderRadius: 100,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-  },
-  badgeText: {
-    fontSize: 11,
-    fontWeight: "700",
-  },
-  message: {
-    color: colors.textPrimary,
-    fontSize: 14,
-    marginTop: 10,
-  },
-  footerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 10,
-    gap: 8,
-  },
-  meta: {
-    color: colors.textFaint,
-    fontSize: 11,
-    flexShrink: 1,
-  },
-  resolveButton: {
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    backgroundColor: colors.inputBg,
-    borderRadius: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-  },
-  resolveText: {
-    color: "#d1d5db",
-    fontSize: 11,
-    fontWeight: "700",
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.bgDark,
+    },
+    loading: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 24,
+    },
+    content: {
+      padding: 16,
+    },
+    title: {
+      fontSize: 17,
+      fontWeight: "700",
+      color: colors.textPrimary,
+    },
+    empty: {
+      color: colors.textMuted,
+      textAlign: "center",
+    },
+    card: {
+      backgroundColor: colors.bgCard,
+      borderRadius: 14,
+      padding: 16,
+    },
+    badgeRow: {
+      flexDirection: "row",
+      gap: 8,
+    },
+    badge: {
+      borderWidth: 1,
+      borderRadius: 100,
+      paddingHorizontal: 10,
+      paddingVertical: 3,
+    },
+    badgeText: {
+      fontSize: 11,
+      fontWeight: "700",
+    },
+    message: {
+      color: colors.textPrimary,
+      fontSize: 14,
+      marginTop: 10,
+    },
+    footerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginTop: 10,
+      gap: 8,
+    },
+    meta: {
+      color: colors.textFaint,
+      fontSize: 11,
+      flexShrink: 1,
+    },
+    resolveButton: {
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      backgroundColor: colors.inputBg,
+      borderRadius: 8,
+      paddingVertical: 6,
+      paddingHorizontal: 10,
+    },
+    resolveText: {
+      color: colors.textSecondary,
+      fontSize: 11,
+      fontWeight: "700",
+    },
+  });
+}

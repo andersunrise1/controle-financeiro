@@ -4,11 +4,13 @@ import GradientText from "./GradientText";
 import { groupByYear } from "../lib/chartGrouping";
 import { formatCurrencyForLocale, formatCompactNumberForLocale } from "../lib/currency";
 import { useLocale } from "../context/LocaleContext";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 // Mirrors components/YearlyChart.tsx.
 export default function YearlyChart({ transactions }) {
   const { region, rates, t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const yearly = groupByYear(transactions);
 
   if (yearly.length === 0) {
@@ -45,31 +47,33 @@ export default function YearlyChart({ transactions }) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.bgCard,
-    borderRadius: 16,
-    padding: 20,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: colors.textPrimary,
-    marginBottom: 12,
-  },
-  empty: {
-    color: colors.textMuted,
-    textAlign: "center",
-    paddingVertical: 20,
-  },
-  footer: {
-    marginTop: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    flexWrap: "wrap",
-  },
-  footerLabel: {
-    fontSize: 13,
-    color: "#d1d5db",
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    card: {
+      backgroundColor: colors.bgCard,
+      borderRadius: 16,
+      padding: 20,
+    },
+    title: {
+      fontSize: 17,
+      fontWeight: "700",
+      color: colors.textPrimary,
+      marginBottom: 12,
+    },
+    empty: {
+      color: colors.textMuted,
+      textAlign: "center",
+      paddingVertical: 20,
+    },
+    footer: {
+      marginTop: 12,
+      flexDirection: "row",
+      alignItems: "center",
+      flexWrap: "wrap",
+    },
+    footerLabel: {
+      fontSize: 13,
+      color: colors.textSecondary,
+    },
+  });
+}

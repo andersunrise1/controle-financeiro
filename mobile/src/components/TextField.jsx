@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
 import Svg, { Path, Circle, Line } from "react-native-svg";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
-function EyeIcon({ open }) {
+function EyeIcon({ open, color }) {
   return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={colors.textMuted} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       {open ? (
         <>
           <Path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -26,6 +26,8 @@ function EyeIcon({ open }) {
 // the web app has (a real client request: users mistyping a password had
 // no way to check what they'd actually typed).
 export default function TextField({ label, secureTextEntry, ...inputProps }) {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [visible, setVisible] = useState(false);
   const isPassword = !!secureTextEntry;
 
@@ -45,7 +47,7 @@ export default function TextField({ label, secureTextEntry, ...inputProps }) {
             style={styles.toggle}
             hitSlop={10}
           >
-            <EyeIcon open={!visible} />
+            <EyeIcon open={!visible} color={colors.textMuted} />
           </Pressable>
         )}
       </View>
@@ -53,35 +55,37 @@ export default function TextField({ label, secureTextEntry, ...inputProps }) {
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    marginBottom: 4,
-  },
-  label: {
-    marginBottom: 6,
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#d1d5db",
-  },
-  inputRow: {
-    position: "relative",
-    justifyContent: "center",
-  },
-  input: {
-    backgroundColor: colors.inputBg,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    color: colors.textPrimary,
-    fontSize: 15,
-  },
-  inputWithToggle: {
-    paddingRight: 48,
-  },
-  toggle: {
-    position: "absolute",
-    right: 14,
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    wrapper: {
+      marginBottom: 4,
+    },
+    label: {
+      marginBottom: 6,
+      fontSize: 13,
+      fontWeight: "600",
+      color: colors.textSecondary,
+    },
+    inputRow: {
+      position: "relative",
+      justifyContent: "center",
+    },
+    input: {
+      backgroundColor: colors.inputBg,
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      color: colors.textPrimary,
+      fontSize: 15,
+    },
+    inputWithToggle: {
+      paddingRight: 48,
+    },
+    toggle: {
+      position: "absolute",
+      right: 14,
+    },
+  });
+}

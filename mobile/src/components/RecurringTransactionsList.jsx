@@ -3,13 +3,15 @@ import { setRecurringActive } from "../services/api";
 import { translateCategory } from "../lib/i18n";
 import { formatCurrencyForLocale, formatDateForRegion } from "../lib/currency";
 import { useLocale } from "../context/LocaleContext";
-import { colors } from "../theme";
+import { useTheme } from "../context/ThemeContext";
 
 const FREQUENCY_KEY = { weekly: "recurrenceWeekly", monthly: "recurrenceMonthly", yearly: "recurrenceYearly" };
 
 // Mirrors components/RecurringTransactionsList.tsx.
 export default function RecurringTransactionsList({ recurring, onChange }) {
   const { locale, region, rates, t } = useLocale();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const active = recurring.filter((r) => r.active === 1);
   if (active.length === 0) return null;
 
@@ -32,7 +34,7 @@ export default function RecurringTransactionsList({ recurring, onChange }) {
                 {translateCategory(item.category, locale)} · {t("recurringNextLabel")} {formatDateForRegion(new Date(`${item.next_run_date}T00:00:00`), region)}
               </Text>
             </View>
-            <Text style={[styles.amount, { color: item.type === "income" ? colors.neonGreen : colors.neonRed }]}>
+            <Text style={[styles.amount, { color: item.type === "income" ? colors.accentGreenText : colors.accentRedText }]}>
               {item.type === "income" ? "+" : "-"}{formatCurrencyForLocale(item.amount, region, rates.rates)}
             </Text>
             <Pressable style={styles.stopButton} onPress={() => handleStop(item.id)}>
@@ -45,52 +47,54 @@ export default function RecurringTransactionsList({ recurring, onChange }) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.bgCard,
-    borderRadius: 16,
-    padding: 20,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: colors.textPrimary,
-    marginBottom: 12,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    backgroundColor: colors.inputBg,
-    borderRadius: 12,
-    padding: 12,
-  },
-  itemTitle: {
-    color: colors.textPrimary,
-    fontWeight: "600",
-    fontSize: 13,
-  },
-  itemMeta: {
-    color: colors.textFaint,
-    fontSize: 11,
-    marginTop: 2,
-  },
-  amount: {
-    fontWeight: "700",
-    fontSize: 13,
-  },
-  stopButton: {
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    borderRadius: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-  },
-  stopText: {
-    color: "#d1d5db",
-    fontSize: 11,
-    fontWeight: "700",
-  },
-});
+function getStyles(colors) {
+  return StyleSheet.create({
+    card: {
+      backgroundColor: colors.bgCard,
+      borderRadius: 16,
+      padding: 20,
+    },
+    title: {
+      fontSize: 17,
+      fontWeight: "700",
+      color: colors.textPrimary,
+      marginBottom: 12,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      backgroundColor: colors.inputBg,
+      borderRadius: 12,
+      padding: 12,
+    },
+    itemTitle: {
+      color: colors.textPrimary,
+      fontWeight: "600",
+      fontSize: 13,
+    },
+    itemMeta: {
+      color: colors.textFaint,
+      fontSize: 11,
+      marginTop: 2,
+    },
+    amount: {
+      fontWeight: "700",
+      fontSize: 13,
+    },
+    stopButton: {
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      borderRadius: 8,
+      paddingVertical: 6,
+      paddingHorizontal: 10,
+    },
+    stopText: {
+      color: colors.textSecondary,
+      fontSize: 11,
+      fontWeight: "700",
+    },
+  });
+}
