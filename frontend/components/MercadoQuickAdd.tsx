@@ -6,6 +6,7 @@ import Alert from "./Alert";
 import { createTransaction, updateTransaction, Transaction } from "@/lib/api";
 import { useI18n } from "@/lib/i18n-context";
 import { translateError } from "@/lib/i18n";
+import { UNITS } from "@/lib/units";
 
 const MERCADO_CATEGORY = "Mercado";
 
@@ -34,6 +35,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
   const [expanded, setExpanded] = useState(false);
   const [product, setProduct] = useState("");
   const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,6 +47,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
     if (!editingTransaction) return;
     setProduct(editingTransaction.description);
     setPrice(String(editingTransaction.amount));
+    setQuantity(editingTransaction.quantity !== null ? String(editingTransaction.quantity) : "");
+    setUnit(editingTransaction.unit || "");
     setExpanded(true);
     setError("");
   }, [editingTransaction]);
@@ -56,6 +61,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
     setExpanded(false);
     setProduct("");
     setPrice("");
+    setQuantity("");
+    setUnit("");
     setError("");
     onCancelEdit?.();
   };
@@ -75,6 +82,15 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
       return;
     }
 
+    let parsedQuantity: number | null = null;
+    if (quantity.trim()) {
+      parsedQuantity = parseFloat(quantity.replace(",", "."));
+      if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+        setError(translateError("Informe uma quantidade válida maior que zero.", locale));
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       if (isEditing && editingTransaction) {
@@ -84,6 +100,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
           description: product.trim(),
           date: editingTransaction.date,
           category: MERCADO_CATEGORY,
+          quantity: parsedQuantity,
+          unit: unit || null,
         });
       } else {
         const now = new Date();
@@ -94,6 +112,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
           description: product.trim(),
           date: today,
           category: MERCADO_CATEGORY,
+          quantity: parsedQuantity,
+          unit: unit || null,
         });
       }
       setSuccess(isEditing ? t("mercadoUpdatedMessage") : t("mercadoSuccessMessage"));
@@ -147,6 +167,40 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
               className="input-dark w-full rounded-xl px-4 py-3"
               required
             />
+          </div>
+
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
+                {t("mercadoQuantityLabel")}
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                placeholder={t("mercadoQuantityPlaceholder")}
+                className="input-dark w-full rounded-xl px-4 py-3"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="mb-1 block text-sm font-medium text-[color:var(--text-secondary)]">
+                {t("mercadoUnitLabel")}
+              </label>
+              <select
+                value={unit}
+                onChange={(e) => setUnit(e.target.value)}
+                className="input-dark w-full rounded-xl px-4 py-3"
+              >
+                <option value="">{t("mercadoUnitPlaceholder")}</option>
+                {UNITS.map((u) => (
+                  <option key={u} value={u}>
+                    {u}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {error && <Alert type="error" message={error} />}

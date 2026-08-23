@@ -77,6 +77,19 @@ export function getDb(): Database.Database {
         "ALTER TABLE transactions ADD COLUMN recurring_id INTEGER REFERENCES recurring_transactions(id)"
       );
     }
+
+    // quantity/unit are Mercado-specific (how much of a product was bought,
+    // e.g. "2 kg" of rice) — nullable since regular income/expense
+    // transactions never set them.
+    const hasQuantity = columns.some((c) => c.name === "quantity");
+    if (!hasQuantity) {
+      db.exec("ALTER TABLE transactions ADD COLUMN quantity REAL");
+    }
+
+    const hasUnit = columns.some((c) => c.name === "unit");
+    if (!hasUnit) {
+      db.exec("ALTER TABLE transactions ADD COLUMN unit TEXT");
+    }
   }
 
   return db;
@@ -100,6 +113,8 @@ export interface Transaction {
   date: string;
   created_at: string;
   recurring_id: number | null;
+  quantity: number | null;
+  unit: string | null;
 }
 
 export interface RecurringTransaction {

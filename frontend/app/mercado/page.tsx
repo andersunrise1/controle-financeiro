@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Navbar from "@/components/Navbar";
 import MercadoQuickAdd from "@/components/MercadoQuickAdd";
+import MercadoFilter from "@/components/MercadoFilter";
+import MercadoMonthlyChart from "@/components/MercadoMonthlyChart";
 import MercadoChart from "@/components/MercadoChart";
 import TransactionList from "@/components/TransactionList";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
 import { getTransactions, Transaction } from "@/lib/api";
-
-const MERCADO_CATEGORY = "Mercado";
+import { getMercadoTransactions, getMercadoYears, filterMercadoByScope } from "@/lib/mercadoGrouping";
 
 function MercadoContent() {
   const { setUser } = useAuth();
@@ -20,6 +21,8 @@ function MercadoContent() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -37,7 +40,13 @@ function MercadoContent() {
     loadData();
   }, [loadData]);
 
-  const mercadoTransactions = transactions.filter((t) => t.category === MERCADO_CATEGORY);
+  const mercadoTransactions = getMercadoTransactions(transactions);
+  const years = getMercadoYears(transactions);
+  // Defaults to the most recent year with actual purchases (not necessarily
+  // the calendar year) so a fresh visit lands somewhere with real data —
+  // falls back to the current year for a brand new account with none yet.
+  const year = selectedYear ?? years[0] ?? new Date().getFullYear();
+  const scopedTransactions = filterMercadoByScope(transactions, year, selectedMonth);
 
   if (loading) {
     return (
@@ -58,12 +67,25 @@ function MercadoContent() {
           editingTransaction={editingTransaction}
           onCancelEdit={() => setEditingTransaction(null)}
         />
-        <MercadoChart transactions={mercadoTransactions} />
+
+        {years.length > 0 && (
+          <MercadoFilter
+            years={years}
+            year={year}
+            onYearChange={setSelectedYear}
+            month={selectedMonth}
+            onMonthChange={setSelectedMonth}
+          />
+        )}
+
+        <MercadoMonthlyChart transactions={mercadoTransactions} year={year} />
+        <MercadoChart transactions={scopedTransactions} />
+
         <TransactionList
-          transactions={mercadoTransactions}
+          transactions={scopedTransactions}
           onDelete={loadData}
-          onEdit={(t) => {
-            setEditingTransaction(t);
+          onEdit={(item) => {
+            setEditingTransaction(item);
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           titleKey="mercadoHistoryTitle"

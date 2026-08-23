@@ -43,6 +43,21 @@ export function formatMonthLabel(date: Date, region: Region): string {
   });
 }
 
+// Just the month name, no year — used where the year is already fixed by a
+// separate filter (e.g. the Mercado monthly chart, always scoped to one
+// selected year) so repeating it on every axis label would be redundant.
+export function formatMonthOnlyLabel(monthIndex: number, region: Region): string {
+  return new Date(2000, monthIndex, 1).toLocaleDateString(REGION_INTL_LOCALE[region], {
+    month: "short",
+  });
+}
+
+export function formatMonthFullLabel(monthIndex: number, region: Region): string {
+  return new Date(2000, monthIndex, 1).toLocaleDateString(REGION_INTL_LOCALE[region], {
+    month: "long",
+  });
+}
+
 export function formatDateForRegion(date: Date, region: Region): string {
   return date.toLocaleDateString(REGION_INTL_LOCALE[region]);
 }

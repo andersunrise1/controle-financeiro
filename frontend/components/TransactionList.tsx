@@ -100,6 +100,12 @@ export default function TransactionList({
                 <p className="font-medium text-[color:var(--text-primary)]">
                   {item.description ||
                     (item.type === "income" ? tr("incomeButton") : tr("expenseButton"))}
+                  {item.quantity !== null && (
+                    <span className="ml-1.5 text-xs font-normal text-[color:var(--text-faint)]">
+                      · {item.quantity}
+                      {item.unit ? ` ${item.unit}` : ""}
+                    </span>
+                  )}
                   {item.recurring_id !== null && (
                     <span className="ml-1.5" title={tr("recurringBadgeTitle")}>
                       🔁

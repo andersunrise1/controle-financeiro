@@ -33,6 +33,8 @@ export interface Transaction {
   date: string;
   created_at: string;
   recurring_id: number | null;
+  quantity: number | null;
+  unit: string | null;
 }
 
 export type RecurrenceFrequency = "weekly" | "monthly" | "yearly";
@@ -148,6 +150,8 @@ export async function createTransaction(data: {
   description: string;
   date: string;
   category: string;
+  quantity?: number | null;
+  unit?: string | null;
 }): Promise<{ transaction: Transaction }> {
   return apiFetch("/api/transactions", {
     method: "POST",
@@ -163,6 +167,8 @@ export async function updateTransaction(
     description: string;
     date: string;
     category: string;
+    quantity?: number | null;
+    unit?: string | null;
   }
 ): Promise<{ transaction: Transaction }> {
   return apiFetch(`/api/transactions?id=${id}`, {

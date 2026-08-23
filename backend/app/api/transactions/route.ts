@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
 import { getDb, Transaction } from "@/lib/db";
-import { DEFAULT_CATEGORY, isValidCategory } from "@/lib/categories";
+import { DEFAULT_CATEGORY, isValidCategory, isValidUnit } from "@/lib/categories";
 import { generateDueTransactions } from "@/lib/recurrence";
 
 export async function OPTIONS(request: NextRequest) {
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { type, amount, description, date, category } = body;
+    const { type, amount, description, date, category, quantity, unit } = body;
 
     if (!type || !amount || !date) {
       return jsonResponse(
@@ -91,10 +91,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    let parsedQuantity: number | null = null;
+    if (quantity !== undefined && quantity !== null && quantity !== "") {
+      parsedQuantity = parseFloat(quantity);
+      if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+        return jsonResponse(
+          request,
+          { error: "Informe uma quantidade válida maior que zero." },
+          400
+        );
+      }
+    }
+
+    if (unit !== undefined && unit !== null && unit !== "" && !isValidUnit(unit)) {
+      return jsonResponse(request, { error: "Unidade inválida." }, 400);
+    }
+
     const db = getDb();
     const result = db
       .prepare(
-        "INSERT INTO transactions (user_id, type, amount, description, date, category) VALUES (?, ?, ?, ?, ?, ?)"
+        "INSERT INTO transactions (user_id, type, amount, description, date, category, quantity, unit) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
       )
       .run(
         user.id,
@@ -102,7 +118,9 @@ export async function POST(request: NextRequest) {
         parsedAmount,
         description?.trim() || "",
         date,
-        category || DEFAULT_CATEGORY
+        category || DEFAULT_CATEGORY,
+        parsedQuantity,
+        unit || null
       );
 
     const transaction = db
@@ -132,7 +150,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { type, amount, description, date, category } = body;
+    const { type, amount, description, date, category, quantity, unit } = body;
 
     if (!type || !amount || !date) {
       return jsonResponse(
@@ -163,10 +181,26 @@ export async function PUT(request: NextRequest) {
       return jsonResponse(request, { error: "Categoria inválida." }, 400);
     }
 
+    let parsedQuantity: number | null = null;
+    if (quantity !== undefined && quantity !== null && quantity !== "") {
+      parsedQuantity = parseFloat(quantity);
+      if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+        return jsonResponse(
+          request,
+          { error: "Informe uma quantidade válida maior que zero." },
+          400
+        );
+      }
+    }
+
+    if (unit !== undefined && unit !== null && unit !== "" && !isValidUnit(unit)) {
+      return jsonResponse(request, { error: "Unidade inválida." }, 400);
+    }
+
     const db = getDb();
     const result = db
       .prepare(
-        "UPDATE transactions SET type = ?, amount = ?, description = ?, date = ?, category = ? WHERE id = ? AND user_id = ?"
+        "UPDATE transactions SET type = ?, amount = ?, description = ?, date = ?, category = ?, quantity = ?, unit = ? WHERE id = ? AND user_id = ?"
       )
       .run(
         type,
@@ -174,6 +208,8 @@ export async function PUT(request: NextRequest) {
         description?.trim() || "",
         date,
         category || DEFAULT_CATEGORY,
+        parsedQuantity,
+        unit || null,
         Number(id),
         user.id
       );
