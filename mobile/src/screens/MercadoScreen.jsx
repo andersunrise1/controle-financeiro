@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { View, Text, ScrollView, ActivityIndicator, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
@@ -16,8 +16,10 @@ const MERCADO_CATEGORY = "Mercado";
 // Mirrors app/mercado/page.tsx.
 export default function MercadoScreen() {
   const { t } = useLocale();
+  const scrollRef = useRef(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingTransaction, setEditingTransaction] = useState(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -52,12 +54,21 @@ export default function MercadoScreen() {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
         >
-          <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-            <MercadoQuickAdd transactions={transactions} onSuccess={loadData} />
+          <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+            <MercadoQuickAdd
+              transactions={transactions}
+              onSuccess={loadData}
+              editingTransaction={editingTransaction}
+              onCancelEdit={() => setEditingTransaction(null)}
+            />
             <MercadoChart transactions={mercadoTransactions} />
             <TransactionList
               transactions={mercadoTransactions}
               onDelete={loadData}
+              onEdit={(item) => {
+                setEditingTransaction(item);
+                scrollRef.current?.scrollTo({ y: 0, animated: true });
+              }}
               titleKey="mercadoHistoryTitle"
               emptyKey="mercadoHistoryEmpty"
             />

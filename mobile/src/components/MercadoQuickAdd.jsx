@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import TextField from "./TextField";
 import Button3D from "./Button3D";
 import Alert from "./Alert";
-import { createTransaction } from "../services/api";
+import { createTransaction, updateTransaction } from "../services/api";
 import { translateError } from "../lib/i18n";
 import { useLocale } from "../context/LocaleContext";
 import { colors } from "../theme";
@@ -29,7 +29,7 @@ function hasPurchaseThisMonth(transactions) {
   });
 }
 
-export default function MercadoQuickAdd({ transactions, onSuccess }) {
+export default function MercadoQuickAdd({ transactions, onSuccess, editingTransaction, onCancelEdit }) {
   const { locale, t } = useLocale();
   const [expanded, setExpanded] = useState(false);
   const [product, setProduct] = useState("");
@@ -38,6 +38,16 @@ export default function MercadoQuickAdd({ transactions, onSuccess }) {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const isEditing = !!editingTransaction;
+
+  useEffect(() => {
+    if (!editingTransaction) return;
+    setProduct(editingTransaction.description);
+    setPrice(String(editingTransaction.amount));
+    setExpanded(true);
+    setError("");
+  }, [editingTransaction]);
+
   const buttonLabel = hasPurchaseThisMonth(transactions) ? t("mercadoButtonNext") : t("mercadoButtonFirst");
 
   const reset = () => {
@@ -45,6 +55,7 @@ export default function MercadoQuickAdd({ transactions, onSuccess }) {
     setProduct("");
     setPrice("");
     setError("");
+    onCancelEdit?.();
   };
 
   const handleSubmit = async () => {
@@ -63,14 +74,24 @@ export default function MercadoQuickAdd({ transactions, onSuccess }) {
 
     setLoading(true);
     try {
-      await createTransaction({
-        type: "expense",
-        amount: parsedPrice,
-        description: product.trim(),
-        date: todayStr(),
-        category: MERCADO_CATEGORY,
-      });
-      setSuccess(t("mercadoSuccessMessage"));
+      if (isEditing) {
+        await updateTransaction(editingTransaction.id, {
+          type: "expense",
+          amount: parsedPrice,
+          description: product.trim(),
+          date: editingTransaction.date,
+          category: MERCADO_CATEGORY,
+        });
+      } else {
+        await createTransaction({
+          type: "expense",
+          amount: parsedPrice,
+          description: product.trim(),
+          date: todayStr(),
+          category: MERCADO_CATEGORY,
+        });
+      }
+      setSuccess(isEditing ? t("mercadoUpdatedMessage") : t("mercadoSuccessMessage"));
       reset();
       onSuccess();
     } catch (err) {
@@ -111,7 +132,7 @@ export default function MercadoQuickAdd({ transactions, onSuccess }) {
           <View style={styles.buttonRow}>
             <View style={{ flex: 1 }}>
               <Button3D fullWidth loading={loading} onPress={handleSubmit}>
-                {loading ? t("mercadoSaveButtonLoading") : t("mercadoSaveButton")}
+                {loading ? t("mercadoSaveButtonLoading") : isEditing ? t("saveChangesButton") : t("mercadoSaveButton")}
               </Button3D>
             </View>
             <Button3D variant="secondary" onPress={reset} disabled={loading}>

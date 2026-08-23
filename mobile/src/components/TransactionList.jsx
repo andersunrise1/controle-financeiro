@@ -17,6 +17,7 @@ import { colors } from "../theme";
 export default function TransactionList({
   transactions,
   onDelete,
+  onEdit,
   titleKey = "historyTitle",
   emptyKey = "historyEmpty",
 }) {
@@ -80,6 +81,11 @@ export default function TransactionList({
               <Text style={[styles.amount, { color: item.type === "income" ? colors.neonGreen : colors.neonRed }]}>
                 {item.type === "income" ? "+" : "-"}{formatCurrencyForLocale(item.amount, region, rates.rates)}
               </Text>
+              {onEdit && (
+                <Pressable onPress={() => onEdit(item)} hitSlop={10}>
+                  <Text style={styles.editIcon}>✎</Text>
+                </Pressable>
+              )}
               <Pressable onPress={() => handleDelete(item.id)} hitSlop={10}>
                 <Text style={styles.removeIcon}>✕</Text>
               </Pressable>
@@ -150,5 +156,9 @@ const styles = StyleSheet.create({
   removeIcon: {
     color: colors.textFaint,
     fontSize: 16,
+  },
+  editIcon: {
+    color: colors.textFaint,
+    fontSize: 15,
   },
 });

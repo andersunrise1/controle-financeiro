@@ -95,6 +95,13 @@ export async function deleteTransaction(id) {
   await apiFetch(`/api/transactions?id=${id}`, { method: "DELETE" });
 }
 
+export async function updateTransaction(id, data) {
+  return apiFetch(`/api/transactions?id=${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
+
 export async function createRecurringTransaction(data) {
   return apiFetch("/api/recurring", {
     method: "POST",

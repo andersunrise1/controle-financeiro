@@ -5,7 +5,7 @@ import SelectField from "./SelectField";
 import DateField from "./DateField";
 import Button3D from "./Button3D";
 import Alert from "./Alert";
-import { createTransaction, createRecurringTransaction } from "../services/api";
+import { createTransaction, updateTransaction, createRecurringTransaction } from "../services/api";
 import { CATEGORIES, DEFAULT_CATEGORY } from "../lib/categories";
 import { translateCategory, translateError } from "../lib/i18n";
 import { useLocale } from "../context/LocaleContext";
@@ -21,7 +21,7 @@ function todayStr() {
 // OCR engine) depends on browser Canvas/WASM APIs this environment can't
 // verify work the same way with React Native's camera stack, and this pass
 // is already large. Flagged as a known gap, not silently skipped.
-export default function TransactionForm({ onSuccess }) {
+export default function TransactionForm({ onSuccess, editingTransaction, onCancelEdit }) {
   const { locale, t } = useLocale();
   const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ label: translateCategory(c.name, locale), value: c.name }));
   const FREQUENCY_OPTIONS = [
@@ -41,6 +41,23 @@ export default function TransactionForm({ onSuccess }) {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const isEditing = !!editingTransaction;
+
+  // Mirrors TransactionForm.tsx's edit mode: populates the form from the
+  // item being edited (TransactionList's edit button) — editing never
+  // touches recurrence, since a recurring transaction is generated from a
+  // separate template row, not a flag on an already-created transaction.
+  useEffect(() => {
+    if (!editingTransaction) return;
+    setType(editingTransaction.type);
+    setAmount(String(editingTransaction.amount));
+    setDescription(editingTransaction.description);
+    setCategory(editingTransaction.category);
+    setDate(editingTransaction.date);
+    setIsRecurring(false);
+    setError("");
+  }, [editingTransaction]);
+
   useEffect(() => {
     if (!success) return;
     const timer = setTimeout(() => setSuccess(""), 3000);
@@ -59,7 +76,10 @@ export default function TransactionForm({ onSuccess }) {
 
     setLoading(true);
     try {
-      if (isRecurring) {
+      if (isEditing) {
+        await updateTransaction(editingTransaction.id, { type, amount: parsedAmount, description, date, category });
+        onCancelEdit?.();
+      } else if (isRecurring) {
         await createRecurringTransaction({ type, amount: parsedAmount, description, date, category, frequency });
       } else {
         await createTransaction({ type, amount: parsedAmount, description, date, category });
@@ -79,7 +99,7 @@ export default function TransactionForm({ onSuccess }) {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>{t("newTransactionTitle")}</Text>
+      <Text style={styles.title}>{isEditing ? t("editingTitle") : t("newTransactionTitle")}</Text>
 
       <View style={styles.typeRow}>
         <Pressable
@@ -115,23 +135,34 @@ export default function TransactionForm({ onSuccess }) {
 
       <DateField label={t("dateLabel")} value={date} onChange={setDate} />
 
-      <Pressable style={styles.checkboxRow} onPress={() => setIsRecurring((v) => !v)}>
-        <View style={[styles.checkbox, isRecurring && styles.checkboxChecked]}>
-          {isRecurring && <Text style={styles.checkmark}>✓</Text>}
-        </View>
-        <Text style={styles.checkboxLabel}>🔁 {t("recurrenceCheckboxLabel")}</Text>
-      </Pressable>
+      {!isEditing && (
+        <Pressable style={styles.checkboxRow} onPress={() => setIsRecurring((v) => !v)}>
+          <View style={[styles.checkbox, isRecurring && styles.checkboxChecked]}>
+            {isRecurring && <Text style={styles.checkmark}>✓</Text>}
+          </View>
+          <Text style={styles.checkboxLabel}>🔁 {t("recurrenceCheckboxLabel")}</Text>
+        </Pressable>
+      )}
 
-      {isRecurring && (
+      {!isEditing && isRecurring && (
         <SelectField value={frequency} onValueChange={setFrequency} options={FREQUENCY_OPTIONS} />
       )}
 
       {error ? <Alert type="error" message={error} /> : null}
       {success ? <Alert type="success" message={success} /> : null}
 
-      <Button3D fullWidth loading={loading} onPress={handleSubmit}>
-        {t("addButton")}
-      </Button3D>
+      <View style={styles.buttonRow}>
+        <View style={{ flex: 1 }}>
+          <Button3D fullWidth loading={loading} onPress={handleSubmit}>
+            {isEditing ? t("saveChangesButton") : t("addButton")}
+          </Button3D>
+        </View>
+        {isEditing && (
+          <Button3D variant="secondary" onPress={onCancelEdit} disabled={loading}>
+            {t("cancelEditButton")}
+          </Button3D>
+        )}
+      </View>
     </View>
   );
 }
@@ -152,6 +183,11 @@ const styles = StyleSheet.create({
   typeRow: {
     flexDirection: "row",
     gap: 8,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 8,
+    alignItems: "center",
   },
   typeButton: {
     flex: 1,

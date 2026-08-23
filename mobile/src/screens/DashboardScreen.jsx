@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { View, Text, ScrollView, ActivityIndicator, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
@@ -19,10 +19,12 @@ import { colors } from "../theme";
 // Mirrors app/dashboard/page.tsx's finance-core sections.
 export default function DashboardScreen() {
   const { t } = useLocale();
+  const scrollRef = useRef(null);
   const [transactions, setTransactions] = useState([]);
   const [recurring, setRecurring] = useState([]);
   const [summary, setSummary] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 });
   const [loading, setLoading] = useState(true);
+  const [editingTransaction, setEditingTransaction] = useState(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -62,19 +64,30 @@ export default function DashboardScreen() {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
         >
-          <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
             <BalanceCard
               balance={summary.balance}
               totalIncome={summary.totalIncome}
               totalExpense={summary.totalExpense}
             />
-            <TransactionForm onSuccess={loadData} />
+            <TransactionForm
+              onSuccess={loadData}
+              editingTransaction={editingTransaction}
+              onCancelEdit={() => setEditingTransaction(null)}
+            />
             <RecurringTransactionsList recurring={recurring} onChange={loadData} />
             <YearlyChart transactions={transactions} />
             <CurrencyConverter />
             <ClusteredChart transactions={transactions} />
             <CategoryChart transactions={transactions} />
-            <TransactionList transactions={transactions} onDelete={loadData} />
+            <TransactionList
+              transactions={transactions}
+              onDelete={loadData}
+              onEdit={(item) => {
+                setEditingTransaction(item);
+                scrollRef.current?.scrollTo({ y: 0, animated: true });
+              }}
+            />
           </ScrollView>
         </KeyboardAvoidingView>
       )}
