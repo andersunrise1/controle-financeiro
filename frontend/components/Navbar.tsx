@@ -8,6 +8,12 @@ import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
 import { logout } from "@/lib/api";
 
+const sunsetTextStyle = {
+  background: "linear-gradient(90deg, #ffd93d, #ff8c42, #d6249f)",
+  WebkitBackgroundClip: "text" as const,
+  WebkitTextFillColor: "transparent" as const,
+};
+
 export default function Navbar() {
   const { user, setUser } = useAuth();
   const { t } = useI18n();
@@ -29,11 +35,7 @@ export default function Navbar() {
             <img src="/icon-divisa-final.png" alt="Divisa" className="h-12 w-12" />
             <span
               className="hidden text-lg font-extrabold tracking-[0.15em] sm:inline"
-              style={{
-                background: "linear-gradient(90deg, #ffd93d, #ff8c42, #d6249f)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
+              style={sunsetTextStyle}
             >
               DIVISA
             </span>
@@ -44,28 +46,14 @@ export default function Navbar() {
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <Link
-            href="/mercado"
-            className="text-sm font-medium text-gray-300 transition hover:text-white"
-          >
+          <Link href="/mercado" className="text-sm font-semibold transition" style={sunsetTextStyle}>
             {t("navMercado")}
           </Link>
-          <Link
-            href="/feedback"
-            className="text-sm font-medium text-gray-300 transition hover:text-white"
-          >
+          <Link href="/feedback" className="text-sm font-semibold transition" style={sunsetTextStyle}>
             {t("navFeedback")}
           </Link>
           {user.isAdmin && (
-            <Link
-              href="/admin"
-              className="text-sm font-semibold transition hover:text-white"
-              style={{
-                background: "linear-gradient(90deg, #ffd93d, #ff8c42, #d6249f)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
+            <Link href="/admin" className="text-sm font-semibold transition" style={sunsetTextStyle}>
               {t("navAdmin")}
             </Link>
           )}
