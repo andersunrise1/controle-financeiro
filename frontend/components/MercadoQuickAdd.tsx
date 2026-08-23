@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import Button3D from "./Button3D";
 import Alert from "./Alert";
-import { createTransaction, Transaction } from "@/lib/api";
+import { createTransaction, updateTransaction, Transaction } from "@/lib/api";
 import { useI18n } from "@/lib/i18n-context";
 import { translateError } from "@/lib/i18n";
 
@@ -12,6 +12,8 @@ const MERCADO_CATEGORY = "Mercado";
 interface MercadoQuickAddProps {
   transactions: Transaction[];
   onSuccess: () => void;
+  editingTransaction?: Transaction | null;
+  onCancelEdit?: () => void;
 }
 
 // One dynamic button instead of Nova Transação's Entrada/Saída toggle — this
@@ -27,7 +29,7 @@ function hasPurchaseThisMonth(transactions: Transaction[]): boolean {
   });
 }
 
-export default function MercadoQuickAdd({ transactions, onSuccess }: MercadoQuickAddProps) {
+export default function MercadoQuickAdd({ transactions, onSuccess, editingTransaction, onCancelEdit }: MercadoQuickAddProps) {
   const { locale, t } = useI18n();
   const [expanded, setExpanded] = useState(false);
   const [product, setProduct] = useState("");
@@ -35,6 +37,16 @@ export default function MercadoQuickAdd({ transactions, onSuccess }: MercadoQuic
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const isEditing = !!editingTransaction;
+
+  useEffect(() => {
+    if (!editingTransaction) return;
+    setProduct(editingTransaction.description);
+    setPrice(String(editingTransaction.amount));
+    setExpanded(true);
+    setError("");
+  }, [editingTransaction]);
 
   const buttonLabel = hasPurchaseThisMonth(transactions)
     ? t("mercadoButtonNext")
@@ -45,6 +57,7 @@ export default function MercadoQuickAdd({ transactions, onSuccess }: MercadoQuic
     setProduct("");
     setPrice("");
     setError("");
+    onCancelEdit?.();
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -64,16 +77,26 @@ export default function MercadoQuickAdd({ transactions, onSuccess }: MercadoQuic
 
     setLoading(true);
     try {
-      const now = new Date();
-      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-      await createTransaction({
-        type: "expense",
-        amount: parsedPrice,
-        description: product.trim(),
-        date: today,
-        category: MERCADO_CATEGORY,
-      });
-      setSuccess(t("mercadoSuccessMessage"));
+      if (isEditing && editingTransaction) {
+        await updateTransaction(editingTransaction.id, {
+          type: "expense",
+          amount: parsedPrice,
+          description: product.trim(),
+          date: editingTransaction.date,
+          category: MERCADO_CATEGORY,
+        });
+      } else {
+        const now = new Date();
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+        await createTransaction({
+          type: "expense",
+          amount: parsedPrice,
+          description: product.trim(),
+          date: today,
+          category: MERCADO_CATEGORY,
+        });
+      }
+      setSuccess(isEditing ? t("mercadoUpdatedMessage") : t("mercadoSuccessMessage"));
       reset();
       onSuccess();
     } catch (err) {
@@ -130,7 +153,11 @@ export default function MercadoQuickAdd({ transactions, onSuccess }: MercadoQuic
 
           <div className="flex gap-2">
             <Button3D type="submit" fullWidth disabled={loading}>
-              {loading ? t("mercadoSaveButtonLoading") : t("mercadoSaveButton")}
+              {loading
+                ? t("mercadoSaveButtonLoading")
+                : isEditing
+                  ? t("saveChangesButton")
+                  : t("mercadoSaveButton")}
             </Button3D>
             <Button3D type="button" variant="secondary" onClick={reset} disabled={loading}>
               {t("mercadoCancelButton")}

@@ -155,6 +155,22 @@ export async function createTransaction(data: {
   });
 }
 
+export async function updateTransaction(
+  id: number,
+  data: {
+    type: "income" | "expense";
+    amount: number;
+    description: string;
+    date: string;
+    category: string;
+  }
+): Promise<{ transaction: Transaction }> {
+  return apiFetch(`/api/transactions?id=${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
+
 export async function deleteTransaction(id: number): Promise<void> {
   await apiFetch(`/api/transactions?id=${id}`, { method: "DELETE" });
 }

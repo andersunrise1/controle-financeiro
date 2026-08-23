@@ -4,16 +4,18 @@ import { useState, FormEvent, useEffect } from "react";
 import Button3D from "./Button3D";
 import Alert from "./Alert";
 import PriceCameraButton from "./PriceCameraButton";
-import { createTransaction, createRecurringTransaction, RecurrenceFrequency } from "@/lib/api";
+import { createTransaction, updateTransaction, createRecurringTransaction, RecurrenceFrequency, Transaction } from "@/lib/api";
 import { CATEGORIES, DEFAULT_CATEGORY } from "@/lib/categories";
 import { useI18n } from "@/lib/i18n-context";
 import { translateCategory, translateError } from "@/lib/i18n";
 
 interface TransactionFormProps {
   onSuccess: () => void;
+  editingTransaction?: Transaction | null;
+  onCancelEdit?: () => void;
 }
 
-export default function TransactionForm({ onSuccess }: TransactionFormProps) {
+export default function TransactionForm({ onSuccess, editingTransaction, onCancelEdit }: TransactionFormProps) {
   const { locale, t } = useI18n();
   const [type, setType] = useState<"income" | "expense">("income");
   const [amount, setAmount] = useState("");
@@ -26,6 +28,23 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [priceNote, setPriceNote] = useState<{ text: string; found: boolean } | null>(null);
+
+  const isEditing = !!editingTransaction;
+
+  // Populates the form from the item being edited (TransactionList's ✎
+  // button) — editing never touches recurrence, since a recurring
+  // transaction is generated from a separate template row, not a flag on
+  // an already-created transaction.
+  useEffect(() => {
+    if (!editingTransaction) return;
+    setType(editingTransaction.type);
+    setAmount(String(editingTransaction.amount));
+    setDescription(editingTransaction.description);
+    setCategory(editingTransaction.category);
+    setDate(editingTransaction.date);
+    setIsRecurring(false);
+    setError("");
+  }, [editingTransaction]);
 
   useEffect(() => {
     if (!success) return;
@@ -69,7 +88,16 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
 
     setLoading(true);
     try {
-      if (isRecurring) {
+      if (isEditing && editingTransaction) {
+        await updateTransaction(editingTransaction.id, {
+          type,
+          amount: parsedAmount,
+          description,
+          date,
+          category,
+        });
+        onCancelEdit?.();
+      } else if (isRecurring) {
         await createRecurringTransaction({
           type,
           amount: parsedAmount,
@@ -104,7 +132,7 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
       <h2 className="mb-4 text-lg font-semibold text-gray-100">
-        {t("newTransactionTitle")}
+        {isEditing ? t("editingTitle") : t("newTransactionTitle")}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -205,37 +233,52 @@ export default function TransactionForm({ onSuccess }: TransactionFormProps) {
           />
         </div>
 
-        <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-            <input
-              type="checkbox"
-              checked={isRecurring}
-              onChange={(e) => setIsRecurring(e.target.checked)}
-              className="h-4 w-4 rounded border-[#555] bg-[#2a2a2a] accent-[#39ff14]"
-            />
-            🔁 {t("recurrenceCheckboxLabel")}
-          </label>
+        {!isEditing && (
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+              <input
+                type="checkbox"
+                checked={isRecurring}
+                onChange={(e) => setIsRecurring(e.target.checked)}
+                className="h-4 w-4 rounded border-[#555] bg-[#2a2a2a] accent-[#39ff14]"
+              />
+              🔁 {t("recurrenceCheckboxLabel")}
+            </label>
 
-          {isRecurring && (
-            <select
-              value={frequency}
-              onChange={(e) => setFrequency(e.target.value as RecurrenceFrequency)}
-              aria-label={t("recurrenceFrequencyLabel")}
-              className="input-dark mt-2 w-full rounded-xl px-4 py-3"
-            >
-              <option value="weekly">{t("recurrenceWeekly")}</option>
-              <option value="monthly">{t("recurrenceMonthly")}</option>
-              <option value="yearly">{t("recurrenceYearly")}</option>
-            </select>
-          )}
-        </div>
+            {isRecurring && (
+              <select
+                value={frequency}
+                onChange={(e) => setFrequency(e.target.value as RecurrenceFrequency)}
+                aria-label={t("recurrenceFrequencyLabel")}
+                className="input-dark mt-2 w-full rounded-xl px-4 py-3"
+              >
+                <option value="weekly">{t("recurrenceWeekly")}</option>
+                <option value="monthly">{t("recurrenceMonthly")}</option>
+                <option value="yearly">{t("recurrenceYearly")}</option>
+              </select>
+            )}
+          </div>
+        )}
 
         {error && <Alert type="error" message={error} />}
         {success && <Alert type="success" message={success} />}
 
-        <Button3D type="submit" fullWidth disabled={loading}>
-          {loading ? t("addButtonLoading") : t("addButton")}
-        </Button3D>
+        <div className="flex gap-2">
+          <Button3D type="submit" fullWidth disabled={loading}>
+            {isEditing
+              ? loading
+                ? t("saveChangesButtonLoading")
+                : t("saveChangesButton")
+              : loading
+                ? t("addButtonLoading")
+                : t("addButton")}
+          </Button3D>
+          {isEditing && (
+            <Button3D type="button" variant="secondary" onClick={onCancelEdit} disabled={loading}>
+              {t("cancelEditButton")}
+            </Button3D>
+          )}
+        </div>
       </form>
     </div>
   );

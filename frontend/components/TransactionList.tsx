@@ -10,6 +10,7 @@ import { translateCategory, translateError } from "@/lib/i18n";
 interface TransactionListProps {
   transactions: Transaction[];
   onDelete: () => void;
+  onEdit?: (transaction: Transaction) => void;
   titleKey?: "historyTitle" | "mercadoHistoryTitle";
   emptyKey?: "historyEmpty" | "mercadoHistoryEmpty";
 }
@@ -17,6 +18,7 @@ interface TransactionListProps {
 export default function TransactionList({
   transactions,
   onDelete,
+  onEdit,
   titleKey = "historyTitle",
   emptyKey = "historyEmpty",
 }: TransactionListProps) {
@@ -129,6 +131,15 @@ export default function TransactionList({
                   {item.type === "income" ? "+" : "-"}
                   {formatCurrencyForLocale(item.amount, region, rates.rates)}
                 </span>
+                {onEdit && (
+                  <button
+                    onClick={() => onEdit(item)}
+                    className="text-xs text-gray-500 hover:text-[#39ff14]"
+                    title={tr("editTitle")}
+                  >
+                    ✎
+                  </button>
+                )}
                 <button
                   onClick={() => handleDelete(item.id)}
                   className="text-xs text-gray-500 hover:text-[#ff073a]"

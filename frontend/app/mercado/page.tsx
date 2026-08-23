@@ -19,6 +19,7 @@ function MercadoContent() {
   const router = useRouter();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -51,11 +52,20 @@ function MercadoContent() {
       <Navbar />
 
       <main className="mx-auto max-w-4xl space-y-6 px-4 py-8">
-        <MercadoQuickAdd transactions={transactions} onSuccess={loadData} />
+        <MercadoQuickAdd
+          transactions={transactions}
+          onSuccess={loadData}
+          editingTransaction={editingTransaction}
+          onCancelEdit={() => setEditingTransaction(null)}
+        />
         <MercadoChart transactions={mercadoTransactions} />
         <TransactionList
           transactions={mercadoTransactions}
           onDelete={loadData}
+          onEdit={(t) => {
+            setEditingTransaction(t);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
           titleKey="mercadoHistoryTitle"
           emptyKey="mercadoHistoryEmpty"
         />

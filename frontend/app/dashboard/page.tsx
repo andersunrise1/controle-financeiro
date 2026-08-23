@@ -34,6 +34,7 @@ function DashboardContent() {
     balance: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -76,7 +77,11 @@ function DashboardContent() {
               totalIncome={summary.totalIncome}
               totalExpense={summary.totalExpense}
             />
-            <TransactionForm onSuccess={loadData} />
+            <TransactionForm
+              onSuccess={loadData}
+              editingTransaction={editingTransaction}
+              onCancelEdit={() => setEditingTransaction(null)}
+            />
             <RecurringTransactionsList recurring={recurring} onChange={loadData} />
           </div>
           <div className="space-y-6">
@@ -88,7 +93,14 @@ function DashboardContent() {
         <ClusteredChart transactions={transactions} />
         <CategoryChart transactions={transactions} />
 
-        <TransactionList transactions={transactions} onDelete={loadData} />
+        <TransactionList
+          transactions={transactions}
+          onDelete={loadData}
+          onEdit={(t) => {
+            setEditingTransaction(t);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        />
       </main>
     </div>
   );
