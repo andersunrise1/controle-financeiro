@@ -69,6 +69,13 @@ export default function TransactionList({
               <View style={{ flex: 1 }}>
                 <Text style={styles.itemTitle}>
                   {item.description || (item.type === "income" ? t("incomeButton") : t("expenseButton"))}
+                  {item.quantity !== null && item.quantity !== undefined ? (
+                    <Text style={styles.itemQuantity}>
+                      {" "}
+                      · {item.quantity}
+                      {item.unit ? ` ${item.unit}` : ""}
+                    </Text>
+                  ) : null}
                   {item.recurring_id !== null ? " 🔁" : ""}
                 </Text>
                 <View style={styles.itemMetaRow}>
@@ -131,6 +138,11 @@ function getStyles(colors) {
       color: colors.textPrimary,
       fontWeight: "600",
       fontSize: 14,
+    },
+    itemQuantity: {
+      color: colors.textFaint,
+      fontWeight: "400",
+      fontSize: 12,
     },
     itemMetaRow: {
       flexDirection: "row",

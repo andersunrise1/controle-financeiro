@@ -1,17 +1,18 @@
 import { useState, useCallback, useRef } from "react";
-import { View, Text, ScrollView, ActivityIndicator, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import { View, ScrollView, ActivityIndicator, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import TopNavBar from "../components/TopNavBar";
 import TopTabBar from "../components/TopTabBar";
 import MercadoQuickAdd from "../components/MercadoQuickAdd";
+import MercadoFilter from "../components/MercadoFilter";
+import MercadoMonthlyChart from "../components/MercadoMonthlyChart";
 import MercadoChart from "../components/MercadoChart";
 import TransactionList from "../components/TransactionList";
 import { getTransactions } from "../services/api";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
-
-const MERCADO_CATEGORY = "Mercado";
+import { getMercadoTransactions, getMercadoYears, filterMercadoByScope } from "../lib/mercadoGrouping";
 
 // Mirrors app/mercado/page.tsx.
 export default function MercadoScreen() {
@@ -22,6 +23,8 @@ export default function MercadoScreen() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingTransaction, setEditingTransaction] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -41,7 +44,12 @@ export default function MercadoScreen() {
     }, [loadData])
   );
 
-  const mercadoTransactions = transactions.filter((t) => t.category === MERCADO_CATEGORY);
+  const mercadoTransactions = getMercadoTransactions(transactions);
+  const years = getMercadoYears(transactions);
+  // Defaults to the most recent year with actual purchases, falling back to
+  // the current year for a brand new account with none yet.
+  const year = selectedYear ?? years[0] ?? new Date().getFullYear();
+  const scopedTransactions = filterMercadoByScope(transactions, year, selectedMonth);
 
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
@@ -63,9 +71,22 @@ export default function MercadoScreen() {
               editingTransaction={editingTransaction}
               onCancelEdit={() => setEditingTransaction(null)}
             />
-            <MercadoChart transactions={mercadoTransactions} />
+
+            {years.length > 0 && (
+              <MercadoFilter
+                years={years}
+                year={year}
+                onYearChange={setSelectedYear}
+                month={selectedMonth}
+                onMonthChange={setSelectedMonth}
+              />
+            )}
+
+            <MercadoMonthlyChart transactions={mercadoTransactions} year={year} />
+            <MercadoChart transactions={scopedTransactions} />
+
             <TransactionList
-              transactions={mercadoTransactions}
+              transactions={scopedTransactions}
               onDelete={loadData}
               onEdit={(item) => {
                 setEditingTransaction(item);

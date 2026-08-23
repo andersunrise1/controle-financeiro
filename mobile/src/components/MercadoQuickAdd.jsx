@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import TextField from "./TextField";
+import SelectField from "./SelectField";
 import Button3D from "./Button3D";
 import Alert from "./Alert";
 import { createTransaction, updateTransaction } from "../services/api";
 import { translateError } from "../lib/i18n";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
+import { UNITS } from "../lib/units";
 
 const MERCADO_CATEGORY = "Mercado";
 
@@ -36,6 +38,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
   const [expanded, setExpanded] = useState(false);
   const [product, setProduct] = useState("");
   const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -46,6 +50,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
     if (!editingTransaction) return;
     setProduct(editingTransaction.description);
     setPrice(String(editingTransaction.amount));
+    setQuantity(editingTransaction.quantity !== null && editingTransaction.quantity !== undefined ? String(editingTransaction.quantity) : "");
+    setUnit(editingTransaction.unit || "");
     setExpanded(true);
     setError("");
   }, [editingTransaction]);
@@ -56,6 +62,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
     setExpanded(false);
     setProduct("");
     setPrice("");
+    setQuantity("");
+    setUnit("");
     setError("");
     onCancelEdit?.();
   };
@@ -74,6 +82,15 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
       return;
     }
 
+    let parsedQuantity = null;
+    if (quantity.trim()) {
+      parsedQuantity = parseFloat(quantity.replace(",", "."));
+      if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+        setError(translateError("Informe uma quantidade válida maior que zero.", locale));
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       if (isEditing) {
@@ -83,6 +100,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
           description: product.trim(),
           date: editingTransaction.date,
           category: MERCADO_CATEGORY,
+          quantity: parsedQuantity,
+          unit: unit || null,
         });
       } else {
         await createTransaction({
@@ -91,6 +110,8 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
           description: product.trim(),
           date: todayStr(),
           category: MERCADO_CATEGORY,
+          quantity: parsedQuantity,
+          unit: unit || null,
         });
       }
       setSuccess(isEditing ? t("mercadoUpdatedMessage") : t("mercadoSuccessMessage"));
@@ -128,6 +149,26 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
             placeholder="0,00"
             keyboardType="decimal-pad"
           />
+
+          <View style={styles.buttonRow}>
+            <View style={{ flex: 1 }}>
+              <TextField
+                label={t("mercadoQuantityLabel")}
+                value={quantity}
+                onChangeText={setQuantity}
+                placeholder={t("mercadoQuantityPlaceholder")}
+                keyboardType="decimal-pad"
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <SelectField
+                label={t("mercadoUnitLabel")}
+                value={unit}
+                onValueChange={setUnit}
+                options={[{ label: t("mercadoUnitPlaceholder"), value: "" }, ...UNITS.map((u) => ({ label: u, value: u }))]}
+              />
+            </View>
+          </View>
 
           {error ? <Alert type="error" message={error} /> : null}
 
