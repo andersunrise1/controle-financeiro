@@ -271,6 +271,16 @@ Verificado ao vivo, ponta a ponta: no site, testei os dois tamanhos reais de uso
 
 Não feito: build EAS novo ainda não gerado com esse logo (pendente confirmação final do usuário).
 
+## "Gastos por Ano" fica interativo — toque no ano pra ver o total (2026-08-24, web e mobile)
+
+Antes, o gráfico "Gastos por Ano" do Dashboard sempre mostrava embaixo o "ano que você mais gastou", fixo. Pedido do usuário: clicar numa barra de ano específico mostra o gasto total daquele ano embaixo, não só o de maior gasto. Implementado como seleção com estado: sem nenhum clique ainda, continua mostrando o ano de maior gasto (mesmo comportamento de sempre); clicar em qualquer barra troca o texto embaixo pro ano clicado, e a barra clicada fica em opacidade cheia enquanto as outras ficam esmaecidas (35%) — feedback visual de qual ano está selecionado.
+
+**Web** (`YearlyChart.tsx`): Recharts já suporta `onClick` no `<Bar>`, recebendo o item clicado via `barData.payload.year`. A opacidade por barra usa `<Cell>` (mesmo mecanismo já usado no `MercadoChart.tsx` redesenhado no dia 23) com `fillOpacity` condicional. Texto do rodapé trocou de "Ano que você mais gastou:" (`mostSpentYearLabel`, removido) pra "Gasto total em" (`yearlyChartTotalLabel`, neutro — funciona tanto pro estado padrão quanto pro clicado) + uma dica nova (`yearlyChartClickHint`): "Toque numa barra para ver o total daquele ano."
+
+**Mobile** (`YearlyChart.jsx` + `GroupedBarChart.jsx`): o primitivo `GroupedBarChart` (SVG puro, sem biblioteca de gráfico) não tinha nenhum suporte a toque até agora — ganhou uma prop opcional `onGroupPress` (chamada com o objeto do grupo tocado) e um `Rect` invisível de altura total cobrindo a coluna inteira de cada grupo, garantindo uma área de toque confiável mesmo pra barras bem curtas (a barra visível em si ficou com `pointerEvents="none"`, já que o hit-test agora é feito pelo retângulo invisível). Cada `bar` também ganhou um campo opcional `opacity`, aplicado direto no `<Rect>` — o mesmo mecanismo genérico serve tanto pra esse recurso quanto pra qualquer gráfico futuro que precise de destaque por barra. `YearlyChart.jsx` calcula a opacidade de cada ano e passa `onGroupPress={(group) => setSelectedYear(group.year)}`, espelhando a lógica do web exatamente.
+
+Verificado ao vivo, ponta a ponta, nas duas plataformas: registrei uma conta de teste, semeei gastos em 2023/2024/2025 diretamente no banco, confirmei que o estado padrão mostra o ano de maior gasto com a barra em destaque, cliquei em 2023 e depois 2025 e confirmei que o texto e o destaque visual acompanham corretamente em cada clique — testado nos dois temas (claro/escuro) no mobile (preview mobile-web) e no site.
+
 ## Problemas conhecidos
 
 **"Erro interno do servidor" em qualquer rota que toca o banco (register/login/transactions)**: o módulo nativo `better-sqlite3` foi compilado para a versão do Node instalada quando `npm install` rodou (junho/2026) — se o Node da máquina for atualizado depois disso, o binário fica com `NODE_MODULE_VERSION` incompatível e todo `require('better-sqlite3')` falha (`ERR_DLOPEN_FAILED`). A rota engole o erro num `catch` genérico sem logar nada, então o único sintoma visível é o 500 no frontend. Corrigido em 2026-08-15 rodando:

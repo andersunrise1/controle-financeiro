@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -34,6 +36,10 @@ function groupByYear(transactions: Transaction[]) {
 export default function YearlyChart({ transactions }: YearlyChartProps) {
   const { region, rates, t } = useI18n();
   const data = groupByYear(transactions);
+  // null until the user clicks a bar — defaults to the highest-spend year,
+  // same as the chart's original static behavior, but clicking any other
+  // bar overrides it to show that year's total instead.
+  const [selectedYear, setSelectedYear] = useState<string | null>(null);
 
   if (data.length === 0) {
     return (
@@ -44,6 +50,7 @@ export default function YearlyChart({ transactions }: YearlyChartProps) {
   }
 
   const topYear = data.reduce((max, d) => (d.total > max.total ? d : max), data[0]);
+  const activeData = data.find((d) => d.year === selectedYear) ?? topYear;
 
   return (
     <div className="card-dark rounded-2xl p-6 shadow-md">
@@ -78,13 +85,22 @@ export default function YearlyChart({ transactions }: YearlyChartProps) {
           <Bar
             dataKey="total"
             name={t("expenseLabel")}
-            fill="url(#sunsetGrad)"
             radius={[6, 6, 0, 0]}
-          />
+            cursor="pointer"
+            onClick={(barData) => setSelectedYear(barData.payload.year)}
+          >
+            {data.map((entry) => (
+              <Cell
+                key={entry.year}
+                fill="url(#sunsetGrad)"
+                fillOpacity={entry.year === activeData.year ? 1 : 0.35}
+              />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
       <p className="mt-3 text-sm text-[color:var(--text-secondary)]">
-        {t("mostSpentYearLabel")}{" "}
+        {t("yearlyChartTotalLabel")}{" "}
         <span
           className="font-semibold"
           style={{
@@ -93,9 +109,10 @@ export default function YearlyChart({ transactions }: YearlyChartProps) {
             WebkitTextFillColor: "transparent",
           }}
         >
-          {topYear.year} ({formatCurrencyForLocale(topYear.total, region, rates.rates)})
+          {activeData.year} ({formatCurrencyForLocale(activeData.total, region, rates.rates)})
         </span>
       </p>
+      <p className="mt-1 text-xs text-[color:var(--text-faint)]">{t("yearlyChartClickHint")}</p>
     </div>
   );
 }

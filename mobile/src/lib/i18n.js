@@ -65,7 +65,8 @@ const pt = {
 
   yearlyChartTitle: "Gastos por Ano",
   yearlyChartEmpty: "Adicione transações para visualizar os gastos por ano.",
-  mostSpentYearLabel: "Ano que você mais gastou:",
+  yearlyChartTotalLabel: "Gasto total em",
+  yearlyChartClickHint: "Toque numa barra para ver o total daquele ano.",
 
   converterTitle: "Conversor de Moedas",
   converterSubtitle: "Útil pra quem está viajando entre países",
@@ -205,7 +206,8 @@ const en = {
 
   yearlyChartTitle: "Spending by Year",
   yearlyChartEmpty: "Add transactions to see spending by year.",
-  mostSpentYearLabel: "Year you spent the most:",
+  yearlyChartTotalLabel: "Total spent in",
+  yearlyChartClickHint: "Tap a bar to see that year's total.",
 
   converterTitle: "Currency Converter",
   converterSubtitle: "Handy for travelers crossing borders",
@@ -345,7 +347,8 @@ const es = {
 
   yearlyChartTitle: "Gastos por Año",
   yearlyChartEmpty: "Agrega transacciones para ver los gastos por año.",
-  mostSpentYearLabel: "Año en el que más gastaste:",
+  yearlyChartTotalLabel: "Gasto total en",
+  yearlyChartClickHint: "Toca una barra para ver el total de ese año.",
 
   converterTitle: "Conversor de Monedas",
   converterSubtitle: "Útil para quienes están viajando entre países",

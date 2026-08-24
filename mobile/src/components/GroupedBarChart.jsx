@@ -19,7 +19,12 @@ const GROUP_MIN_WIDTH = 60;
 // Simplified vs. the web version: no hover/tap tooltip yet (web shows exact
 // values on hover) — values are still readable from the axis and bar
 // height. A real, disclosed simplification, not an oversight.
-export default function GroupedBarChart({ data, barWidth = 18, barGap = 4, formatY = (v) => v }) {
+//
+// onGroupPress (optional) is called with the tapped group's own data object
+// when provided — used by YearlyChart to let the user tap a year and see
+// its total, mirroring the web version's click-to-select behavior. Each
+// bar's own `opacity` (if set) lets the caller dim unselected groups.
+export default function GroupedBarChart({ data, barWidth = 18, barGap = 4, formatY = (v) => v, onGroupPress }) {
   const { width: screenWidth } = useWindowDimensions();
   const { colors } = useTheme();
 
@@ -75,6 +80,16 @@ export default function GroupedBarChart({ data, barWidth = 18, barGap = 4, forma
           const startX = groupX + (groupWidth - totalBarsWidth) / 2;
           return (
             <G key={group.label}>
+              {onGroupPress && (
+                <Rect
+                  x={groupX}
+                  y={0}
+                  width={groupWidth}
+                  height={CHART_HEIGHT}
+                  fill="transparent"
+                  onPress={() => onGroupPress(group)}
+                />
+              )}
               {group.bars.map((bar, bi) => {
                 const barHeight = Math.max((bar.value / maxValue) * plotHeight, 0);
                 const x = startX + bi * (barWidth + barGap);
@@ -87,7 +102,9 @@ export default function GroupedBarChart({ data, barWidth = 18, barGap = 4, forma
                     width={barWidth}
                     height={barHeight}
                     rx={4}
+                    opacity={bar.opacity ?? 1}
                     fill={bar.gradientId ? `url(#${bar.gradientId})` : bar.color}
+                    pointerEvents="none"
                   />
                 );
               })}
