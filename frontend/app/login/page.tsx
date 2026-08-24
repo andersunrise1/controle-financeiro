@@ -65,16 +65,6 @@ export default function LoginPage() {
         <div className="card-dark rounded-2xl p-8 shadow-lg">
           <div className="mx-auto mb-4 flex flex-col items-center">
             <img src="/icon-divisa-final.png" alt="Divisa" className="h-28 w-28" />
-            <span
-              className="mt-2 text-2xl font-extrabold tracking-[0.2em]"
-              style={{
-                background: "linear-gradient(90deg, #ffd93d, #ff8c42, #d6249f)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              DIVISA
-            </span>
           </div>
           <h1 className="text-2xl font-bold text-[color:var(--text-primary)]">{t("loginTitle")}</h1>
           <p className="mt-1 text-sm text-[color:var(--text-muted)]">{t("loginSubtitle")}</p>

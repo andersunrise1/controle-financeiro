@@ -15,7 +15,7 @@
       "package": "com.divisa.mobile",
       "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#2d2d2d",
+        "backgroundColor": "#ff8c42",
         "foregroundImage": "./assets/adaptive-icon-foreground.png"
       }
     },
@@ -28,7 +28,7 @@
         "expo-splash-screen",
         {
           "image": "./assets/splash-icon-divisa.png",
-          "imageWidth": 220,
+          "imageWidth": 320,
           "resizeMode": "contain",
           "backgroundColor": "#2d2d2d"
         }

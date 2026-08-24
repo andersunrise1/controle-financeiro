@@ -34,12 +34,6 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <Link href="/dashboard" className="flex items-center gap-3">
             <img src="/icon-divisa-final.png" alt="Divisa" className="h-12 w-12" />
-            <span
-              className="hidden text-lg font-extrabold tracking-[0.15em] sm:inline"
-              style={sunsetTextStyle}
-            >
-              DIVISA
-            </span>
           </Link>
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             {t("greeting")}{" "}
