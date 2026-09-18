@@ -28,9 +28,17 @@ interface CategoryChartProps {
   transactions: Transaction[];
 }
 
+// Recharts wants one flat object per month: the `month` label plus one key
+// per category holding its total — so the index signature has to allow both
+// a string and a number, and reads coerce with Number() where a total is
+// expected.
+interface MonthCategoryRow {
+  month: string;
+  [category: string]: string | number;
+}
+
 function groupByMonthAndCategory(transactions: Transaction[], region: Region) {
-  const grouped: Record<string, { month: string } & Record<string, number>> =
-    {};
+  const grouped: Record<string, MonthCategoryRow> = {};
 
   transactions.forEach((t) => {
     if (t.type !== "expense") return;
@@ -43,7 +51,7 @@ function groupByMonthAndCategory(transactions: Transaction[], region: Region) {
       grouped[key] = { month: label };
     }
 
-    grouped[key][t.category] = (grouped[key][t.category] || 0) + t.amount;
+    grouped[key][t.category] = Number(grouped[key][t.category] ?? 0) + t.amount;
   });
 
   return Object.keys(grouped)
@@ -56,7 +64,7 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
   const data = groupByMonthAndCategory(transactions, region);
 
   const usedCategories = CATEGORIES.filter((c) =>
-    data.some((month) => (month[c.name] || 0) > 0)
+    data.some((month) => Number(month[c.name] ?? 0) > 0)
   );
 
   if (data.length === 0) {
