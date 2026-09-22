@@ -3,7 +3,7 @@ export default function Home() {
     <main className="flex min-h-screen items-center justify-center bg-gray-100 p-8">
       <div className="rounded-2xl bg-white p-8 shadow-md">
         <h1 className="text-2xl font-bold text-gray-800">
-          Controle Financeiro — API
+          DIVISA — API
         </h1>
         <p className="mt-2 text-gray-600">
           Backend rodando na porta 3001. Use o frontend em{" "}

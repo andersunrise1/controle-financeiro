@@ -5,8 +5,8 @@ import { LocaleProvider } from "@/lib/i18n-context";
 import { ThemeProvider } from "@/lib/theme-context";
 
 export const metadata: Metadata = {
-  title: "Controle Financeiro",
-  description: "MVP de controle financeiro pessoal",
+  title: "DIVISA",
+  description: "Controle financeiro pessoal: entradas, saídas e gastos de mercado.",
 };
 
 export default function RootLayout({
