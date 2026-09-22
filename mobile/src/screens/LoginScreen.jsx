@@ -93,6 +93,13 @@ export default function LoginScreen({ navigation }) {
               </Button3D>
             </View>
 
+            <Text
+              style={styles.forgotLink}
+              onPress={() => navigation.navigate("ForgotPassword")}
+            >
+              {t("forgotPasswordLink")}
+            </Text>
+
             <View style={styles.footer}>
               <Text style={styles.footerText}>{t("noAccount")} </Text>
               <Text
@@ -157,6 +164,13 @@ function getStyles(colors) {
     form: {
       marginTop: 24,
       gap: 16,
+    },
+    forgotLink: {
+      marginTop: 18,
+      fontSize: 14,
+      textAlign: "center",
+      textDecorationLine: "underline",
+      color: colors.textMuted,
     },
     footer: {
       flexDirection: "row",

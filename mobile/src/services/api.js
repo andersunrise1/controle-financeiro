@@ -128,6 +128,22 @@ export async function getMe() {
   return apiFetch("/api/auth/me");
 }
 
+// Answers the same way whether or not the address has an account, so the
+// UI must not phrase the result as "we sent you an email" either.
+export async function forgotPassword(email) {
+  return apiFetch("/api/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resetPassword(email, code, password) {
+  return apiFetch("/api/auth/reset-password", {
+    method: "POST",
+    body: JSON.stringify({ email, code, password }),
+  });
+}
+
 // Irreversible: removes the account and every transaction, recurrence and
 // feedback attached to it. The password is re-checked server-side. Clears
 // the local session only on success — a wrong password must leave the user

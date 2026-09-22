@@ -104,7 +104,16 @@ export default function LoginPage() {
             </Button3D>
           </form>
 
-          <p className="mt-6 text-center text-sm text-[color:var(--text-muted)]">
+          <p className="mt-4 text-center text-sm">
+            <Link
+              href="/esqueci-senha"
+              className="text-[color:var(--text-muted)] underline"
+            >
+              {t("forgotPasswordLink")}
+            </Link>
+          </p>
+
+          <p className="mt-4 text-center text-sm text-[color:var(--text-muted)]">
             {t("noAccount")}{" "}
             <Link href="/register" className="font-semibold text-[color:var(--text-accent-green)] hover:underline">
               {t("signUpLink")}
