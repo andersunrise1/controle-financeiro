@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
 import { getDb, Transaction } from "@/lib/db";
 import { DEFAULT_CATEGORY, isValidCategory, isValidUnit } from "@/lib/categories";
+import { isValidDateString } from "@/lib/validators";
 import { generateDueTransactions } from "@/lib/recurrence";
 import { logError } from "@/lib/logger";
 
@@ -73,6 +74,10 @@ export async function POST(request: NextRequest) {
         { error: "Tipo deve ser 'income' ou 'expense'." },
         400
       );
+    }
+
+    if (!isValidDateString(date)) {
+      return jsonResponse(request, { error: "Informe uma data válida." }, 400);
     }
 
     const parsedAmount = parseFloat(amount);
@@ -170,6 +175,10 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    if (!isValidDateString(date)) {
+      return jsonResponse(request, { error: "Informe uma data válida." }, 400);
+    }
+
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
       return jsonResponse(
@@ -199,22 +208,35 @@ export async function PUT(request: NextRequest) {
       return jsonResponse(request, { error: "Unidade inválida." }, 400);
     }
 
+    // An *absent* quantity/unit means "this client doesn't handle these
+    // fields" — the Dashboard's TransactionForm has no inputs for them, so
+    // editing a Mercado purchase from there must leave them alone instead of
+    // wiping the "5 kg" the Mercado form saved. An explicit null is the
+    // Mercado form genuinely clearing them.
+    const keepQuantity = quantity === undefined;
+    const keepUnit = unit === undefined;
+
+    const params: (string | number | null)[] = [
+      type,
+      parsedAmount,
+      description?.trim() || "",
+      date,
+      category || DEFAULT_CATEGORY,
+    ];
+    if (!keepQuantity) params.push(parsedQuantity);
+    if (!keepUnit) params.push(unit || null);
+    params.push(Number(id), user.id);
+
     const db = getDb();
     const result = db
       .prepare(
-        "UPDATE transactions SET type = ?, amount = ?, description = ?, date = ?, category = ?, quantity = ?, unit = ? WHERE id = ? AND user_id = ?"
+        `UPDATE transactions
+            SET type = ?, amount = ?, description = ?, date = ?, category = ?,
+                quantity = ${keepQuantity ? "quantity" : "?"},
+                unit = ${keepUnit ? "unit" : "?"}
+          WHERE id = ? AND user_id = ?`
       )
-      .run(
-        type,
-        parsedAmount,
-        description?.trim() || "",
-        date,
-        category || DEFAULT_CATEGORY,
-        parsedQuantity,
-        unit || null,
-        Number(id),
-        user.id
-      );
+      .run(...params);
 
     if (result.changes === 0) {
       return jsonResponse(request, { error: "Transação não encontrada." }, 404);

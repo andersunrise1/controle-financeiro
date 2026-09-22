@@ -4,6 +4,8 @@ const pt = {
   logout: "Sair",
   greeting: "Olá,",
   loadingDashboard: "Carregando dashboard...",
+  loadErrorMessage: "Não foi possível carregar seus dados. Verifique sua conexão e tente novamente.",
+  loadErrorRetry: "Tentar novamente",
   loading: "Carregando...",
 
   loginTitle: "Entrar",
@@ -145,6 +147,8 @@ const en = {
   logout: "Log out",
   greeting: "Hi,",
   loadingDashboard: "Loading dashboard...",
+  loadErrorMessage: "We couldn't load your data. Check your connection and try again.",
+  loadErrorRetry: "Try again",
   loading: "Loading...",
 
   loginTitle: "Log in",
@@ -286,6 +290,8 @@ const es = {
   logout: "Cerrar sesión",
   greeting: "Hola,",
   loadingDashboard: "Cargando panel...",
+  loadErrorMessage: "No pudimos cargar tus datos. Revisa tu conexión e inténtalo de nuevo.",
+  loadErrorRetry: "Intentar de nuevo",
   loading: "Cargando...",
 
   loginTitle: "Iniciar sesión",
@@ -450,6 +456,9 @@ export function translateCategory(category, locale) {
 // to the original Portuguese.
 const errorTranslations = {
   en: {
+    "Informe uma data válida.": "Enter a valid date.",
+    "Sem conexão com o servidor. Verifique sua internet.": "No connection to the server. Check your internet.",
+    "O servidor está indisponível no momento. Tente novamente em instantes.": "The server is unavailable right now. Try again shortly.",
     "Não autenticado.": "Not authenticated.",
     "Tipo, valor e data são obrigatórios.": "Type, amount and date are required.",
     "Tipo deve ser 'income' ou 'expense'.": "Type must be 'income' or 'expense'.",
@@ -485,6 +494,9 @@ const errorTranslations = {
     "Recorrência não encontrada.": "Recurrence not found.",
   },
   es: {
+    "Informe uma data válida.": "Introduce una fecha válida.",
+    "Sem conexão com o servidor. Verifique sua internet.": "Sin conexión con el servidor. Revisa tu internet.",
+    "O servidor está indisponível no momento. Tente novamente em instantes.": "El servidor no está disponible ahora. Inténtalo en unos instantes.",
     "Não autenticado.": "No autenticado.",
     "Tipo, valor e data são obrigatórios.": "Tipo, monto y fecha son obligatorios.",
     "Tipo deve ser 'income' ou 'expense'.": "El tipo debe ser 'income' o 'expense'.",

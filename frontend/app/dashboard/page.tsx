@@ -20,6 +20,7 @@ import {
   Transaction,
   RecurringTransaction,
   Summary,
+  ApiError,
 } from "@/lib/api";
 
 function DashboardContent() {
@@ -34,6 +35,7 @@ function DashboardContent() {
     balance: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   const loadData = useCallback(async () => {
@@ -45,9 +47,15 @@ function DashboardContent() {
       setTransactions(transactionsData.transactions);
       setSummary(transactionsData.summary);
       setRecurring(recurringData.recurring);
-    } catch {
-      setUser(null);
-      router.replace("/login");
+    } catch (err) {
+      // Only an invalid session belongs on the login page. A network blip
+      // used to bounce the user out of the app entirely.
+      if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
+        setUser(null);
+        router.replace("/login");
+      } else {
+        setLoadError(err instanceof Error ? err.message : "");
+      }
     } finally {
       setLoading(false);
     }
@@ -61,6 +69,24 @@ function DashboardContent() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg-dark">
         <p className="text-[color:var(--text-muted)]">{t("loadingDashboard")}</p>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-bg-dark px-6 text-center">
+        <p className="text-3xl">⚠️</p>
+        <p className="max-w-sm text-[color:var(--text-secondary)]">{loadError}</p>
+        <button
+          onClick={() => {
+            setLoading(true);
+            loadData();
+          }}
+          className="rounded-xl bg-neon-green px-5 py-2 font-bold text-gray-900"
+        >
+          {t("loadErrorRetry")}
+        </button>
       </div>
     );
   }

@@ -78,6 +78,19 @@ export function clearToken(): void {
   localStorage.removeItem(TOKEN_KEY);
 }
 
+// Mirrors mobile/src/services/api.js's ApiError: callers need the status to
+// tell an expired session (401 — log out) apart from an unreachable server
+// (status 0 — keep the session, let the user retry).
+export class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 async function apiFetch<T>(
   path: string,
   options: RequestInit = {}
@@ -92,19 +105,39 @@ async function apiFetch<T>(
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers,
-    credentials: "include",
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error || "Erro na requisição.");
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers,
+      credentials: "include",
+    });
+  } catch {
+    throw new ApiError("Sem conexão com o servidor. Verifique sua internet.", 0);
   }
 
-  return data;
+  // A platform-level 502/503 (Railway restarting or cold-starting) answers
+  // with an HTML error page, and response.json() on that used to throw a raw
+  // "Unexpected token '<'" straight through to the UI.
+  const raw = await response.text();
+  let data: { error?: string } | null = null;
+  try {
+    data = raw ? JSON.parse(raw) : null;
+  } catch {
+    data = null;
+  }
+
+  if (!response.ok) {
+    throw new ApiError(
+      data?.error ||
+        (response.status >= 500
+          ? "O servidor está indisponível no momento. Tente novamente em instantes."
+          : "Erro na requisição."),
+      response.status
+    );
+  }
+
+  return data as T;
 }
 
 export async function register(

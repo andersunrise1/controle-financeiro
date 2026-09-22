@@ -6,7 +6,7 @@ import TextField from "../components/TextField";
 import Button3D from "../components/Button3D";
 import Alert from "../components/Alert";
 import RegionPicker from "../components/RegionPicker";
-import { login, setToken, isValidEmail, isValidPassword } from "../services/api";
+import { login, setToken, setCachedUser, isValidEmail, isValidPassword } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { useLocale } from "../context/LocaleContext";
 import { translateError } from "../lib/i18n";
@@ -39,6 +39,7 @@ export default function LoginScreen({ navigation }) {
     try {
       const data = await login(email, password);
       await setToken(data.token);
+      await setCachedUser(data.user);
       setUser(data.user);
     } catch (err) {
       setError(translateError(err.message || "Erro ao fazer login.", locale));

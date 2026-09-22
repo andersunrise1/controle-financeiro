@@ -5,6 +5,7 @@ const pt = {
   greeting: "Olá,",
   loadingDashboard: "Carregando dashboard...",
   loading: "Carregando...",
+  loadErrorRetry: "Tentar novamente",
 
   loginTitle: "Entrar",
   loginSubtitle: "Acesse seu painel financeiro",
@@ -155,6 +156,7 @@ const en: Dictionary = {
   greeting: "Hi,",
   loadingDashboard: "Loading dashboard...",
   loading: "Loading...",
+  loadErrorRetry: "Try again",
 
   loginTitle: "Log in",
   loginSubtitle: "Access your financial dashboard",
@@ -302,6 +304,7 @@ const es: Dictionary = {
   greeting: "Hola,",
   loadingDashboard: "Cargando panel...",
   loading: "Cargando...",
+  loadErrorRetry: "Intentar de nuevo",
 
   loginTitle: "Iniciar sesión",
   loginSubtitle: "Accede a tu panel financiero",
@@ -487,6 +490,9 @@ export function translateCategory(category: string, locale: Locale): string {
 // an unmapped string just falls back to the original Portuguese.
 const errorTranslations: Record<Exclude<Locale, "pt">, Record<string, string>> = {
   en: {
+    "Informe uma data válida.": "Enter a valid date.",
+    "Sem conexão com o servidor. Verifique sua internet.": "No connection to the server. Check your internet.",
+    "O servidor está indisponível no momento. Tente novamente em instantes.": "The server is unavailable right now. Try again shortly.",
     "Não autenticado.": "Not authenticated.",
     "Tipo, valor e data são obrigatórios.": "Type, amount and date are required.",
     "Tipo deve ser 'income' ou 'expense'.": "Type must be 'income' or 'expense'.",
@@ -522,6 +528,9 @@ const errorTranslations: Record<Exclude<Locale, "pt">, Record<string, string>> =
     "Recorrência não encontrada.": "Recurrence not found.",
   },
   es: {
+    "Informe uma data válida.": "Introduce una fecha válida.",
+    "Sem conexão com o servidor. Verifique sua internet.": "Sin conexión con el servidor. Revisa tu internet.",
+    "O servidor está indisponível no momento. Tente novamente em instantes.": "El servidor no está disponible ahora. Inténtalo en unos instantes.",
     "Não autenticado.": "No autenticado.",
     "Tipo, valor e data são obrigatórios.": "Tipo, monto y fecha son obligatorios.",
     "Tipo deve ser 'income' ou 'expense'.": "El tipo debe ser 'income' o 'expense'.",

@@ -9,6 +9,7 @@ import {
   VOLATILE_REGIONS,
 } from "@/lib/regions";
 import RegionSelect from "./RegionSelect";
+import { parseAmount } from "@/lib/currency";
 
 export default function CurrencyConverter() {
   const { region, rates, t } = useI18n();
@@ -16,7 +17,7 @@ export default function CurrencyConverter() {
   const [from, setFrom] = useState<Region>(region);
   const [to, setTo] = useState<Region>(region === "BR" ? "US" : "BR");
 
-  const parsedAmount = parseFloat(amount.replace(",", ".")) || 0;
+  const parsedAmount = parseAmount(amount) || 0;
   // pivota pelo BRL, reaproveitando a mesma tabela de taxas do resto do app
   const inBRL = parsedAmount / rates.rates[from];
   const converted = inBRL * rates.rates[to];

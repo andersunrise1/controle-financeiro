@@ -9,6 +9,7 @@ import MercadoFilter from "../components/MercadoFilter";
 import MercadoMonthlyChart from "../components/MercadoMonthlyChart";
 import MercadoChart from "../components/MercadoChart";
 import TransactionList from "../components/TransactionList";
+import LoadError from "../components/LoadError";
 import { getTransactions } from "../services/api";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
@@ -22,6 +23,7 @@ export default function MercadoScreen() {
   const scrollRef = useRef(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(null);
@@ -30,10 +32,18 @@ export default function MercadoScreen() {
     try {
       const data = await getTransactions();
       setTransactions(data.transactions);
+      setLoadError("");
+    } catch (err) {
+      setLoadError(err?.message || "");
     } finally {
       setLoading(false);
     }
   }, []);
+
+  const retry = useCallback(() => {
+    setLoading(true);
+    loadData();
+  }, [loadData]);
 
   // useFocusEffect, same reasoning as DashboardScreen — bottom-tab screens
   // stay mounted on tab switch, so this needs to refetch on every focus
@@ -59,6 +69,8 @@ export default function MercadoScreen() {
         <View style={styles.loading}>
           <ActivityIndicator color={colors.neonGreen} size="large" />
         </View>
+      ) : loadError ? (
+        <LoadError message={loadError} onRetry={retry} />
       ) : (
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}

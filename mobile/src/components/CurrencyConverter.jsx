@@ -5,6 +5,7 @@ import RegionPicker from "./RegionPicker";
 import { useLocale } from "../context/LocaleContext";
 import { REGION_CURRENCY, REGION_INTL_LOCALE, VOLATILE_REGIONS } from "../lib/regions";
 import { useTheme } from "../context/ThemeContext";
+import { parseAmount } from "../lib/currency";
 
 // Mirrors components/CurrencyConverter.tsx.
 export default function CurrencyConverter() {
@@ -15,7 +16,7 @@ export default function CurrencyConverter() {
   const [from, setFrom] = useState(region);
   const [to, setTo] = useState(region === "BR" ? "US" : "BR");
 
-  const parsedAmount = parseFloat(amount.replace(",", ".")) || 0;
+  const parsedAmount = parseAmount(amount) || 0;
   const inBRL = parsedAmount / rates.rates[from];
   const converted = inBRL * rates.rates[to];
 

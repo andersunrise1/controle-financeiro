@@ -8,6 +8,7 @@ import { createTransaction, updateTransaction, createRecurringTransaction, Recur
 import { CATEGORIES, DEFAULT_CATEGORY } from "@/lib/categories";
 import { useI18n } from "@/lib/i18n-context";
 import { translateCategory, translateError } from "@/lib/i18n";
+import { parseAmount } from "@/lib/currency";
 
 interface TransactionFormProps {
   onSuccess: () => void;
@@ -75,7 +76,7 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
     setError("");
     setSuccess("");
 
-    const parsedAmount = parseFloat(amount.replace(",", "."));
+    const parsedAmount = parseAmount(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
       setError(translateError("Informe um valor válido maior que zero.", locale));
       return;

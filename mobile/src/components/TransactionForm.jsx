@@ -10,6 +10,7 @@ import { CATEGORIES, DEFAULT_CATEGORY } from "../lib/categories";
 import { translateCategory, translateError } from "../lib/i18n";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
+import { parseAmount } from "../lib/currency";
 
 function todayStr() {
   const d = new Date();
@@ -70,7 +71,7 @@ export default function TransactionForm({ onSuccess, editingTransaction, onCance
     setError("");
     setSuccess("");
 
-    const parsedAmount = parseFloat(amount.replace(",", "."));
+    const parsedAmount = parseAmount(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
       setError(translateError("Informe um valor válido maior que zero.", locale));
       return;

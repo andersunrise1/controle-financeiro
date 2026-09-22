@@ -90,6 +90,34 @@ export function getDb(): Database.Database {
     if (!hasUnit) {
       db.exec("ALTER TABLE transactions ADD COLUMN unit TEXT");
     }
+
+    // The day-of-month a monthly/yearly rule was originally set to. Without
+    // it, next_run_date is the only memory of the intended day — so a rule
+    // set for the 31st gets clamped to Feb 28 and then stays on the 28th
+    // forever, because the next hop reads the day back off the clamped date.
+    const recurringColumns = db
+      .prepare("PRAGMA table_info(recurring_transactions)")
+      .all() as { name: string }[];
+
+    if (!recurringColumns.some((c) => c.name === "anchor_day")) {
+      db.exec(
+        "ALTER TABLE recurring_transactions ADD COLUMN anchor_day INTEGER"
+      );
+
+      // Backfill: the first transaction a rule ever generated still carries
+      // the original, un-clamped day. Rules that never ran fall back to their
+      // pending next_run_date, which hasn't been rewritten yet either.
+      db.exec(`
+        UPDATE recurring_transactions
+           SET anchor_day = COALESCE(
+             (SELECT CAST(strftime('%d', MIN(t.date)) AS INTEGER)
+                FROM transactions t
+               WHERE t.recurring_id = recurring_transactions.id),
+             CAST(strftime('%d', next_run_date) AS INTEGER)
+           )
+         WHERE anchor_day IS NULL
+      `);
+    }
   }
 
   return db;
@@ -126,6 +154,7 @@ export interface RecurringTransaction {
   category: string;
   frequency: "weekly" | "monthly" | "yearly";
   next_run_date: string;
+  anchor_day: number | null;
   active: number;
   created_at: string;
 }

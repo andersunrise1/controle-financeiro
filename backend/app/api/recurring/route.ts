@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
 import { getDb, RecurringTransaction } from "@/lib/db";
 import { DEFAULT_CATEGORY, isValidCategory } from "@/lib/categories";
+import { isValidDateString } from "@/lib/validators";
 import { generateDueTransactions, isValidFrequency } from "@/lib/recurrence";
 import { logError } from "@/lib/logger";
 
@@ -56,6 +57,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!isValidDateString(date)) {
+      return jsonResponse(request, { error: "Informe uma data válida." }, 400);
+    }
+
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
       return jsonResponse(
@@ -76,7 +81,7 @@ export async function POST(request: NextRequest) {
     const db = getDb();
     const result = db
       .prepare(
-        "INSERT INTO recurring_transactions (user_id, type, amount, description, category, frequency, next_run_date) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO recurring_transactions (user_id, type, amount, description, category, frequency, next_run_date, anchor_day) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
       )
       .run(
         user.id,
@@ -85,7 +90,10 @@ export async function POST(request: NextRequest) {
         description?.trim() || "",
         category || DEFAULT_CATEGORY,
         frequency,
-        date
+        date,
+        // The day the user actually picked — the rule's permanent anchor, so
+        // a short February can't quietly rewrite "every 31st" into "every 28th".
+        Number(date.slice(8, 10))
       );
 
     // Materializes the first occurrence right away if its date is today or

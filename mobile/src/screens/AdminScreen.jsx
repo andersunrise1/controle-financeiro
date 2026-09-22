@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Pressable, ActivityIndicator, StyleSheet } from
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopNavBar from "../components/TopNavBar";
 import TopTabBar from "../components/TopTabBar";
+import LoadError from "../components/LoadError";
 import { useAuth } from "../context/AuthContext";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
@@ -27,11 +28,15 @@ function AdminContent() {
   const CATEGORY_LABEL = { bug: t("feedbackCategoryBug"), sugestao: t("feedbackCategorySugestao"), outro: t("feedbackCategoryOutro") };
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
   const loadFeedback = useCallback(async () => {
     try {
       const data = await getAdminFeedback();
       setFeedback(data.feedback);
+      setLoadError("");
+    } catch (err) {
+      setLoadError(err?.message || "");
     } finally {
       setLoading(false);
     }
@@ -41,8 +46,18 @@ function AdminContent() {
     loadFeedback();
   }, [loadFeedback]);
 
+  const retry = useCallback(() => {
+    setLoading(true);
+    loadFeedback();
+  }, [loadFeedback]);
+
   const toggleResolved = async (item) => {
-    await setFeedbackResolved(item.id, item.resolved === 0);
+    try {
+      await setFeedbackResolved(item.id, item.resolved === 0);
+    } catch (err) {
+      setLoadError(err?.message || "");
+      return;
+    }
     loadFeedback();
   };
 
@@ -52,6 +67,10 @@ function AdminContent() {
         <ActivityIndicator color={colors.neonGreen} size="large" />
       </View>
     );
+  }
+
+  if (loadError) {
+    return <LoadError message={loadError} onRetry={retry} />;
   }
 
   return (

@@ -27,15 +27,28 @@ function daysInMonth(year: number, month: number): number {
 
 // Adds N months/years to a date, clamping the day so e.g. Jan 31 + 1 month
 // lands on Feb 28/29 instead of silently rolling over into March.
-function addClamped(date: Date, monthsToAdd: number, yearsToAdd: number): Date {
-  const day = date.getDate();
+//
+// `anchorDay` is the day the rule was originally set to, and it matters: read
+// the day off the *current* date instead and a rule for the 31st clamps to
+// Feb 28 and then stays on the 28th for good, because March's hop now thinks
+// the 28th was the intent all along.
+function addClamped(
+  date: Date,
+  monthsToAdd: number,
+  yearsToAdd: number,
+  anchorDay: number
+): Date {
   const targetYear = date.getFullYear() + yearsToAdd;
   const targetMonth = date.getMonth() + monthsToAdd;
-  const clampedDay = Math.min(day, daysInMonth(targetYear, targetMonth));
+  const clampedDay = Math.min(anchorDay, daysInMonth(targetYear, targetMonth));
   return new Date(targetYear, targetMonth, clampedDay);
 }
 
-export function addPeriod(dateStr: string, frequency: Frequency): string {
+export function addPeriod(
+  dateStr: string,
+  frequency: Frequency,
+  anchorDay?: number | null
+): string {
   const date = parseDate(dateStr);
 
   if (frequency === "weekly") {
@@ -43,11 +56,15 @@ export function addPeriod(dateStr: string, frequency: Frequency): string {
     return formatDate(date);
   }
 
+  // Falls back to the current date's own day for rules created before
+  // anchor_day existed and never backfilled — same behavior as before.
+  const anchor = anchorDay ?? date.getDate();
+
   if (frequency === "monthly") {
-    return formatDate(addClamped(date, 1, 0));
+    return formatDate(addClamped(date, 1, 0, anchor));
   }
 
-  return formatDate(addClamped(date, 0, 1));
+  return formatDate(addClamped(date, 0, 1, anchor));
 }
 
 const MAX_CATCH_UP_OCCURRENCES = 500;
@@ -93,7 +110,7 @@ export function generateDueTransactions(userId: number): void {
         rule.category,
         rule.id
       );
-      nextRunDate = addPeriod(nextRunDate, rule.frequency);
+      nextRunDate = addPeriod(nextRunDate, rule.frequency, rule.anchor_day);
       count++;
     }
 

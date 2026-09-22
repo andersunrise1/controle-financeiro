@@ -9,6 +9,7 @@ import { translateError } from "../lib/i18n";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
 import { UNITS } from "../lib/units";
+import { parseAmount } from "../lib/currency";
 
 const MERCADO_CATEGORY = "Mercado";
 
@@ -72,7 +73,7 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
     setError("");
     setSuccess("");
 
-    const parsedPrice = parseFloat(price.replace(",", "."));
+    const parsedPrice = parseAmount(price);
     if (isNaN(parsedPrice) || parsedPrice <= 0) {
       setError(translateError("Informe um valor válido maior que zero.", locale));
       return;
@@ -84,7 +85,7 @@ export default function MercadoQuickAdd({ transactions, onSuccess, editingTransa
 
     let parsedQuantity = null;
     if (quantity.trim()) {
-      parsedQuantity = parseFloat(quantity.replace(",", "."));
+      parsedQuantity = parseAmount(quantity);
       if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
         setError(translateError("Informe uma quantidade válida maior que zero.", locale));
         return;

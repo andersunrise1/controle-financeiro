@@ -12,6 +12,7 @@ import YearlyChart from "../components/YearlyChart";
 import ClusteredChart from "../components/ClusteredChart";
 import CategoryChart from "../components/CategoryChart";
 import CurrencyConverter from "../components/CurrencyConverter";
+import LoadError from "../components/LoadError";
 import { getTransactions, getRecurringTransactions } from "../services/api";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
@@ -26,6 +27,7 @@ export default function DashboardScreen() {
   const [recurring, setRecurring] = useState([]);
   const [summary, setSummary] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 });
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [editingTransaction, setEditingTransaction] = useState(null);
 
   const loadData = useCallback(async () => {
@@ -37,10 +39,20 @@ export default function DashboardScreen() {
       setTransactions(transactionsData.transactions);
       setSummary(transactionsData.summary);
       setRecurring(recurringData.recurring);
+      setLoadError("");
+    } catch (err) {
+      // Without this the rejection went unhandled and the screen just sat
+      // there showing a R$ 0,00 balance as if the account were empty.
+      setLoadError(err?.message || "");
     } finally {
       setLoading(false);
     }
   }, []);
+
+  const retry = useCallback(() => {
+    setLoading(true);
+    loadData();
+  }, [loadData]);
 
   // useFocusEffect (not a plain useEffect) — bottom-tab screens stay
   // mounted when you switch tabs, so a plain mount-only effect would leave
@@ -61,6 +73,8 @@ export default function DashboardScreen() {
           <ActivityIndicator color={colors.neonGreen} size="large" />
           <Text style={styles.loadingText}>{t("loadingDashboard")}</Text>
         </View>
+      ) : loadError ? (
+        <LoadError message={loadError} onRetry={retry} />
       ) : (
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}

@@ -37,3 +37,26 @@ export function formatMonthFullLabel(monthIndex, region) {
 export function formatDateForRegion(date, region) {
   return date.toLocaleDateString(REGION_INTL_LOCALE[region]);
 }
+
+// Mirrors frontend/lib/currency.ts's parseAmount exactly — see the long
+// comment there for why the old `replace(",", ".")` silently turned
+// "2.500,00" into R$ 2,50.
+export function parseAmount(input) {
+  if (typeof input === "number") return input;
+  if (typeof input !== "string") return NaN;
+
+  const cleaned = input.trim().replace(/[^\d.,-]/g, "");
+  if (!cleaned) return NaN;
+
+  const lastSeparator = Math.max(cleaned.lastIndexOf(","), cleaned.lastIndexOf("."));
+  if (lastSeparator === -1) return parseFloat(cleaned);
+
+  const decimalDigits = cleaned.length - lastSeparator - 1;
+
+  if (decimalDigits >= 1 && decimalDigits <= 2) {
+    const whole = cleaned.slice(0, lastSeparator).replace(/[.,]/g, "");
+    return parseFloat(`${whole}.${cleaned.slice(lastSeparator + 1)}`);
+  }
+
+  return parseFloat(cleaned.replace(/[.,]/g, ""));
+}
