@@ -3,7 +3,36 @@ import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { getDb, User } from "./db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
+const DEV_FALLBACK_SECRET = "dev-secret-key";
+
+/**
+ * The key every session token is signed with.
+ *
+ * Read lazily, per call, rather than at module load: `next build` runs with
+ * NODE_ENV=production, and throwing at import time would break the build on
+ * a machine that legitimately has no secret set.
+ *
+ * In production a missing JWT_SECRET is fatal on purpose. Falling back to a
+ * value that is published in this repository would let anyone who read it
+ * mint a valid token for any account — that is worse than the app refusing
+ * to authenticate at all.
+ */
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (secret) return secret;
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "JWT_SECRET não está definido. O servidor se recusa a assinar ou " +
+        "validar sessões com a chave de desenvolvimento em produção — " +
+        "qualquer pessoa que conheça essa chave conseguiria forjar o acesso " +
+        "a qualquer conta. Defina JWT_SECRET nas variáveis de ambiente."
+    );
+  }
+
+  return DEV_FALLBACK_SECRET;
+}
+
 const COOKIE_NAME = "auth_token";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
@@ -42,14 +71,19 @@ export async function verifyPassword(
 }
 
 export function createToken(user: AuthUser): string {
-  return jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+  return jwt.sign({ userId: user.id, email: user.email }, getJwtSecret(), {
     expiresIn: "7d",
   });
 }
 
 export function verifyToken(token: string): TokenPayload | null {
+  // The secret is resolved outside the try/catch on purpose: a misconfigured
+  // server must surface as a loud 500, not get swallowed into the "invalid
+  // token" path and look like every user's session simply expired.
+  const secret = getJwtSecret();
+
   try {
-    return jwt.verify(token, JWT_SECRET) as TokenPayload;
+    return jwt.verify(token, secret) as TokenPayload;
   } catch {
     return null;
   }

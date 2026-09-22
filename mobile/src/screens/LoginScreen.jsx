@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DivisaLogo from "../components/DivisaLogo";
 import TextField from "../components/TextField";
@@ -11,6 +11,7 @@ import { useAuth } from "../context/AuthContext";
 import { useLocale } from "../context/LocaleContext";
 import { translateError } from "../lib/i18n";
 import { useTheme } from "../context/ThemeContext";
+import { PRIVACY_POLICY_URL } from "../lib/links";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -101,6 +102,15 @@ export default function LoginScreen({ navigation }) {
                 {t("signUpLink")}
               </Text>
             </View>
+
+            {/* The Play Store requires the privacy policy to be reachable
+                from inside the app, not only from the store listing. */}
+            <Text
+              style={styles.policyLink}
+              onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
+            >
+              {t("privacyPolicyLink")}
+            </Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -161,6 +171,13 @@ function getStyles(colors) {
       fontSize: 14,
       fontWeight: "700",
       color: colors.accentGreenText,
+    },
+    policyLink: {
+      marginTop: 18,
+      fontSize: 12,
+      textAlign: "center",
+      textDecorationLine: "underline",
+      color: colors.textMuted,
     },
   });
 }

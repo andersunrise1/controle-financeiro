@@ -110,6 +110,15 @@ export default function LoginPage() {
               {t("signUpLink")}
             </Link>
           </p>
+
+          <p className="mt-5 text-center">
+            <Link
+              href="/privacidade"
+              className="text-xs text-[color:var(--text-muted)] underline"
+            >
+              {t("privacyPolicyLink")}
+            </Link>
+          </p>
         </div>
       </div>
     </div>

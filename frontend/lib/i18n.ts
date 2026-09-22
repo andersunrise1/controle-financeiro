@@ -6,6 +6,7 @@ const pt = {
   loadingDashboard: "Carregando dashboard...",
   loading: "Carregando...",
   loadErrorRetry: "Tentar novamente",
+  privacyPolicyLink: "Política de Privacidade",
 
   loginTitle: "Entrar",
   loginSubtitle: "Acesse seu painel financeiro",
@@ -157,6 +158,7 @@ const en: Dictionary = {
   loadingDashboard: "Loading dashboard...",
   loading: "Loading...",
   loadErrorRetry: "Try again",
+  privacyPolicyLink: "Privacy Policy",
 
   loginTitle: "Log in",
   loginSubtitle: "Access your financial dashboard",
@@ -305,6 +307,7 @@ const es: Dictionary = {
   loadingDashboard: "Cargando panel...",
   loading: "Cargando...",
   loadErrorRetry: "Intentar de nuevo",
+  privacyPolicyLink: "Política de Privacidad",
 
   loginTitle: "Iniciar sesión",
   loginSubtitle: "Accede a tu panel financiero",

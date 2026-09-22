@@ -17,7 +17,13 @@
       "adaptiveIcon": {
         "backgroundColor": "#ff8c42",
         "foregroundImage": "./assets/adaptive-icon-foreground.png"
-      }
+      },
+      "blockedPermissions": [
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.VIBRATE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon-divisa.png"
@@ -31,14 +37,6 @@
           "imageWidth": 320,
           "resizeMode": "contain",
           "backgroundColor": "#2d2d2d"
-        }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "usesCleartextTraffic": true
-          }
         }
       ]
     ],

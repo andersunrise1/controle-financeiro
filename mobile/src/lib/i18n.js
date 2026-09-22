@@ -6,6 +6,7 @@ const pt = {
   loadingDashboard: "Carregando dashboard...",
   loadErrorMessage: "Não foi possível carregar seus dados. Verifique sua conexão e tente novamente.",
   loadErrorRetry: "Tentar novamente",
+  privacyPolicyLink: "Política de Privacidade",
   loading: "Carregando...",
 
   loginTitle: "Entrar",
@@ -149,6 +150,7 @@ const en = {
   loadingDashboard: "Loading dashboard...",
   loadErrorMessage: "We couldn't load your data. Check your connection and try again.",
   loadErrorRetry: "Try again",
+  privacyPolicyLink: "Privacy Policy",
   loading: "Loading...",
 
   loginTitle: "Log in",
@@ -292,6 +294,7 @@ const es = {
   loadingDashboard: "Cargando panel...",
   loadErrorMessage: "No pudimos cargar tus datos. Revisa tu conexión e inténtalo de nuevo.",
   loadErrorRetry: "Intentar de nuevo",
+  privacyPolicyLink: "Política de Privacidad",
   loading: "Cargando...",
 
   loginTitle: "Iniciar sesión",
