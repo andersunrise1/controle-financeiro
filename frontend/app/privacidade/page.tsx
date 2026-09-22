@@ -146,20 +146,29 @@ export default function PrivacidadePage() {
 
         <Section title="Exclusão da sua conta e dos seus dados">
           <p>
-            Você pode pedir a exclusão completa da sua conta a qualquer momento,
-            escrevendo para{" "}
+            Você mesmo pode excluir sua conta a qualquer momento, sem precisar
+            pedir para ninguém: abra a aba{" "}
+            <strong className="text-[color:var(--text-primary)]">Conta</strong>{" "}
+            no aplicativo ou no site, toque em{" "}
+            <strong className="text-[color:var(--text-primary)]">
+              Excluir minha conta
+            </strong>{" "}
+            e confirme com a sua senha. A exclusão é imediata.
+          </p>
+          <p>
+            Ela remove definitivamente seu cadastro, todos os seus lançamentos,
+            suas recorrências e seus feedbacks. Não fica cópia e não há como
+            desfazer.
+          </p>
+          <p>
+            Se você não conseguir acessar a conta para excluí-la, escreva para{" "}
             <a
               href={`mailto:${CONTACT_EMAIL}?subject=Excluir%20minha%20conta%20Divisa`}
               className="font-semibold text-neon-green underline"
             >
               {CONTACT_EMAIL}
             </a>{" "}
-            a partir do e-mail cadastrado na conta.
-          </p>
-          <p>
-            A exclusão remove definitivamente seu cadastro, todos os seus
-            lançamentos, suas recorrências e seus feedbacks. Não fica cópia. O
-            pedido é atendido em até 30 dias.
+            a partir do e-mail cadastrado, e o pedido é atendido em até 30 dias.
           </p>
         </Section>
 

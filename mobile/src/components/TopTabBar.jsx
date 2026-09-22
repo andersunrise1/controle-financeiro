@@ -9,6 +9,7 @@ const TABS = [
   { name: "Dashboard", symbol: "🏠", labelKey: "navDashboard" },
   { name: "Mercado", symbol: "🛒", labelKey: "navMercado" },
   { name: "Feedback", symbol: "💬", labelKey: "navFeedback" },
+  { name: "Conta", symbol: "👤", labelKey: "navAccount" },
   { name: "Admin", symbol: "🛠️", labelKey: "navAdmin", adminOnly: true },
 ];
 

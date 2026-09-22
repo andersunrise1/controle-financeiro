@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "../screens/DashboardScreen";
 import MercadoScreen from "../screens/MercadoScreen";
 import FeedbackScreen from "../screens/FeedbackScreen";
+import AccountScreen from "../screens/AccountScreen";
 import AdminScreen from "../screens/AdminScreen";
 import { useAuth } from "../context/AuthContext";
 
@@ -27,6 +28,7 @@ export default function MainTabs() {
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Mercado" component={MercadoScreen} />
       <Tab.Screen name="Feedback" component={FeedbackScreen} />
+      <Tab.Screen name="Conta" component={AccountScreen} />
       {user?.isAdmin && <Tab.Screen name="Admin" component={AdminScreen} />}
     </Tab.Navigator>
   );

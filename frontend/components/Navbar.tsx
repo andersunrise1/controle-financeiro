@@ -47,6 +47,9 @@ export default function Navbar() {
           <Link href="/feedback" className="text-sm font-semibold transition" style={sunsetTextStyle}>
             {t("navFeedback")}
           </Link>
+          <Link href="/conta" className="text-sm font-semibold transition" style={sunsetTextStyle}>
+            {t("navAccount")}
+          </Link>
           {user.isAdmin && (
             <Link href="/admin" className="text-sm font-semibold transition" style={sunsetTextStyle}>
               {t("navAdmin")}

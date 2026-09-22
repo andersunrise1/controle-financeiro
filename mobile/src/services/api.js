@@ -128,6 +128,19 @@ export async function getMe() {
   return apiFetch("/api/auth/me");
 }
 
+// Irreversible: removes the account and every transaction, recurrence and
+// feedback attached to it. The password is re-checked server-side. Clears
+// the local session only on success — a wrong password must leave the user
+// exactly where they were.
+export async function deleteAccount(password) {
+  const result = await apiFetch("/api/auth/me", {
+    method: "DELETE",
+    body: JSON.stringify({ password }),
+  });
+  await clearToken();
+  return result;
+}
+
 export function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
