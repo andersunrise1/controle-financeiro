@@ -46,6 +46,24 @@ export function getDb(): Database.Database {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
 
+      -- Codes are stored hashed, never in the clear: a leak of this table
+      -- would otherwise be a leak of live "change anyone's password" tokens.
+      -- attempts caps guessing of the 6-digit code, expires_at caps how long
+      -- a leaked email stays useful, used_at makes a code single-use.
+      CREATE TABLE IF NOT EXISTS password_resets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        code_hash TEXT NOT NULL,
+        expires_at TEXT NOT NULL,
+        attempts INTEGER NOT NULL DEFAULT 0,
+        used_at TEXT,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_password_resets_user
+        ON password_resets(user_id);
+
       CREATE TABLE IF NOT EXISTS recurring_transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
@@ -156,6 +174,16 @@ export interface RecurringTransaction {
   next_run_date: string;
   anchor_day: number | null;
   active: number;
+  created_at: string;
+}
+
+export interface PasswordReset {
+  id: number;
+  user_id: number;
+  code_hash: string;
+  expires_at: string;
+  attempts: number;
+  used_at: string | null;
   created_at: string;
 }
 
