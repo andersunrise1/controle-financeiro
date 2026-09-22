@@ -9,6 +9,7 @@ import {
 } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
 import { isValidEmail, isValidName, isValidPassword } from "@/lib/validators";
+import { logError } from "@/lib/logger";
 
 export async function OPTIONS(request: NextRequest) {
   return corsOptions(request);
@@ -71,7 +72,8 @@ export async function POST(request: NextRequest) {
       user,
       token,
     });
-  } catch {
+  } catch (error) {
+    logError("auth/register", error);
     return jsonResponse(request, { error: "Erro interno do servidor." }, 500);
   }
 }

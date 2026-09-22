@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
 import { getDb, FeedbackWithUser } from "@/lib/db";
+import { logError } from "@/lib/logger";
 
 export async function OPTIONS(request: NextRequest) {
   return corsOptions(request);
@@ -66,7 +67,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     return jsonResponse(request, { message: "Feedback atualizado." });
-  } catch {
+  } catch (error) {
+    logError("admin/feedback", error);
     return jsonResponse(request, { error: "Erro interno do servidor." }, 500);
   }
 }

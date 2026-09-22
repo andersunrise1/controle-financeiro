@@ -4,6 +4,7 @@ import { corsOptions, jsonResponse } from "@/lib/cors";
 import { getDb, Transaction } from "@/lib/db";
 import { DEFAULT_CATEGORY, isValidCategory, isValidUnit } from "@/lib/categories";
 import { generateDueTransactions } from "@/lib/recurrence";
+import { logError } from "@/lib/logger";
 
 export async function OPTIONS(request: NextRequest) {
   return corsOptions(request);
@@ -128,7 +129,8 @@ export async function POST(request: NextRequest) {
       .get(result.lastInsertRowid) as Transaction;
 
     return jsonResponse(request, { transaction }, 201);
-  } catch {
+  } catch (error) {
+    logError("transactions", error);
     return jsonResponse(request, { error: "Erro interno do servidor." }, 500);
   }
 }
@@ -223,7 +225,8 @@ export async function PUT(request: NextRequest) {
       .get(Number(id)) as Transaction;
 
     return jsonResponse(request, { transaction });
-  } catch {
+  } catch (error) {
+    logError("transactions", error);
     return jsonResponse(request, { error: "Erro interno do servidor." }, 500);
   }
 }

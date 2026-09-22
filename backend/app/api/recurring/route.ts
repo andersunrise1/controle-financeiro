@@ -4,6 +4,7 @@ import { corsOptions, jsonResponse } from "@/lib/cors";
 import { getDb, RecurringTransaction } from "@/lib/db";
 import { DEFAULT_CATEGORY, isValidCategory } from "@/lib/categories";
 import { generateDueTransactions, isValidFrequency } from "@/lib/recurrence";
+import { logError } from "@/lib/logger";
 
 export async function OPTIONS(request: NextRequest) {
   return corsOptions(request);
@@ -96,7 +97,8 @@ export async function POST(request: NextRequest) {
       .get(result.lastInsertRowid) as RecurringTransaction;
 
     return jsonResponse(request, { recurring }, 201);
-  } catch {
+  } catch (error) {
+    logError("recurring", error);
     return jsonResponse(request, { error: "Erro interno do servidor." }, 500);
   }
 }
@@ -133,7 +135,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     return jsonResponse(request, { message: "Recorrência atualizada." });
-  } catch {
+  } catch (error) {
+    logError("recurring", error);
     return jsonResponse(request, { error: "Erro interno do servidor." }, 500);
   }
 }

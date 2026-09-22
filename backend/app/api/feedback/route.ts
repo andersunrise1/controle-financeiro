@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
 import { getDb, Feedback } from "@/lib/db";
 import { isValidFeedbackCategory } from "@/lib/feedback";
+import { logError } from "@/lib/logger";
 
 export async function OPTIONS(request: NextRequest) {
   return corsOptions(request);
@@ -53,7 +54,8 @@ export async function POST(request: NextRequest) {
       .get(result.lastInsertRowid) as Feedback;
 
     return jsonResponse(request, { feedback }, 201);
-  } catch {
+  } catch (error) {
+    logError("feedback", error);
     return jsonResponse(request, { error: "Erro interno do servidor." }, 500);
   }
 }
