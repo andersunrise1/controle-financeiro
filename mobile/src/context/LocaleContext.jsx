@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { dictionaries } from "../lib/i18n";
 import { REGIONS, REGION_LOCALE } from "../lib/regions";
@@ -20,28 +28,55 @@ export function LocaleProvider({ children }) {
   const [region, setRegionState] = useState("BR");
   const [rates, setRates] = useState(DEFAULT_RATES_STATE);
 
+  // Same guard as ThemeContext, for the same reason: a disk read started at
+  // mount can resolve after the person has already picked a region, and
+  // would otherwise snap their choice back to whatever was stored before.
+  const chosenByUser = useRef(false);
+
   useEffect(() => {
-    AsyncStorage.getItem(REGION_KEY).then((stored) => {
-      if (stored && REGIONS.includes(stored)) setRegionState(stored);
-    });
+    let cancelled = false;
+
+    AsyncStorage.getItem(REGION_KEY)
+      .then((stored) => {
+        if (cancelled || chosenByUser.current) return;
+        if (stored && REGIONS.includes(stored)) setRegionState(stored);
+      })
+      .catch(() => {
+        // Unreadable preference just means we keep the default.
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
-    getExchangeRates().then(setRates);
+    getExchangeRates().then(setRates).catch(() => {});
   }, []);
 
-  const setRegion = (next) => {
+  const setRegion = useCallback((next) => {
+    chosenByUser.current = true;
     setRegionState(next);
-    AsyncStorage.setItem(REGION_KEY, next);
-  };
+  }, []);
 
-  const locale = REGION_LOCALE[region];
-  const t = (key) => dictionaries[locale][key];
+  useEffect(() => {
+    if (!chosenByUser.current) return;
+    AsyncStorage.setItem(REGION_KEY, region).catch(() => {});
+  }, [region]);
+
+  const value = useMemo(() => {
+    const locale = REGION_LOCALE[region];
+    return {
+      region,
+      setRegion,
+      locale,
+      t: (key) => dictionaries[locale][key],
+      rates,
+    };
+  }, [region, setRegion, rates]);
 
   return (
-    <LocaleContext.Provider value={{ region, setRegion, locale, t, rates }}>
-      {children}
-    </LocaleContext.Provider>
+    <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>
   );
 }
 
