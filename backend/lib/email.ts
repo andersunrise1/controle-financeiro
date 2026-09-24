@@ -35,9 +35,23 @@ function getTransporter(): Transporter {
     transporter = nodemailer.createTransport({
       host: SMTP_HOST,
       port: SMTP_PORT,
-      // 465 is implicit TLS; 587 upgrades with STARTTLS after connecting.
+      // 465 is implicit TLS; 587 and 2525 upgrade with STARTTLS after
+      // connecting.
       secure: SMTP_PORT === 465,
       auth: { user: SMTP_USER, pass: SMTP_PASSWORD },
+
+      // Without these, a blocked outbound port doesn't fail — it hangs, and
+      // nodemailer's own defaults let it hang for around two minutes. The
+      // caller is a person who just tapped "send me a code", so they sit on
+      // a spinner the whole time and then get the same message they would
+      // have got instantly. Failing fast turns that into a normal response
+      // plus a real error in the logs.
+      //
+      // (Hosting providers commonly block 587 to curb spam; Brevo offers
+      // 2525 for exactly that case. SMTP_PORT is the knob for it.)
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 15_000,
     });
   }
   return transporter;
