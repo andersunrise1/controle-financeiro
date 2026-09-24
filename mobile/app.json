@@ -4,6 +4,13 @@
     "slug": "divisa",
     "version": "1.0.0",
     "orientation": "portrait",
+    "updates": {
+      "url": "https://u.expo.dev/7e2e167c-81ab-4a6d-b32d-c36ae03a9310",
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
     "icon": "./assets/icon-divisa-1024.png",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#2d2d2d",
