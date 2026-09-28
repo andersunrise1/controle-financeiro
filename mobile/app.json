@@ -20,7 +20,6 @@
     },
     "android": {
       "package": "com.divisa.mobile",
-      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#ff8c42",
         "foregroundImage": "./assets/adaptive-icon-foreground.png"

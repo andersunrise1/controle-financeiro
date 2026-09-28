@@ -84,11 +84,14 @@ lançamento gradual acima vale mais que a capacidade de reverter.
 1. **Suba a versão visível** em `app.json` → `expo.version`
    (`1.0.0` → `1.0.1` para correção, `1.1.0` para novidade).
 
-   Não mexa em `android.versionCode`. O `eas.json` usa
-   `appVersionSource: "remote"` com `autoIncrement: true` no perfil de
-   produção, então o EAS incrementa sozinho. Esse é o número que a Google usa
-   para saber qual build é mais novo, e reenviar um número já usado é o erro
-   que mais trava envio.
+   Não existe `android.versionCode` no `app.json`, e é de propósito: o
+   `eas.json` usa `appVersionSource: "remote"` com `autoIncrement: true` no
+   perfil de produção, então esse número vive no EAS e é incrementado sozinho.
+   Deixá-lo também no `app.json` só criaria um valor que parece importar e é
+   ignorado — o próprio EAS avisa sobre isso durante o build.
+
+   Esse é o número que a Google usa para saber qual build é mais novo, e
+   reenviar um número já usado é o erro que mais trava envio.
 
 2. **Gere o build:**
 
