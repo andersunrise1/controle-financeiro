@@ -1,5 +1,5 @@
 import nodemailer, { type Transporter } from "nodemailer";
-import { logError } from "./logger";
+import { logError, logInfo } from "./logger";
 
 /**
  * Outgoing email, by whichever route is configured.
@@ -92,7 +92,7 @@ async function sendViaBrevoApi(options: {
   subject: string;
   text: string;
   html: string;
-}): Promise<void> {
+}): Promise<string> {
   const response = await fetch(BREVO_API_URL, {
     method: "POST",
     headers: {
@@ -112,9 +112,19 @@ async function sendViaBrevoApi(options: {
     signal: AbortSignal.timeout(15_000),
   });
 
+  const body = await response.text().catch(() => "");
+
   if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    throw new Error(`Brevo API ${response.status}: ${detail.slice(0, 300)}`);
+    throw new Error(`Brevo API ${response.status}: ${body.slice(0, 300)}`);
+  }
+
+  // Brevo answers a successful send with a messageId. Returning it means the
+  // log can name which message it was, so a "we sent it" claim can actually
+  // be checked against Brevo's own delivery record.
+  try {
+    return String(JSON.parse(body)?.messageId ?? "(sem messageId)");
+  } catch {
+    return "(resposta sem JSON)";
   }
 }
 
@@ -135,7 +145,8 @@ export async function sendEmail(options: {
 
   try {
     if (isBrevoApiConfigured()) {
-      await sendViaBrevoApi(options);
+      const messageId = await sendViaBrevoApi(options);
+      logInfo("email/send", `Brevo API aceitou, messageId=${messageId}`);
     } else {
       await getTransporter().sendMail({
         from: `"${MAIL_FROM_NAME}" <${MAIL_FROM}>`,

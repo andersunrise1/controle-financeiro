@@ -4,7 +4,7 @@ import { corsOptions, jsonResponse } from "@/lib/cors";
 import { isValidEmail } from "@/lib/validators";
 import { isEmailConfigured, sendEmail } from "@/lib/email";
 import { createResetCode, isRateLimited, RESET_CONFIG } from "@/lib/passwordReset";
-import { logError } from "@/lib/logger";
+import { logError, logInfo } from "@/lib/logger";
 
 export async function OPTIONS(request: NextRequest) {
   return corsOptions(request);
@@ -71,7 +71,18 @@ export async function POST(request: NextRequest) {
     // account: anything else turns this endpoint into a way to find out who
     // is registered. The rate-limit case answers identically for the same
     // reason — it is invisible to someone probing addresses.
-    if (user && !isRateLimited(user.id)) {
+    // The response stays identical in every branch; the log does not. Which
+    // branch was taken is invisible from outside on purpose, and that same
+    // silence made a real delivery failure indistinguishable from a
+    // rate-limited request while debugging. The server is allowed to know.
+    if (!user) {
+      logInfo("auth/forgot-password", "pedido para e-mail sem conta");
+    } else if (isRateLimited(user.id)) {
+      logInfo(
+        "auth/forgot-password",
+        `limite de ${RESET_CONFIG.MAX_REQUESTS_PER_HOUR}/hora atingido, nada enviado`
+      );
+    } else {
       const code = createResetCode(user.id);
       const { text, html } = buildEmail(user.name, code);
       await sendEmail({

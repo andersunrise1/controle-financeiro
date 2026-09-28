@@ -16,3 +16,15 @@ export function logError(context: string, error: unknown): void {
     error instanceof Error ? `${error.message}\n${error.stack ?? ""}` : String(error);
   console.error(`[divisa] ${context}: ${detail}`);
 }
+
+/**
+ * Records something that went right.
+ *
+ * Only logging failures sounds economical until something doesn't happen:
+ * an empty log then means either "it worked" or "it was never attempted",
+ * and there is no way to tell which. That ambiguity cost a long debugging
+ * session on email delivery, where silence looked like success.
+ */
+export function logInfo(context: string, detail: string): void {
+  console.log(`[divisa] ${context}: ${detail}`);
+}
