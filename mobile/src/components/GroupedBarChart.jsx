@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { ScrollView, useWindowDimensions } from "react-native";
 import Svg, { G, Rect, Text as SvgText, Line, Defs, LinearGradient, Stop } from "react-native-svg";
 import { useTheme } from "../context/ThemeContext";
@@ -24,15 +25,45 @@ const GROUP_MIN_WIDTH = 60;
 // when provided — used by YearlyChart to let the user tap a year and see
 // its total, mirroring the web version's click-to-select behavior. Each
 // bar's own `opacity` (if set) lets the caller dim unselected groups.
-export default function GroupedBarChart({ data, barWidth = 18, barGap = 4, formatY = (v) => v, onGroupPress }) {
+//
+// focusIndex (optional) is the group the chart should open on when it is
+// wider than the screen. A twelve-month chart only fits about seven columns,
+// so without this it opens on January — which for most of the year is empty.
+// The person then sees a blank chart with no hint that their data is a swipe
+// away, because the scroll indicator only appears once you already scroll.
+// Opening at the far end instead shows the recent months, which is what a
+// spending trend is read for, and the bars cut off at the left edge are
+// themselves the hint that there is more to the left.
+export default function GroupedBarChart({
+  data,
+  barWidth = 18,
+  barGap = 4,
+  formatY = (v) => v,
+  onGroupPress,
+  focusIndex,
+}) {
   const { width: screenWidth } = useWindowDimensions();
   const { colors } = useTheme();
+  const scrollRef = useRef(null);
+
+  const groupCount = data.length;
+  const seriesPerGroup = groupCount > 0 ? data[0].bars.length || 1 : 1;
+  const groupW = Math.max(GROUP_MIN_WIDTH, seriesPerGroup * (barWidth + barGap) + 16);
+  const visibleWidth = screenWidth - 64;
+
+  useEffect(() => {
+    if (focusIndex == null || !scrollRef.current) return;
+    // Bring the focused group to the right edge, so the months leading up to
+    // it stay on screen as context.
+    const x = AXIS_LEFT + (focusIndex + 1) * groupW - visibleWidth;
+    if (x > 0) scrollRef.current.scrollTo({ x, animated: false });
+  }, [focusIndex, groupW, visibleWidth]);
 
   if (data.length === 0) return null;
 
-  const seriesCount = data[0].bars.length || 1;
-  const groupWidth = Math.max(GROUP_MIN_WIDTH, seriesCount * (barWidth + barGap) + 16);
-  const chartWidth = Math.max(screenWidth - 64, data.length * groupWidth);
+  const seriesCount = seriesPerGroup;
+  const groupWidth = groupW;
+  const chartWidth = Math.max(visibleWidth, data.length * groupWidth);
   const plotHeight = CHART_HEIGHT - TOP_PAD - AXIS_BOTTOM;
 
   const maxValue = Math.max(1, ...data.flatMap((d) => d.bars.map((b) => b.value))) * 1.15;
@@ -48,7 +79,11 @@ export default function GroupedBarChart({ data, barWidth = 18, barGap = 4, forma
   });
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+    <ScrollView
+      ref={scrollRef}
+      horizontal
+      showsHorizontalScrollIndicator={chartWidth > visibleWidth}
+    >
       <Svg width={chartWidth} height={CHART_HEIGHT}>
         <Defs>
           {gradientDefs.map((g) => (

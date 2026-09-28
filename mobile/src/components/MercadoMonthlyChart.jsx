@@ -28,12 +28,18 @@ export default function MercadoMonthlyChart({ transactions, year }) {
     bars: [{ key: "total", value: d.total, gradientId: "mercadoMonthlyGrad", gradient: ["#ffd93d", "#d6249f"] }],
   }));
 
+  // Twelve columns don't fit on a phone, and January is empty for most of the
+  // year — opening there shows a blank chart. Open on the most recent month
+  // that actually has purchases instead.
+  const lastWithData = data.reduce((acc, d, i) => (d.total > 0 ? i : acc), 0);
+
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{t("mercadoMonthlyChartTitle")}</Text>
       <GroupedBarChart
         data={chartData}
         barWidth={18}
+        focusIndex={lastWithData}
         formatY={(v) => formatCompactNumberForLocale(v, region, rates.rates)}
       />
     </View>
