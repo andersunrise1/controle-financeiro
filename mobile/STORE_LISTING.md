@@ -112,10 +112,25 @@ abre o app, vê uma tela de login que não consegue passar, e **rejeita a
 submissão**. É uma das causas mais comuns de rejeição de primeira viagem.
 
 No Play Console: **Conteúdo do app → Acesso ao app → "Todas as
-funcionalidades exigem credenciais"**, e informe uma conta criada só para isso.
+funcionalidades exigem credenciais"**, e informe:
 
-Crie a conta antes de enviar e deixe-a com alguns lançamentos, para o revisor
-ver o app com conteúdo em vez de telas vazias.
+```
+E-mail: revisor@divisa.app
+Senha:  DivisaReview2026
+```
+
+A conta já existe em produção e já tem 22 lançamentos de três meses, mais uma
+recorrência — o revisor abre e vê o app com conteúdo, saldo e gráficos, em vez
+de telas vazias que não demonstram nada.
+
+Instruções sugeridas para o campo de observações do revisor:
+
+> O app exige conta. Use as credenciais acima. A aba Mercado é o principal
+> diferencial: registra o preço e a quantidade de cada produto ao longo dos
+> meses. A conta já contém dados de demonstração.
+
+Não é uma conta descartável: ela precisa continuar existindo enquanto o app
+estiver publicado, porque cada atualização passa por revisão de novo.
 
 ---
 
@@ -134,8 +149,17 @@ Aqui a resposta honesta é curta, porque o app realmente coleta pouco.
 | Coleta localização, contatos, fotos, arquivos? | Não |
 | Anúncios ou rastreamento? | Não |
 
-Isso é verificável: o manifesto Android declara apenas `INTERNET`, e o
-projeto não tem nenhum SDK de análise ou publicidade.
+Isso é verificável no próprio `.aab` gerado: o manifesto final declara duas
+permissões, `INTERNET` e `ACCESS_NETWORK_STATE` (esta vem do `expo-updates`,
+para checar se há conexão antes de buscar uma atualização). Nenhuma das duas
+é sensível nem gera pedido ao usuário, e o projeto não tem nenhum SDK de
+análise ou publicidade.
+
+As quatro permissões que o React Native e o `expo-file-system` acrescentavam
+por padrão — `SYSTEM_ALERT_WINDOW`, `READ/WRITE_EXTERNAL_STORAGE` e `VIBRATE`
+— estão bloqueadas em `app.json` e foram confirmadas ausentes no manifesto
+final. Isso importa porque `SYSTEM_ALERT_WINDOW` ("sobrepor outros apps")
+apareceria na ficha da loja, e num app de finanças isso afasta gente.
 
 ---
 
