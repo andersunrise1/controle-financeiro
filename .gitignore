@@ -12,6 +12,13 @@ out/
 # Database
 backend/data/
 
+# Backups do banco. NUNCA versionar: cada arquivo é o banco inteiro, com as
+# finanças de todos os clientes e os hashes de senha de todas as contas.
+backups/
+*.db
+*.db-wal
+*.db-shm
+
 # Debug
 npm-debug.log*
 

@@ -135,14 +135,26 @@ só no estado atual. O banco (`backend/data/`) está fora do versionamento.
 Por ordem de importância. Nada aqui é desconhecido — é decisão consciente ou
 trabalho pendente.
 
-### 1. Backup e cifragem em repouso do banco de produção — *não verificado*
+### 1. Backup: a ferramenta existe, falta ligar o agendamento
 
-O SQLite vive num volume do Railway. **Não foi confirmado se existe backup
-automático nem se o volume é cifrado.** Para dado financeiro, **perder** o banco
-é tão grave quanto vazá-lo: um cliente que pagou o vitalício e perdeu dois meses
-de lançamentos não volta.
+**Cifragem em repouso: resolvida.** O Trust Center do Railway lista
+*Encryption-at-rest* explicitamente, junto de SOC 2 Type 2, SOC 3, HIPAA e GDPR.
 
-É o item mais importante desta lista e o único que não depende de código.
+**Backup: parcialmente resolvido.** O Railway faz backup de volumes e a
+documentação cita SQLite por extenso, mas **não vem ligado** — precisa ser
+ativado uma vez na aba *Backups* do serviço. Enquanto isso não for feito, não
+existe snapshot nenhum.
+
+A cópia externa (`npm run backup`) já está construída e verificada, inclusive
+com escritas acontecendo durante a cópia. Ela existe porque o snapshot do
+Railway vive dentro do mesmo projeto, e a documentação deles avisa que apagar o
+volume apaga os backups junto — isso cobre "estraguei os dados", não "perdi o
+projeto".
+
+Procedimento completo, incluindo restauração: [BACKUP.md](backend/BACKUP.md).
+
+**Ainda em aberto:** ligar o agendamento no painel, e ensaiar uma restauração de
+verdade. Um backup que nunca foi restaurado é uma suposição, não uma garantia.
 
 ### 2. Sair não invalida o token
 

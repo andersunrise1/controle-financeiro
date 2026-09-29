@@ -6,7 +6,9 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start -p ${PORT:-3001}",
-    "lint": "eslint"
+    "lint": "eslint",
+    "backup": "node scripts/baixarBackup.mjs",
+    "backup:conferir": "node scripts/conferirBackup.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
