@@ -26,7 +26,7 @@ import { PRIVACY_POLICY_URL } from "../lib/links";
 // create an account. Two steps on purpose: the first press only reveals the
 // confirmation, so the destructive action is never one tap away.
 export default function AccountScreen() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, setAccess } = useAuth();
   const { locale, t } = useLocale();
   const { colors } = useTheme();
   const styles = getStyles(colors);
@@ -52,6 +52,7 @@ export default function AccountScreen() {
       // The account no longer exists; dropping the user sends the navigator
       // back to the login stack on its own.
       setUser(null);
+      setAccess(null);
     } catch (err) {
       setError(translateError(err.message || "Erro ao excluir a conta.", locale));
       setLoading(false);

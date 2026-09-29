@@ -5,6 +5,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import TopNavBar from "../components/TopNavBar";
 import TopTabBar from "../components/TopTabBar";
 import MercadoQuickAdd from "../components/MercadoQuickAdd";
+import TrialNotice from "../components/TrialNotice";
 import MercadoFilter from "../components/MercadoFilter";
 import MercadoMonthlyChart from "../components/MercadoMonthlyChart";
 import MercadoChart from "../components/MercadoChart";
@@ -77,6 +78,7 @@ export default function MercadoScreen() {
           style={{ flex: 1 }}
         >
           <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+            <TrialNotice />
             <MercadoQuickAdd
               transactions={transactions}
               onSuccess={loadData}

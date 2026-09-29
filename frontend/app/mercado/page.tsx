@@ -9,6 +9,7 @@ import MercadoFilter from "@/components/MercadoFilter";
 import MercadoMonthlyChart from "@/components/MercadoMonthlyChart";
 import MercadoChart from "@/components/MercadoChart";
 import TransactionList from "@/components/TransactionList";
+import TrialBanner from "@/components/TrialBanner";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
 import { getTransactions, Transaction, ApiError } from "@/lib/api";
@@ -86,6 +87,8 @@ function MercadoContent() {
       <Navbar />
 
       <main className="mx-auto max-w-4xl space-y-6 px-4 py-8">
+        <TrialBanner />
+
         <MercadoQuickAdd
           transactions={transactions}
           onSuccess={loadData}

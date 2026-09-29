@@ -12,6 +12,7 @@ import CurrencyConverter from "@/components/CurrencyConverter";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
 import RecurringTransactionsList from "@/components/RecurringTransactionsList";
+import TrialBanner from "@/components/TrialBanner";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
 import {
@@ -96,6 +97,8 @@ function DashboardContent() {
       <Navbar />
 
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
+        <TrialBanner />
+
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="space-y-6">
             <BalanceCard

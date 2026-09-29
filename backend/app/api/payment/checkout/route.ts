@@ -1,12 +1,34 @@
 import { NextRequest } from "next/server";
 import { getAuthUser, getUserByEmail } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
-import { createCheckout, isPaymentConfigured } from "@/lib/payment";
+import {
+  createCheckout,
+  isPaymentConfigured,
+  LIFETIME_PRICE_BRL_CENTS,
+  LIFETIME_PRODUCT_NAME,
+} from "@/lib/payment";
 import { getAccessStatus } from "@/lib/access";
 import { logError, logInfo } from "@/lib/logger";
 
 export async function OPTIONS(request: NextRequest) {
   return corsOptions(request);
+}
+
+/**
+ * O que a página de ativação precisa saber antes de qualquer clique: o preço
+ * de verdade e se o pagamento está disponível.
+ *
+ * O preço vem daqui, e não de uma constante repetida no site, porque o valor
+ * cobrado é este. Se um dia mudar, muda em um lugar só, e não existe o caso de
+ * a página anunciar R$ 19,90 e o checkout abrir com outro número.
+ */
+export async function GET(request: NextRequest) {
+  return jsonResponse(request, {
+    available: isPaymentConfigured(),
+    priceCents: LIFETIME_PRICE_BRL_CENTS,
+    currency: "BRL",
+    productName: LIFETIME_PRODUCT_NAME,
+  });
 }
 
 export async function POST(request: NextRequest) {

@@ -80,12 +80,13 @@ export function getAccessStatus(userId: number): AccessStatus {
 }
 
 /**
- * Libera o acesso vitalício.
+ * Libera o acesso vitalício por COMPRA. Só o webhook de pagamento chama isto.
  *
- * Usado tanto pelo webhook de pagamento quanto pela tela de admin, que
- * concede acesso a parceiros de divulgação. É um UPDATE simples de
- * propósito: o Mercado Pago reenvia a mesma notificação mais de uma vez, e
- * rodar isto duas vezes tem que ser inofensivo.
+ * É um UPDATE simples de propósito: o Mercado Pago reenvia a mesma notificação
+ * mais de uma vez, e rodar isto duas vezes tem que ser inofensivo.
+ *
+ * `paid_at` é o que marca uma compra de verdade, e é por isso que ele NÃO é
+ * preenchido por uma concessão manual — ver grantComplimentaryAccess.
  */
 export function grantLifetimeAccess(userId: number, paymentId?: string | null): void {
   getDb()
@@ -97,6 +98,25 @@ export function grantLifetimeAccess(userId: number, paymentId?: string | null): 
         WHERE id = ?`
     )
     .run(paymentId ?? null, userId);
+}
+
+/**
+ * Libera o acesso vitalício de graça, pela tela de admin — parceiros de
+ * divulgação, ou correção de um engano.
+ *
+ * Deixa `paid_at` em branco de propósito, e isso é a diferença inteira: a
+ * trava que impede revogar um acesso olha justamente para `paid_at`. A primeira
+ * versão usava grantLifetimeAccess aqui, e o efeito só apareceu ao testar —
+ * a concessão marcava a conta como se tivesse pago, então o botão "Voltar para
+ * teste" respondia 409 para todo mundo que tinha passado por esta tela. O botão
+ * existia sem nunca poder funcionar.
+ *
+ * Com `paid_at` vazio, quem ganhou pode ter o acesso removido; quem pagou, não.
+ */
+export function grantComplimentaryAccess(userId: number): void {
+  getDb()
+    .prepare("UPDATE users SET plan = 'lifetime' WHERE id = ?")
+    .run(userId);
 }
 
 /**
