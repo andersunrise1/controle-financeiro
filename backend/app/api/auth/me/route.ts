@@ -6,6 +6,7 @@ import {
   verifyPassword,
 } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
+import { getAccessStatus } from "@/lib/access";
 import { deleteUserAccount } from "@/lib/account";
 import { logError } from "@/lib/logger";
 
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
     return jsonResponse(request, { error: "Não autenticado." }, 401);
   }
 
-  return jsonResponse(request, { user });
+  return jsonResponse(request, { user, access: getAccessStatus(user.id) });
 }
 
 /**

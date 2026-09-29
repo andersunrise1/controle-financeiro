@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
+import { canWrite, TRIAL_ENDED_MESSAGE } from "@/lib/access";
 import { getDb, RecurringTransaction } from "@/lib/db";
 import { DEFAULT_CATEGORY, isValidCategory } from "@/lib/categories";
 import { isValidDateString } from "@/lib/validators";
@@ -36,6 +37,10 @@ export async function POST(request: NextRequest) {
   if (!user) {
     return jsonResponse(request, { error: "Não autenticado." }, 401);
   }
+
+    if (!canWrite(user.id)) {
+      return jsonResponse(request, { error: TRIAL_ENDED_MESSAGE }, 402);
+    }
 
   try {
     const body = await request.json();
@@ -118,6 +123,10 @@ export async function PATCH(request: NextRequest) {
   if (!user) {
     return jsonResponse(request, { error: "Não autenticado." }, 401);
   }
+
+    if (!canWrite(user.id)) {
+      return jsonResponse(request, { error: TRIAL_ENDED_MESSAGE }, 402);
+    }
 
   try {
     const body = await request.json();

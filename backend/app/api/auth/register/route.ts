@@ -8,6 +8,7 @@ import {
   verifyPassword,
 } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
+import { getAccessStatus } from "@/lib/access";
 import { isValidEmail, isValidName, isValidPassword } from "@/lib/validators";
 import { logError } from "@/lib/logger";
 
@@ -71,6 +72,7 @@ export async function POST(request: NextRequest) {
       message: "Cadastro realizado com sucesso!",
       user,
       token,
+      access: getAccessStatus(user.id),
     });
   } catch (error) {
     logError("auth/register", error);

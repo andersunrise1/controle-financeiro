@@ -109,6 +109,33 @@ export function getDb(): Database.Database {
       db.exec("ALTER TABLE transactions ADD COLUMN unit TEXT");
     }
 
+    // Acesso: o app é gratuito por 60 dias e depois pede uma compra única.
+    //
+    // Não há coluna de "início do teste": ele é contado a partir de
+    // users.created_at, que já existe. Isso importa mais do que parece — o
+    // prazo vive no servidor, preso à conta, então desinstalar e reinstalar o
+    // app não reinicia nada. Um contador guardado no aparelho seria zerado
+    // por qualquer reinstalação.
+    //
+    // 'trial' é o padrão, inclusive para as contas que já existiam antes
+    // desta migração: elas simplesmente passam a contar os 60 dias a partir
+    // de quando foram criadas.
+    const userColumns = db.prepare("PRAGMA table_info(users)").all() as {
+      name: string;
+    }[];
+
+    if (!userColumns.some((c) => c.name === "plan")) {
+      db.exec(
+        "ALTER TABLE users ADD COLUMN plan TEXT NOT NULL DEFAULT 'trial'"
+      );
+    }
+    if (!userColumns.some((c) => c.name === "paid_at")) {
+      db.exec("ALTER TABLE users ADD COLUMN paid_at TEXT");
+    }
+    if (!userColumns.some((c) => c.name === "mp_payment_id")) {
+      db.exec("ALTER TABLE users ADD COLUMN mp_payment_id TEXT");
+    }
+
     // The day-of-month a monthly/yearly rule was originally set to. Without
     // it, next_run_date is the only memory of the intended day — so a rule
     // set for the 31st gets clamped to Feb 28 and then stays on the 28th
@@ -141,12 +168,17 @@ export function getDb(): Database.Database {
   return db;
 }
 
+export type Plan = "trial" | "lifetime";
+
 export interface User {
   id: number;
   name: string;
   email: string;
   password_hash: string;
   created_at: string;
+  plan: Plan;
+  paid_at: string | null;
+  mp_payment_id: string | null;
 }
 
 export interface Transaction {
