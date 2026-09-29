@@ -17,7 +17,7 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setUser } = useAuth();
+  const { setUser, setAccess } = useAuth();
   const { region, setRegion, locale, t } = useLocale();
   const { colors } = useTheme();
   const styles = getStyles(colors);
@@ -36,7 +36,7 @@ export default function RegisterScreen({ navigation }) {
     }
 
     if (!isValidPassword(password)) {
-      setError(translateError("A senha deve ter no mínimo 6 caracteres.", locale));
+      setError(translateError("A senha deve ter no mínimo 8 caracteres.", locale));
       return;
     }
 
@@ -46,6 +46,7 @@ export default function RegisterScreen({ navigation }) {
       await setToken(data.token);
       await setCachedUser(data.user);
       setUser(data.user);
+      setAccess(data.access);
     } catch (err) {
       setError(translateError(err.message || "Erro ao cadastrar.", locale));
     } finally {

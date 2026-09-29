@@ -6,7 +6,7 @@ import TextField from "../components/TextField";
 import Button3D from "../components/Button3D";
 import Alert from "../components/Alert";
 import RegionPicker from "../components/RegionPicker";
-import { login, setToken, setCachedUser, isValidEmail, isValidPassword } from "../services/api";
+import { login, setToken, setCachedUser, isValidEmail } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { useLocale } from "../context/LocaleContext";
 import { translateError } from "../lib/i18n";
@@ -18,7 +18,7 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setUser } = useAuth();
+  const { setUser, setAccess } = useAuth();
   const { region, setRegion, locale, t } = useLocale();
   const { colors } = useTheme();
   const styles = getStyles(colors);
@@ -31,8 +31,10 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    if (!isValidPassword(password)) {
-      setError(translateError("A senha deve ter no mínimo 6 caracteres.", locale));
+    // Entrar exige apenas que a senha esteja preenchida — ver a tela de login
+    // da web para o motivo (não barrar senha antiga de 6 caracteres).
+    if (!password) {
+      setError(translateError("Informe sua senha.", locale));
       return;
     }
 
@@ -42,6 +44,7 @@ export default function LoginScreen({ navigation }) {
       await setToken(data.token);
       await setCachedUser(data.user);
       setUser(data.user);
+      setAccess(data.access);
     } catch (err) {
       setError(translateError(err.message || "Erro ao fazer login.", locale));
     } finally {
@@ -82,7 +85,7 @@ export default function LoginScreen({ navigation }) {
                 label={t("passwordLabel")}
                 value={password}
                 onChangeText={setPassword}
-                placeholder={t("passwordPlaceholder")}
+                placeholder={t("passwordPlaceholderLogin")}
                 secureTextEntry
               />
 

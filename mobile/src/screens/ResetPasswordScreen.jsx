@@ -43,7 +43,7 @@ export default function ResetPasswordScreen({ navigation, route }) {
     }
     if (!isValidPassword(password)) {
       setError(
-        translateError("A senha deve ter no mínimo 6 caracteres.", locale)
+        translateError("A senha deve ter no mínimo 8 caracteres.", locale)
       );
       return;
     }

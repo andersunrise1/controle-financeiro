@@ -4,6 +4,7 @@ export interface DeletionSummary {
   transactions: number;
   recurring: number;
   feedback: number;
+  passwordResets: number;
 }
 
 /**
@@ -29,14 +30,37 @@ export function deleteUserAccount(userId: number): DeletionSummary {
   const deleteTransactions = db.prepare(
     "DELETE FROM transactions WHERE user_id = ?"
   );
+  // Os códigos de recuperação de senha ficavam para trás: a função prometia
+  // apagar "todas as linhas que pertencem ao usuário" e deixava estas. São
+  // linhas com o id da pessoa e o hash de um código morto, então não davam
+  // acesso a nada — conferi que o id nunca é reaproveitado (AUTOINCREMENT
+  // mantém uma marca d'água em sqlite_sequence), o que descarta o cenário de
+  // um código pendente reaparecer na conta de outra pessoa. Mesmo assim, quem
+  // pede para apagar os dados não espera que sobre resíduo.
+  const deletePasswordResets = db.prepare(
+    "DELETE FROM password_resets WHERE user_id = ?"
+  );
   const deleteUser = db.prepare("DELETE FROM users WHERE id = ?");
 
+  // login_attempts é indexada por e-mail, não por user_id — porque registra
+  // também tentativas contra endereços sem conta. Isso significa que ela guarda
+  // o e-mail da pessoa, que é dado pessoal e tem de sair junto.
+  const deleteLoginAttempts = db.prepare(
+    "DELETE FROM login_attempts WHERE email = ?"
+  );
+
   const run = db.transaction((id: number): DeletionSummary => {
+    const conta = db
+      .prepare("SELECT email FROM users WHERE id = ?")
+      .get(id) as { email: string } | undefined;
+
     const feedback = deleteFeedback.run(id).changes;
     const recurring = deleteRecurring.run(id).changes;
     const transactions = deleteTransactions.run(id).changes;
+    const passwordResets = deletePasswordResets.run(id).changes;
+    if (conta) deleteLoginAttempts.run(conta.email.toLowerCase().trim());
     deleteUser.run(id);
-    return { transactions, recurring, feedback };
+    return { transactions, recurring, feedback, passwordResets };
   });
 
   return run(userId);

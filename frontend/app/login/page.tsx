@@ -7,7 +7,7 @@ import Button3D from "@/components/Button3D";
 import Alert from "@/components/Alert";
 import PasswordInput from "@/components/PasswordInput";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { login, isValidEmail, isValidPassword, setToken } from "@/lib/api";
+import { login, isValidEmail, setToken } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
 import { translateError } from "@/lib/i18n";
@@ -19,7 +19,7 @@ export default function LoginPage() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { user, setUser } = useAuth();
+  const { user, setUser, setAccess } = useAuth();
   const { locale, t } = useI18n();
 
   useEffect(() => {
@@ -36,8 +36,11 @@ export default function LoginPage() {
       return;
     }
 
-    if (!isValidPassword(password)) {
-      setError(translateError("A senha deve ter no mínimo 6 caracteres.", locale));
+    // Entrar exige apenas que a senha esteja preenchida. Conferir o mínimo
+    // atual aqui barraria, antes mesmo de chegar ao servidor, quem tem uma
+    // senha de 6 caracteres criada sob a regra antiga.
+    if (!password) {
+      setError(translateError("Informe sua senha.", locale));
       return;
     }
 
@@ -46,6 +49,7 @@ export default function LoginPage() {
       const data = await login(email, password);
       setToken(data.token);
       setUser(data.user);
+      setAccess(data.access);
       setSuccess(data.message);
       router.push("/dashboard");
     } catch (err) {
@@ -91,7 +95,7 @@ export default function LoginPage() {
               <PasswordInput
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={t("passwordPlaceholder")}
+                placeholder={t("passwordPlaceholderLogin")}
                 required
               />
             </div>

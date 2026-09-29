@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     if (typeof password !== "string" || !isValidPassword(password)) {
       return jsonResponse(
         request,
-        { error: "A senha deve ter no mínimo 6 caracteres." },
+        { error: "A senha deve ter no mínimo 8 caracteres." },
         400
       );
     }

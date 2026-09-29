@@ -35,7 +35,9 @@ const pt = {
   emailLabel: "E-mail",
   emailPlaceholder: "seu@email.com",
   passwordLabel: "Senha",
-  passwordPlaceholder: "Mínimo 6 caracteres",
+  passwordPlaceholder: "Mínimo 8 caracteres",
+  // Ver frontend/lib/i18n.ts: entrar aceita senha antiga de qualquer tamanho.
+  passwordPlaceholderLogin: "Sua senha",
   showPasswordLabel: "Mostrar senha",
   hidePasswordLabel: "Ocultar senha",
   loginButton: "Entrar",
@@ -163,6 +165,14 @@ const pt = {
   mercadoChartFooter: "Total gasto em cada produto no período selecionado — cada produto tem sua própria cor.",
   mercadoHistoryTitle: "Histórico de Compras",
   mercadoHistoryEmpty: "Nenhuma compra registrada ainda.",
+
+  trialBadgeLifetime: "Vitalício",
+  trialBadgeDays: "{n} dia(s) de teste",
+  trialBadgeExpired: "Teste vencido",
+  trialNoticeWarn: "Seu teste gratuito termina em {n} dia(s).",
+  trialNoticeWarnLast: "Último dia do seu teste gratuito.",
+  trialNoticeEnded: "Seu período de teste terminou. Seus dados continuam aqui e podem ser consultados — ative sua conta para voltar a registrar.",
+  trialNoticeWhere: "A ativação é feita na sua conta, pelo navegador.",
 };
 
 const en = {
@@ -200,7 +210,8 @@ const en = {
   emailLabel: "Email",
   emailPlaceholder: "you@email.com",
   passwordLabel: "Password",
-  passwordPlaceholder: "At least 6 characters",
+  passwordPlaceholder: "At least 8 characters",
+  passwordPlaceholderLogin: "Your password",
   showPasswordLabel: "Show password",
   hidePasswordLabel: "Hide password",
   loginButton: "Log in",
@@ -328,6 +339,14 @@ const en = {
   mercadoChartFooter: "Total spent on each product in the selected period — each product has its own color.",
   mercadoHistoryTitle: "Purchase History",
   mercadoHistoryEmpty: "No purchases logged yet.",
+
+  trialBadgeLifetime: "Lifetime",
+  trialBadgeDays: "{n} trial day(s)",
+  trialBadgeExpired: "Trial ended",
+  trialNoticeWarn: "Your free trial ends in {n} day(s).",
+  trialNoticeWarnLast: "Last day of your free trial.",
+  trialNoticeEnded: "Your trial has ended. Your data is still here and can be viewed — activate your account to log entries again.",
+  trialNoticeWhere: "Activation happens in your account, through a browser.",
 };
 
 const es = {
@@ -365,7 +384,8 @@ const es = {
   emailLabel: "Correo electrónico",
   emailPlaceholder: "tu@correo.com",
   passwordLabel: "Contraseña",
-  passwordPlaceholder: "Mínimo 6 caracteres",
+  passwordPlaceholder: "Mínimo 8 caracteres",
+  passwordPlaceholderLogin: "Tu contraseña",
   showPasswordLabel: "Mostrar contraseña",
   hidePasswordLabel: "Ocultar contraseña",
   loginButton: "Iniciar sesión",
@@ -493,6 +513,14 @@ const es = {
   mercadoChartFooter: "Total gastado en cada producto en el período seleccionado — cada producto tiene su propio color.",
   mercadoHistoryTitle: "Historial de Compras",
   mercadoHistoryEmpty: "Ninguna compra registrada todavía.",
+
+  trialBadgeLifetime: "De por vida",
+  trialBadgeDays: "{n} día(s) de prueba",
+  trialBadgeExpired: "Prueba vencida",
+  trialNoticeWarn: "Tu prueba gratuita termina en {n} día(s).",
+  trialNoticeWarnLast: "Último día de tu prueba gratuita.",
+  trialNoticeEnded: "Tu prueba terminó. Tus datos siguen aquí y puedes consultarlos — activa tu cuenta para volver a registrar.",
+  trialNoticeWhere: "La activación se hace en tu cuenta, desde un navegador.",
 };
 
 export const dictionaries = { pt, en, es };
@@ -546,7 +574,10 @@ const errorTranslations = {
     "Nome, e-mail e senha são obrigatórios.": "Name, email and password are required.",
     "Nome deve ter pelo menos 2 caracteres.": "Name must be at least 2 characters.",
     "Informe um e-mail válido.": "Enter a valid email.",
-    "A senha deve ter no mínimo 6 caracteres.": "Password must be at least 6 characters.",
+    "A senha deve ter no mínimo 8 caracteres.": "Password must be at least 8 characters.",
+    "Informe sua senha.": "Enter your password.",
+    "Muitas tentativas de login. Tente novamente em 15 minutos ou redefina sua senha.":
+      "Too many login attempts. Try again in 15 minutes or reset your password.",
     "Este e-mail já está cadastrado.": "This email is already registered.",
     "E-mail e senha são obrigatórios.": "Email and password are required.",
     "E-mail ou senha incorretos.": "Incorrect email or password.",
@@ -566,6 +597,8 @@ const errorTranslations = {
       "Type, amount, date and frequency are required.",
     "Frequência inválida.": "Invalid frequency.",
     "Recorrência não encontrada.": "Recurrence not found.",
+    "Seu período de teste terminou. Seus dados continuam aqui e podem ser consultados — ative sua conta para voltar a registrar.":
+      "Your trial has ended. Your data is still here and can be viewed — activate your account to log entries again.",
   },
   es: {
     "Informe o código recebido.": "Escribe el código que recibiste.",
@@ -592,7 +625,10 @@ const errorTranslations = {
     "Nome, e-mail e senha são obrigatórios.": "Nombre, correo y contraseña son obligatorios.",
     "Nome deve ter pelo menos 2 caracteres.": "El nombre debe tener al menos 2 caracteres.",
     "Informe um e-mail válido.": "Ingresa un correo válido.",
-    "A senha deve ter no mínimo 6 caracteres.": "La contraseña debe tener al menos 6 caracteres.",
+    "A senha deve ter no mínimo 8 caracteres.": "La contraseña debe tener al menos 8 caracteres.",
+    "Informe sua senha.": "Ingresa tu contraseña.",
+    "Muitas tentativas de login. Tente novamente em 15 minutos ou redefina sua senha.":
+      "Demasiados intentos de inicio de sesión. Inténtalo en 15 minutos o restablece tu contraseña.",
     "Este e-mail já está cadastrado.": "Este correo ya está registrado.",
     "E-mail e senha são obrigatórios.": "Correo y contraseña son obligatorios.",
     "E-mail ou senha incorretos.": "Correo o contraseña incorrectos.",
@@ -612,8 +648,20 @@ const errorTranslations = {
       "El tipo, monto, fecha y frecuencia son obligatorios.",
     "Frequência inválida.": "Frecuencia inválida.",
     "Recorrência não encontrada.": "Recurrencia no encontrada.",
+    "Seu período de teste terminou. Seus dados continuam aqui e podem ser consultados — ative sua conta para voltar a registrar.":
+      "Tu prueba terminó. Tus datos siguen aquí y puedes consultarlos — activa tu cuenta para volver a registrar.",
   },
 };
+
+/**
+ * Substitui {marcadores} numa frase traduzida. Espelha frontend/lib/i18n.ts.
+ */
+export function fill(template, values) {
+  return Object.entries(values).reduce(
+    (text, [key, value]) => text.replaceAll(`{${key}}`, String(value)),
+    template
+  );
+}
 
 export function translateError(message, locale) {
   if (locale === "pt") return message;

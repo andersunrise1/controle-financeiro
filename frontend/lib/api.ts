@@ -7,6 +7,27 @@ export interface User {
   isAdmin: boolean;
 }
 
+export type Plan = "trial" | "lifetime";
+
+export interface AccessStatus {
+  plan: Plan;
+  /** Pode gravar agora. Vencido, o app fica só para consulta. */
+  active: boolean;
+  /** Dias inteiros restantes do teste; null se já ativou. */
+  trialDaysLeft: number | null;
+  shouldWarn: boolean;
+}
+
+export interface AdminUser {
+  id: number;
+  name: string;
+  email: string;
+  plan: Plan;
+  created_at: string;
+  paid_at: string | null;
+  dias_restantes: number;
+}
+
 export type FeedbackCategory = "bug" | "sugestao" | "outro";
 
 export interface Feedback {
@@ -91,6 +112,15 @@ export class ApiError extends Error {
   }
 }
 
+// Quem for avisado quando o servidor recusar uma escrita por teste vencido
+// (402). O AuthProvider registra o próprio refreshUser aqui; ficar como
+// callback (e não um import) evita que a camada de rede dependa do React.
+let onPaymentRequired: (() => void) | null = null;
+
+export function setPaymentRequiredHandler(handler: (() => void) | null): void {
+  onPaymentRequired = handler;
+}
+
 async function apiFetch<T>(
   path: string,
   options: RequestInit = {}
@@ -128,6 +158,14 @@ async function apiFetch<T>(
   }
 
   if (!response.ok) {
+    // 402 é o servidor dizendo que o teste venceu. Tratar num lugar só faz o
+    // aviso aparecer em qualquer página: uma aba deixada aberta até passar da
+    // meia-noite mostraria apenas um erro ao salvar, sem explicação, porque o
+    // estado carregado no início ainda diz que o teste está válido.
+    if (response.status === 402 && onPaymentRequired) {
+      onPaymentRequired();
+    }
+
     throw new ApiError(
       data?.error ||
         (response.status >= 500
@@ -144,7 +182,7 @@ export async function register(
   name: string,
   email: string,
   password: string
-): Promise<{ user: User; token: string; message: string }> {
+): Promise<{ user: User; access: AccessStatus; token: string; message: string }> {
   return apiFetch("/api/auth/register", {
     method: "POST",
     body: JSON.stringify({ name, email, password }),
@@ -154,7 +192,7 @@ export async function register(
 export async function login(
   email: string,
   password: string
-): Promise<{ user: User; token: string; message: string }> {
+): Promise<{ user: User; access: AccessStatus; token: string; message: string }> {
   return apiFetch("/api/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
@@ -169,7 +207,7 @@ export async function logout(): Promise<void> {
   }
 }
 
-export async function getMe(): Promise<{ user: User }> {
+export async function getMe(): Promise<{ user: User; access: AccessStatus }> {
   return apiFetch("/api/auth/me");
 }
 
@@ -307,12 +345,51 @@ export async function setFeedbackResolved(
   });
 }
 
+export async function getAdminUsers(): Promise<{ users: AdminUser[] }> {
+  return apiFetch("/api/admin/users");
+}
+
+export async function setUserLifetime(
+  id: number,
+  lifetime: boolean
+): Promise<void> {
+  await apiFetch("/api/admin/users", {
+    method: "PATCH",
+    body: JSON.stringify({ id, lifetime }),
+  });
+}
+
+export interface PaymentOffer {
+  available: boolean;
+  priceCents: number;
+  currency: string;
+  productName: string;
+}
+
+/** Preço e disponibilidade reais, lidos do servidor que vai cobrar. */
+export async function getPaymentOffer(): Promise<PaymentOffer> {
+  return apiFetch("/api/payment/checkout");
+}
+
+/**
+ * Abre o checkout do Mercado Pago e devolve a URL para onde redirecionar.
+ *
+ * Existe só aqui, no site. O aplicativo Android não pode oferecer a compra
+ * nem apontar para esta página — a política de pagamentos do Google exige o
+ * faturamento da própria loja para conteúdo digital comprado dentro do app.
+ */
+export async function createCheckout(): Promise<{ url: string }> {
+  return apiFetch("/api/payment/checkout", { method: "POST" });
+}
+
 export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
+// Só para criar ou trocar senha — ver o comentário em
+// backend/lib/validators.ts. A tela de login não usa isto.
 export function isValidPassword(password: string): boolean {
-  return password.length >= 6;
+  return password.length >= 8;
 }
 
 export function formatCurrency(value: number): string {

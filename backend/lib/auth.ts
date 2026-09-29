@@ -59,8 +59,21 @@ export interface TokenPayload {
   email: string;
 }
 
+/**
+ * Custo do bcrypt.
+ *
+ * 12 é o padrão recomendado hoje; cada passo dobra o tempo de conferir uma
+ * senha — o que atrasa quem tenta quebrar o hash em massa, não quem faz login.
+ *
+ * Aumentar isto não invalida senha nenhuma: o hash do bcrypt carrega o próprio
+ * custo dentro dele, então `compare` continua conferindo corretamente as
+ * senhas antigas gravadas com custo 10. Elas sobem para 12 sozinhas na próxima
+ * vez que a pessoa trocar a senha.
+ */
+const BCRYPT_COST = 12;
+
 export async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, 10);
+  return bcrypt.hash(password, BCRYPT_COST);
 }
 
 export async function verifyPassword(
@@ -68,6 +81,61 @@ export async function verifyPassword(
   hash: string
 ): Promise<boolean> {
   return bcrypt.compare(password, hash);
+}
+
+/**
+ * Hash descartável, de um valor aleatório que ninguém conhece.
+ *
+ * Serve só para gastar tempo: ver `burnPasswordComparison` abaixo.
+ */
+const DUMMY_HASH = "$2b$12$aJ3R7oZVmExdDzSUmHzqnuZPVp9Dv.WvOoVttvtFK3tuQbj2a9qfu";
+
+/**
+ * Gasta o mesmo tempo de uma conferência de senha, sem conferir nada.
+ *
+ * Primeira metade da defesa contra vazamento por tempo de resposta: quando o
+ * e-mail não tem conta, o bcrypt nunca era chamado, então a resposta voltava em
+ * poucos milissegundos em vez de algumas centenas. As duas respostas dizem a
+ * mesma frase ("E-mail ou senha incorretos"), mas o relógio dizia qual era qual
+ * — dava para descobrir quais endereços têm conta só medindo a demora.
+ */
+export async function burnPasswordComparison(password: string): Promise<void> {
+  await bcrypt.compare(password, DUMMY_HASH);
+}
+
+/**
+ * Piso de tempo de resposta do login.
+ *
+ * Segunda metade da defesa, e a que realmente resolve. Só igualar a chamada do
+ * bcrypt não bastou, e a verificação mostrou isso na prática: o hash
+ * descartável é de custo 12 (~230 ms), mas as contas criadas antes da mudança
+ * têm hash de custo 10 (~60 ms), então o e-mail inexistente passou a ser o
+ * *mais lento* dos dois — o vazamento apenas trocou de direção. E não existe um
+ * custo único que sirva, porque o banco vai conviver com os dois por tempo
+ * indeterminado: um hash só sobe de custo quando a pessoa troca a senha.
+ *
+ * Com um piso fixo acima da conferência mais lenta, todas as respostas levam o
+ * mesmo tempo e o custo do hash deixa de importar.
+ *
+ * 500 ms é imperceptível num login (a latência de rede já costuma passar disso)
+ * e ainda atrasa um pouco quem tenta adivinhar em série. Configurável porque o
+ * limite real é a CPU de onde o app estiver hospedado, não desta máquina.
+ */
+const LOGIN_FLOOR_MS = Number(process.env.LOGIN_MIN_RESPONSE_MS || 500);
+
+/**
+ * Espera até o piso ser atingido. Se a requisição já demorou mais que isso,
+ * volta na hora.
+ *
+ * Resíduo honesto: num servidor lento o suficiente para o bcrypt de custo 12
+ * passar de 500 ms, as contas de custo 10 continuariam mais rápidas e a
+ * diferença voltaria. Nesse caso é só subir LOGIN_MIN_RESPONSE_MS.
+ */
+export async function padToFloor(startedAt: number): Promise<void> {
+  const restante = LOGIN_FLOOR_MS - (Date.now() - startedAt);
+  if (restante > 0) {
+    await new Promise((resolve) => setTimeout(resolve, restante));
+  }
 }
 
 export function createToken(user: AuthUser): string {

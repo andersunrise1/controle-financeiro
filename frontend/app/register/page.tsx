@@ -20,7 +20,7 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { user, setUser } = useAuth();
+  const { user, setUser, setAccess } = useAuth();
   const { locale, t } = useI18n();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function RegisterPage() {
     }
 
     if (!isValidPassword(password)) {
-      setError(translateError("A senha deve ter no mínimo 6 caracteres.", locale));
+      setError(translateError("A senha deve ter no mínimo 8 caracteres.", locale));
       return;
     }
 
@@ -52,6 +52,7 @@ export default function RegisterPage() {
       const data = await register(name, email, password);
       setToken(data.token);
       setUser(data.user);
+      setAccess(data.access);
       setSuccess(data.message);
       router.push("/dashboard");
     } catch (err) {

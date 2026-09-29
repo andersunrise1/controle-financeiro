@@ -64,6 +64,28 @@ export function getDb(): Database.Database {
       CREATE INDEX IF NOT EXISTS idx_password_resets_user
         ON password_resets(user_id);
 
+      -- Cada tentativa de login que falhou. É o que limita adivinhação de
+      -- senha: sem isto, nada impede alguém de testar uma lista de senhas
+      -- comuns contra um e-mail conhecido, indefinidamente.
+      --
+      -- Gravado no banco, não em memória: o Railway reinicia o servidor a
+      -- cada deploy, e um contador em memória voltaria a zero junto — bastaria
+      -- esperar o próximo deploy (ou provocar um erro) para recomeçar do zero.
+      --
+      -- Guarda o e-mail tentado, não o user_id, porque a tentativa pode ser
+      -- contra um endereço que não tem conta — e essas também contam.
+      CREATE TABLE IF NOT EXISTS login_attempts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL,
+        ip TEXT,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_login_attempts_email
+        ON login_attempts(email, created_at);
+      CREATE INDEX IF NOT EXISTS idx_login_attempts_ip
+        ON login_attempts(ip, created_at);
+
       CREATE TABLE IF NOT EXISTS recurring_transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,

@@ -3,8 +3,15 @@ export function isValidEmail(email: string): boolean {
   return emailRegex.test(email.trim());
 }
 
+/**
+ * Mínimo de senha para CRIAR ou TROCAR uma senha.
+ *
+ * Deliberadamente NÃO é usada no login: aplicar a regra de hoje na entrada
+ * trancaria fora do app quem criou a conta quando o mínimo era 6 — a rota de
+ * login só confere que a senha foi preenchida.
+ */
 export function isValidPassword(password: string): boolean {
-  return password.length >= 6;
+  return password.length >= 8;
 }
 
 export function isValidName(name: string): boolean {

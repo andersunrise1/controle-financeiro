@@ -34,7 +34,10 @@ const pt = {
   emailLabel: "E-mail",
   emailPlaceholder: "seu@email.com",
   passwordLabel: "Senha",
-  passwordPlaceholder: "Mínimo 6 caracteres",
+  passwordPlaceholder: "Mínimo 8 caracteres",
+  // A tela de entrar aceita a senha que a conta já tem, de qualquer tamanho,
+  // então não pode anunciar o mínimo exigido para criar uma nova.
+  passwordPlaceholderLogin: "Sua senha",
   showPasswordLabel: "Mostrar senha",
   hidePasswordLabel: "Ocultar senha",
   loginButton: "Entrar",
@@ -169,6 +172,53 @@ const pt = {
   mercadoChartFooter: "Total gasto em cada produto no período selecionado — cada produto tem sua própria cor.",
   mercadoHistoryTitle: "Histórico de Compras",
   mercadoHistoryEmpty: "Nenhuma compra registrada ainda.",
+
+  navActivate: "Ativar",
+  trialBannerWarn: "Seu teste gratuito termina em {n} dia(s).",
+  trialBannerWarnLast: "Último dia do seu teste gratuito.",
+  trialBannerEnded: "Seu teste terminou. Você continua vendo tudo que registrou, mas não é possível adicionar, editar ou apagar.",
+  trialBannerCta: "Ativar acesso vitalício",
+  trialBadgeLifetime: "Vitalício",
+  trialBadgeDays: "{n} dia(s) de teste",
+
+  activateTitle: "Ativar seu acesso",
+  activateSubtitle: "Pagamento único. Sem mensalidade, sem renovação.",
+  activatePriceNote: "pagamento único",
+  activateBenefitsTitle: "O que continua funcionando",
+  activateBenefit1: "Lançamentos, saldo e histórico sem limite",
+  activateBenefit2: "Aba Mercado com preço por quilo, litro e unidade",
+  activateBenefit3: "Gráficos por mês, por ano e por categoria",
+  activateBenefit4: "Conversor de moedas com cotação do dia",
+  activateBenefit5: "Contas fixas que se repetem sozinhas",
+  activateBenefit6: "Acesso no site e no aplicativo, com os mesmos dados",
+  activateButton: "Comprar agora",
+  activateButtonLoading: "Abrindo o pagamento...",
+  activateAlreadyTitle: "Sua conta já está ativa",
+  activateAlreadyBody: "O acesso é vitalício e não expira. Nada mais a fazer por aqui.",
+  activateTrialLeft: "Você ainda tem {n} dia(s) de teste. Ativar agora não encurta nada — o acesso vitalício simplesmente passa a valer.",
+  activateBackToApp: "Voltar para o painel",
+  activateDataSafe: "Seus dados nunca são apagados, ativando ou não.",
+  activateUnavailable: "A compra está temporariamente indisponível. Tente novamente mais tarde.",
+
+  paymentSuccessTitle: "Pagamento recebido",
+  paymentSuccessChecking: "Confirmando com o Mercado Pago...",
+  paymentSuccessDone: "Tudo certo! Seu acesso vitalício está ativo.",
+  paymentSuccessSlow: "O pagamento foi feito, mas a confirmação ainda não chegou. Isso pode levar alguns minutos — atualize esta página ou entre novamente mais tarde.",
+  paymentCancelTitle: "Pagamento não concluído",
+  paymentCancelBody: "Nada foi cobrado. Seus dados continuam como estavam e você pode tentar de novo quando quiser.",
+  paymentCancelRetry: "Tentar de novo",
+  paymentPendingTitle: "Pagamento em análise",
+  paymentPendingBody: "Alguns meios de pagamento, como o boleto, levam até alguns dias para serem confirmados. Assim que cair, seu acesso é liberado automaticamente.",
+
+  adminUsersTitle: "Contas",
+  adminUsersEmpty: "Nenhuma conta cadastrada.",
+  adminUsersPlanLifetime: "Vitalício",
+  adminUsersPlanTrial: "Em teste",
+  adminUsersPlanExpired: "Teste vencido",
+  adminUsersPaidAt: "Comprou em",
+  adminUsersGrant: "Liberar vitalício",
+  adminUsersRevoke: "Voltar para teste",
+  adminUsersGrantHint: "Use para parceiros de divulgação. Quem comprou de verdade não pode ser revogado por aqui.",
 };
 
 type Dictionary = typeof pt;
@@ -207,7 +257,8 @@ const en: Dictionary = {
   emailLabel: "Email",
   emailPlaceholder: "you@email.com",
   passwordLabel: "Password",
-  passwordPlaceholder: "At least 6 characters",
+  passwordPlaceholder: "At least 8 characters",
+  passwordPlaceholderLogin: "Your password",
   showPasswordLabel: "Show password",
   hidePasswordLabel: "Hide password",
   loginButton: "Log in",
@@ -341,6 +392,53 @@ const en: Dictionary = {
   mercadoChartFooter: "Total spent on each product in the selected period — each product has its own color.",
   mercadoHistoryTitle: "Purchase History",
   mercadoHistoryEmpty: "No purchases logged yet.",
+
+  navActivate: "Activate",
+  trialBannerWarn: "Your free trial ends in {n} day(s).",
+  trialBannerWarnLast: "Last day of your free trial.",
+  trialBannerEnded: "Your trial has ended. You can still see everything you logged, but adding, editing and deleting are off.",
+  trialBannerCta: "Get lifetime access",
+  trialBadgeLifetime: "Lifetime",
+  trialBadgeDays: "{n} trial day(s)",
+
+  activateTitle: "Activate your access",
+  activateSubtitle: "One payment. No subscription, no renewal.",
+  activatePriceNote: "one-time payment",
+  activateBenefitsTitle: "What keeps working",
+  activateBenefit1: "Entries, balance and history with no limit",
+  activateBenefit2: "Grocery tab with price per kilo, litre and unit",
+  activateBenefit3: "Charts by month, by year and by category",
+  activateBenefit4: "Currency converter with today's rates",
+  activateBenefit5: "Fixed bills that repeat on their own",
+  activateBenefit6: "Same data on the website and in the app",
+  activateButton: "Buy now",
+  activateButtonLoading: "Opening payment...",
+  activateAlreadyTitle: "Your account is already active",
+  activateAlreadyBody: "Access is for life and never expires. Nothing else to do here.",
+  activateTrialLeft: "You still have {n} trial day(s). Activating now costs you nothing — lifetime access simply takes over.",
+  activateBackToApp: "Back to the dashboard",
+  activateDataSafe: "Your data is never deleted, whether you activate or not.",
+  activateUnavailable: "Purchasing is temporarily unavailable. Please try again later.",
+
+  paymentSuccessTitle: "Payment received",
+  paymentSuccessChecking: "Confirming with Mercado Pago...",
+  paymentSuccessDone: "All set! Your lifetime access is active.",
+  paymentSuccessSlow: "The payment went through, but the confirmation hasn't arrived yet. This can take a few minutes — refresh this page or sign in again later.",
+  paymentCancelTitle: "Payment not completed",
+  paymentCancelBody: "Nothing was charged. Your data is exactly as it was and you can try again whenever you like.",
+  paymentCancelRetry: "Try again",
+  paymentPendingTitle: "Payment under review",
+  paymentPendingBody: "Some payment methods take up to a few days to clear. As soon as it does, your access is released automatically.",
+
+  adminUsersTitle: "Accounts",
+  adminUsersEmpty: "No accounts yet.",
+  adminUsersPlanLifetime: "Lifetime",
+  adminUsersPlanTrial: "On trial",
+  adminUsersPlanExpired: "Trial ended",
+  adminUsersPaidAt: "Bought on",
+  adminUsersGrant: "Grant lifetime",
+  adminUsersRevoke: "Back to trial",
+  adminUsersGrantHint: "For promotion partners. Accounts with a real purchase can't be revoked here.",
 };
 
 const es: Dictionary = {
@@ -377,7 +475,9 @@ const es: Dictionary = {
   emailLabel: "Correo electrónico",
   emailPlaceholder: "tu@correo.com",
   passwordLabel: "Contraseña",
-  passwordPlaceholder: "Mínimo 6 caracteres",
+  passwordPlaceholder: "Mínimo 8 caracteres",
+  // A tela de entrar aceita a senha que a conta já tem, de qualquer tamanho,
+  passwordPlaceholderLogin: "Tu contraseña",
   showPasswordLabel: "Mostrar contraseña",
   hidePasswordLabel: "Ocultar contraseña",
   loginButton: "Iniciar sesión",
@@ -511,6 +611,53 @@ const es: Dictionary = {
   mercadoChartFooter: "Total gastado en cada producto en el período seleccionado — cada producto tiene su propio color.",
   mercadoHistoryTitle: "Historial de Compras",
   mercadoHistoryEmpty: "Ninguna compra registrada todavía.",
+
+  navActivate: "Activar",
+  trialBannerWarn: "Tu prueba gratuita termina en {n} día(s).",
+  trialBannerWarnLast: "Último día de tu prueba gratuita.",
+  trialBannerEnded: "Tu prueba terminó. Sigues viendo todo lo que registraste, pero no puedes agregar, editar ni borrar.",
+  trialBannerCta: "Activar acceso de por vida",
+  trialBadgeLifetime: "De por vida",
+  trialBadgeDays: "{n} día(s) de prueba",
+
+  activateTitle: "Activar tu acceso",
+  activateSubtitle: "Un solo pago. Sin mensualidad, sin renovación.",
+  activatePriceNote: "pago único",
+  activateBenefitsTitle: "Lo que sigue funcionando",
+  activateBenefit1: "Registros, saldo e historial sin límite",
+  activateBenefit2: "Pestaña Mercado con precio por kilo, litro y unidad",
+  activateBenefit3: "Gráficos por mes, por año y por categoría",
+  activateBenefit4: "Conversor de monedas con la cotización del día",
+  activateBenefit5: "Gastos fijos que se repiten solos",
+  activateBenefit6: "Los mismos datos en el sitio y en la aplicación",
+  activateButton: "Comprar ahora",
+  activateButtonLoading: "Abriendo el pago...",
+  activateAlreadyTitle: "Tu cuenta ya está activa",
+  activateAlreadyBody: "El acceso es de por vida y no caduca. Nada más que hacer por aquí.",
+  activateTrialLeft: "Todavía tienes {n} día(s) de prueba. Activar ahora no te quita nada — el acceso de por vida simplemente entra en vigor.",
+  activateBackToApp: "Volver al panel",
+  activateDataSafe: "Tus datos nunca se borran, actives o no.",
+  activateUnavailable: "La compra está temporalmente no disponible. Inténtalo más tarde.",
+
+  paymentSuccessTitle: "Pago recibido",
+  paymentSuccessChecking: "Confirmando con Mercado Pago...",
+  paymentSuccessDone: "¡Listo! Tu acceso de por vida está activo.",
+  paymentSuccessSlow: "El pago se hizo, pero la confirmación aún no llegó. Puede tardar unos minutos — actualiza esta página o vuelve a entrar más tarde.",
+  paymentCancelTitle: "Pago no completado",
+  paymentCancelBody: "No se cobró nada. Tus datos siguen como estaban y puedes intentarlo de nuevo cuando quieras.",
+  paymentCancelRetry: "Intentar de nuevo",
+  paymentPendingTitle: "Pago en revisión",
+  paymentPendingBody: "Algunos medios de pago tardan hasta unos días en confirmarse. En cuanto se acredite, tu acceso se libera automáticamente.",
+
+  adminUsersTitle: "Cuentas",
+  adminUsersEmpty: "Ninguna cuenta registrada.",
+  adminUsersPlanLifetime: "De por vida",
+  adminUsersPlanTrial: "En prueba",
+  adminUsersPlanExpired: "Prueba vencida",
+  adminUsersPaidAt: "Compró el",
+  adminUsersGrant: "Liberar de por vida",
+  adminUsersRevoke: "Volver a prueba",
+  adminUsersGrantHint: "Para socios de difusión. Las cuentas con una compra real no se pueden revocar aquí.",
 };
 
 export const dictionaries: Record<Locale, Dictionary> = { pt, en, es };
@@ -580,7 +727,10 @@ const errorTranslations: Record<Exclude<Locale, "pt">, Record<string, string>> =
     "Nome, e-mail e senha são obrigatórios.": "Name, email and password are required.",
     "Nome deve ter pelo menos 2 caracteres.": "Name must be at least 2 characters.",
     "Informe um e-mail válido.": "Enter a valid email.",
-    "A senha deve ter no mínimo 6 caracteres.": "Password must be at least 6 characters.",
+    "A senha deve ter no mínimo 8 caracteres.": "Password must be at least 8 characters.",
+    "Informe sua senha.": "Enter your password.",
+    "Muitas tentativas de login. Tente novamente em 15 minutos ou redefina sua senha.":
+      "Too many login attempts. Try again in 15 minutes or reset your password.",
     "Este e-mail já está cadastrado.": "This email is already registered.",
     "E-mail e senha são obrigatórios.": "Email and password are required.",
     "E-mail ou senha incorretos.": "Incorrect email or password.",
@@ -600,6 +750,12 @@ const errorTranslations: Record<Exclude<Locale, "pt">, Record<string, string>> =
       "Type, amount, date and frequency are required.",
     "Frequência inválida.": "Invalid frequency.",
     "Recorrência não encontrada.": "Recurrence not found.",
+    "Seu período de teste terminou. Seus dados continuam aqui e podem ser consultados — ative sua conta para voltar a registrar.":
+      "Your trial has ended. Your data is still here and can be viewed — activate your account to log entries again.",
+    "O pagamento não está configurado neste servidor. Entre em contato com o suporte.":
+      "Payments are not configured on this server. Please contact support.",
+    "Sua conta já tem acesso vitalício.":
+      "Your account already has lifetime access.",
   },
   es: {
     "Informe o código recebido.": "Escribe el código que recibiste.",
@@ -626,7 +782,10 @@ const errorTranslations: Record<Exclude<Locale, "pt">, Record<string, string>> =
     "Nome, e-mail e senha são obrigatórios.": "Nombre, correo y contraseña son obligatorios.",
     "Nome deve ter pelo menos 2 caracteres.": "El nombre debe tener al menos 2 caracteres.",
     "Informe um e-mail válido.": "Ingresa un correo válido.",
-    "A senha deve ter no mínimo 6 caracteres.": "La contraseña debe tener al menos 6 caracteres.",
+    "A senha deve ter no mínimo 8 caracteres.": "La contraseña debe tener al menos 8 caracteres.",
+    "Informe sua senha.": "Ingresa tu contraseña.",
+    "Muitas tentativas de login. Tente novamente em 15 minutos ou redefina sua senha.":
+      "Demasiados intentos de inicio de sesión. Inténtalo en 15 minutos o restablece tu contraseña.",
     "Este e-mail já está cadastrado.": "Este correo ya está registrado.",
     "E-mail e senha são obrigatórios.": "Correo y contraseña son obligatorios.",
     "E-mail ou senha incorretos.": "Correo o contraseña incorrectos.",
@@ -646,8 +805,30 @@ const errorTranslations: Record<Exclude<Locale, "pt">, Record<string, string>> =
       "El tipo, monto, fecha y frecuencia son obligatorios.",
     "Frequência inválida.": "Frecuencia inválida.",
     "Recorrência não encontrada.": "Recurrencia no encontrada.",
+    "Seu período de teste terminou. Seus dados continuam aqui e podem ser consultados — ative sua conta para voltar a registrar.":
+      "Tu prueba terminó. Tus datos siguen aquí y puedes consultarlos — activa tu cuenta para volver a registrar.",
+    "O pagamento não está configurado neste servidor. Entre em contato com o suporte.":
+      "El pago no está configurado en este servidor. Contacta al soporte.",
+    "Sua conta já tem acesso vitalício.":
+      "Tu cuenta ya tiene acceso de por vida.",
   },
 };
+
+/**
+ * Substitui {marcadores} numa frase traduzida.
+ *
+ * O `t` do contexto não recebe parâmetros, e mudar sua assinatura mexeria em
+ * todas as chamadas do app. Isto resolve o único caso que precisa: contar dias.
+ */
+export function fill(
+  template: string,
+  values: Record<string, string | number>
+): string {
+  return Object.entries(values).reduce(
+    (text, [key, value]) => text.replaceAll(`{${key}}`, String(value)),
+    template
+  );
+}
 
 export function translateError(message: string, locale: Locale): string {
   if (locale === "pt") return message;
