@@ -8,7 +8,8 @@
     "start": "next start -p ${PORT:-3001}",
     "lint": "eslint",
     "backup": "node scripts/baixarBackup.mjs",
-    "backup:conferir": "node scripts/conferirBackup.mjs"
+    "backup:conferir": "node scripts/conferirBackup.mjs",
+    "vitalicio": "node scripts/liberarVitalicio.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

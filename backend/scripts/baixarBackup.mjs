@@ -20,50 +20,29 @@
 
 import fs from "fs";
 import path from "path";
-import readline from "readline";
+import { criarPerguntador } from "./prompt.mjs";
 
 const API_URL =
   process.env.API_URL || "https://controle-financeiro-production-da55.up.railway.app";
 const BACKUP_DIR = process.env.BACKUP_DIR || path.join(process.cwd(), "backups");
 
-function perguntar(texto, oculto = false) {
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-
-  return new Promise((resolve) => {
-    if (!oculto) {
-      rl.question(texto, (resposta) => {
-        rl.close();
-        resolve(resposta.trim());
-      });
-      return;
-    }
-
-    // Esconde a senha enquanto é digitada, interceptando a escrita no terminal.
-    const escrever = rl._writeToOutput.bind(rl);
-    let mascarar = false;
-    rl._writeToOutput = (str) => {
-      if (mascarar && !str.includes(texto)) return;
-      escrever(str);
-    };
-    rl.question(texto, (resposta) => {
-      rl._writeToOutput = escrever;
-      rl.close();
-      process.stdout.write("\n");
-      resolve(resposta.trim());
-    });
-    mascarar = true;
-  });
+async function main() {
+  const { perguntar, fechar } = criarPerguntador();
+  try {
+    await executar(perguntar);
+  } finally {
+    fechar();
+  }
 }
 
-async function main() {
+async function executar(perguntar) {
   console.log(`Servidor: ${API_URL}\n`);
 
   const email = await perguntar("E-mail do admin: ");
   const senha = await perguntar("Senha: ", true);
 
   if (!email || !senha) {
-    console.error("E-mail e senha são obrigatórios.");
-    process.exit(1);
+    throw new Error("E-mail e senha são obrigatórios.");
   }
 
   process.stdout.write("Entrando... ");
@@ -75,8 +54,7 @@ async function main() {
 
   const dadosLogin = await login.json().catch(() => ({}));
   if (!login.ok) {
-    console.error(`falhou (HTTP ${login.status}): ${dadosLogin.error || ""}`);
-    process.exit(1);
+    throw new Error(`falhou (HTTP ${login.status}): ${dadosLogin.error || ""}`);
   }
   console.log("ok");
 
@@ -94,8 +72,7 @@ async function main() {
 
   if (!resposta.ok) {
     const erro = await resposta.json().catch(() => ({}));
-    console.error(`falhou (HTTP ${resposta.status}): ${erro.error || ""}`);
-    process.exit(1);
+    throw new Error(`falhou (HTTP ${resposta.status}): ${erro.error || ""}`);
   }
   console.log("ok");
 
@@ -126,7 +103,9 @@ async function main() {
   console.log(`Confira com:  node scripts/conferirBackup.mjs "${destino}"`);
 }
 
+// Ver o comentário equivalente em liberarVitalicio.mjs: `process.exitCode` evita
+// a asserção nativa do libuv no Windows ao sair com a leitura ainda fechando.
 main().catch((erro) => {
-  console.error(`\nErro: ${erro.message}`);
-  process.exit(1);
+  console.error(`\n${erro.message}`);
+  process.exitCode = 1;
 });
