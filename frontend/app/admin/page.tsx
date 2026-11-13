@@ -69,20 +69,17 @@ function AdminUsers() {
     }
   };
 
-  const planLabel = (conta: AdminUser) => {
-    if (conta.plan === "lifetime") return t("adminUsersPlanLifetime");
-    return conta.dias_restantes > 0
-      ? `${t("adminUsersPlanTrial")} · ${conta.dias_restantes}d`
-      : t("adminUsersPlanExpired");
-  };
+  // Só dois estados desde que a trava dos 60 dias saiu (2026-11-13): comprou
+  // ou não comprou. O rótulo mostrava também os dias restantes e um estado
+  // "vencido" — sem vencimento, isso daria a entender que a conta vai parar
+  // de funcionar, o que não acontece mais.
+  const planLabel = (conta: AdminUser) =>
+    conta.plan === "lifetime" ? t("adminUsersPlanLifetime") : t("adminUsersPlanTrial");
 
-  const planStyle = (conta: AdminUser) => {
-    if (conta.plan === "lifetime")
-      return "border-[#39ff14]/40 bg-[#39ff14]/10 text-[color:var(--alert-success-text)]";
-    return conta.dias_restantes > 0
-      ? "border-[#ffd93d]/40 bg-[#ffd93d]/10 text-[color:var(--alert-warning-text)]"
-      : "border-[#ff073a]/40 bg-[#ff073a]/10 text-[color:var(--alert-error-text)]";
-  };
+  const planStyle = (conta: AdminUser) =>
+    conta.plan === "lifetime"
+      ? "border-[#39ff14]/40 bg-[#39ff14]/10 text-[color:var(--alert-success-text)]"
+      : "border-[#ffd93d]/40 bg-[#ffd93d]/10 text-[color:var(--alert-warning-text)]";
 
   return (
     <section className="mb-10">

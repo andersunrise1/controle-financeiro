@@ -8,7 +8,7 @@ import Alert from "@/components/Alert";
 import Button3D from "@/components/Button3D";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
-import { fill, translateError } from "@/lib/i18n";
+import { translateError } from "@/lib/i18n";
 import {
   createCheckout,
   getPaymentOffer,
@@ -72,16 +72,16 @@ function AtivarContent() {
     );
   }
 
+  // Quatro, não seis. A lista antiga vendia o que hoje é gratuito —
+  // lançamentos, gráficos, aba Mercado, conversor — porque antes a compra
+  // destravava o app depois dos 60 dias. Desde 2026-11-13 ela entrega outra
+  // coisa: tirar o anúncio. Ver backend/lib/access.ts.
   const beneficios = [
     t("activateBenefit1"),
     t("activateBenefit2"),
     t("activateBenefit3"),
     t("activateBenefit4"),
-    t("activateBenefit5"),
-    t("activateBenefit6"),
   ];
-
-  const diasRestantes = access?.active ? (access.trialDaysLeft ?? 0) : 0;
 
   return (
     <main className="mx-auto max-w-lg space-y-6 px-4 py-10">
@@ -118,12 +118,6 @@ function AtivarContent() {
             </li>
           ))}
         </ul>
-
-        {diasRestantes > 0 && (
-          <p className="mt-5 text-xs text-[color:var(--text-faint)]">
-            {fill(t("activateTrialLeft"), { n: diasRestantes })}
-          </p>
-        )}
 
         {(error || offer?.available === false) && (
           <div className="mt-5">

@@ -2,11 +2,7 @@ import { NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
 import { getDb } from "@/lib/db";
-import {
-  grantComplimentaryAccess,
-  revokeLifetimeAccess,
-  TRIAL_DAYS,
-} from "@/lib/access";
+import { grantComplimentaryAccess, revokeLifetimeAccess } from "@/lib/access";
 import { logError, logInfo } from "@/lib/logger";
 
 export async function OPTIONS(request: NextRequest) {
@@ -20,10 +16,15 @@ export interface AdminUserRow {
   plan: string;
   created_at: string;
   paid_at: string | null;
-  dias_restantes: number;
 }
 
-/** Lista para a tela de admin: quem é quem e quanto tempo de teste resta. */
+/**
+ * Lista para a tela de admin: quem é quem e quem já comprou.
+ *
+ * Mostrava também "dias restantes de teste". Saiu junto com a trava dos 60
+ * dias (2026-11-13): sem vencimento, esse número só faria a tela sugerir que
+ * a conta vai parar de funcionar, o que não acontece mais.
+ */
 export async function GET(request: NextRequest) {
   const user = await getAuthUser(request.headers.get("authorization"));
 
@@ -33,15 +34,11 @@ export async function GET(request: NextRequest) {
   try {
     const users = getDb()
       .prepare(
-        `SELECT id, name, email, plan, created_at, paid_at,
-                MAX(0, CAST(
-                  ceil(julianday(datetime(created_at, '+' || ? || ' days')) - julianday('now'))
-                  AS INTEGER
-                )) AS dias_restantes
+        `SELECT id, name, email, plan, created_at, paid_at
            FROM users
           ORDER BY created_at DESC`
       )
-      .all(TRIAL_DAYS) as AdminUserRow[];
+      .all() as AdminUserRow[];
 
     return jsonResponse(request, { users });
   } catch (error) {

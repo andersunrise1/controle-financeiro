@@ -13,7 +13,6 @@ import ClusteredChart from "../components/ClusteredChart";
 import CategoryChart from "../components/CategoryChart";
 import CurrencyConverter from "../components/CurrencyConverter";
 import LoadError from "../components/LoadError";
-import TrialNotice from "../components/TrialNotice";
 import BannerAdSlot from "../components/BannerAdSlot";
 import { getTransactions, getRecurringTransactions } from "../services/api";
 import { useLocale } from "../context/LocaleContext";
@@ -95,7 +94,6 @@ export default function DashboardScreen() {
           style={{ flex: 1 }}
         >
           <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-            <TrialNotice />
             <BalanceCard
               balance={summary.balance}
               totalIncome={summary.totalIncome}

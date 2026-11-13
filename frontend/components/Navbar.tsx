@@ -7,7 +7,6 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
-import { fill } from "@/lib/i18n";
 import { logout } from "@/lib/api";
 
 const sunsetTextStyle = {
@@ -36,23 +35,18 @@ function PlanBadge() {
     );
   }
 
-  if (!access.active) {
-    return (
-      <Link
-        href="/ativar"
-        className="rounded-full border border-[#ff073a]/40 bg-[#ff073a]/10 px-2.5 py-0.5 text-xs font-semibold text-[color:var(--alert-error-text)]"
-      >
-        {t("navActivate")}
-      </Link>
-    );
-  }
-
+  // Quem ainda não comprou vê um convite permanente, não uma contagem.
+  // Antes havia dois estados aqui — dias restantes (âmbar) e vencido
+  // (vermelho) — que saíram com a trava dos 60 dias (2026-11-13). Sem
+  // vencimento, não há o que contar nem o que alarmar; o que resta é deixar
+  // a porta de compra sempre à vista, já que agora nada mais lembra a pessoa
+  // de que ela existe.
   return (
     <Link
       href="/ativar"
       className="rounded-full border border-[#ffd93d]/40 bg-[#ffd93d]/10 px-2.5 py-0.5 text-xs font-semibold text-[color:var(--alert-warning-text)]"
     >
-      {fill(t("trialBadgeDays"), { n: access.trialDaysLeft ?? 0 })}
+      {t("navActivate")}
     </Link>
   );
 }

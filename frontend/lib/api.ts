@@ -11,10 +11,15 @@ export type Plan = "trial" | "lifetime";
 
 export interface AccessStatus {
   plan: Plan;
-  /** Pode gravar agora. Vencido, o app fica só para consulta. */
+  /**
+   * Sempre `true` desde que a trava dos 60 dias saiu (2026-11-13). O campo
+   * continua no contrato porque um app já instalado o lê — ver o comentário
+   * em `backend/lib/access.ts`.
+   */
   active: boolean;
-  /** Dias inteiros restantes do teste; null se já ativou. */
+  /** Não existe mais contagem de teste: `null` para todo mundo. */
   trialDaysLeft: number | null;
+  /** Não há mais vencimento para avisar: sempre `false`. */
   shouldWarn: boolean;
 }
 
@@ -25,7 +30,6 @@ export interface AdminUser {
   plan: Plan;
   created_at: string;
   paid_at: string | null;
-  dias_restantes: number;
 }
 
 export type FeedbackCategory = "bug" | "sugestao" | "outro";

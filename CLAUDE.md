@@ -283,10 +283,12 @@ Verificado ao vivo, ponta a ponta, nas duas plataformas: registrei uma conta de 
 
 ## Anúncios no app (Google AdMob) — 2026-11-13, mobile
 
-Pedido do usuário para monetizar o app além da venda do Vitalício. **O modelo de
-negócio não mudou**: os 60 dias de teste e o travamento em somente-leitura
-continuam exatamente como estavam. O anúncio aparece para quem não tem o
-Vitalício, durante o teste e depois dele.
+Pedido do usuário para monetizar o app além da venda do Vitalício. O anúncio
+aparece para quem não tem o Vitalício.
+
+> Escrito pela manhã dizendo que o modelo dos 60 dias não mudava. **Mudou no
+> mesmo dia** — ver a seção seguinte, "Fim da trava dos 60 dias". A decisão de
+> não mexer no modelo foi tomada antes de o usuário pedir o modelo do Duolingo.
 
 O detalhe que decide tudo está em `mobile/src/services/ads.js`: `shouldShowAds()`
 é o único lugar que responde se alguém vê anúncio — falso no iOS (não existe
@@ -337,6 +339,58 @@ criada. Os passos para criar e trocar os dois identificadores estão em
 rende perto de R$ 0,05–0,15 por mês por usuário diário, então empatar com **uma**
 venda de R$ 19,90 levaria anos — anúncio é colchão em escala, a venda continua
 sendo a remuneração.
+
+## Fim da trava dos 60 dias — modelo Duolingo (2026-11-13)
+
+Decisão do usuário, no mesmo dia em que os anúncios entraram. **O app é
+gratuito para sempre, com anúncio; os R$ 19,90 tiram o anúncio.** Antes eram
+60 dias com tudo liberado e depois somente-leitura até comprar.
+
+O raciocínio que levou a isso: anúncio só rende enquanto a pessoa usa o app, e
+um app que trava no dia 61 é desinstalado — quem não comprava deixava de gerar
+as duas receitas. Por pessoa a venda continua valendo muito mais (≈R$ 18 contra
+centavos por mês), mas como só uma fração pequena compra, o anúncio de quem
+fica tende a somar mais ao longo do ano.
+
+**O que saiu:**
+
+- `canWrite()` e `TRIAL_ENDED_MESSAGE` em `backend/lib/access.ts`, mais as
+  cinco verificações que havia nas rotas de transações e recorrentes.
+- O cálculo de dias restantes em `getAccessStatus` — hoje ele só lê o `plan`.
+- `TrialNotice.jsx` (app) e `TrialBanner.tsx` (site), que avisavam do
+  vencimento. Viraram componentes que nunca renderizavam nada.
+- A contagem de dias no alto do app e no site; sobrou só o selo verde de quem
+  comprou. Na barra do site, quem não comprou vê um convite permanente para
+  `/ativar`, já que nada mais lembra a pessoa de que a compra existe.
+- "Dias restantes" na tela de admin, que passaria a sugerir um vencimento que
+  não existe mais.
+
+**O que ficou de propósito:** `active` e `shouldWarn` continuam no contrato da
+API, fixos em `true`/`false`. Um app já instalado lê `access.active` e, se o
+campo sumisse, concluiria que o teste venceu e pintaria a tela de vermelho —
+do jeito que está, esses aparelhos simplesmente param de avisar, e os que já
+estavam travados voltam a funcionar sozinhos.
+
+**Textos reescritos** em pt/en/es: a página `/ativar` vendia lançamentos,
+gráficos, aba Mercado e conversor — tudo gratuito agora. Passou a vender o que
+a compra de fato entrega.
+
+**Verificado de verdade:** uma conta com `created_at` forçado para 90 dias
+atrás (que a regra antiga deixaria só em leitura) fez login e gravou uma
+transação pela API — HTTP 201, e o `access` devolvido veio
+`{plan:"trial", active:true, trialDaysLeft:null, shouldWarn:false}`. A mesma
+conta abriu o site e o app sem nenhum aviso de vencimento, e a página `/ativar`
+mostrou os textos novos. `tsc --noEmit` limpo nos dois pacotes.
+
+**Dívida pequena:** sobraram chaves órfãs no i18n dos dois lados
+(`trialBanner*`, `trialBadgeDays`, `trialBadgeExpired`, `activateTrialLeft`,
+`adminUsersPlanExpired`, `trialNotice*`). Não quebram nada; foram deixadas para
+não espalhar a mudança por mais arquivos de uma vez.
+
+**Pendência que isto cria:** sem a trava, o app Android não tem como contar ao
+usuário que existe a compra — ele não pode mostrar preço nem apontar para o
+site, por política do Google. Enquanto o Play Billing não entrar, a conversão
+pelo app é zero. As duas coisas precisam andar juntas.
 
 ## Problemas conhecidos
 

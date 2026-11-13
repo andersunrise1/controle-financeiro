@@ -5,32 +5,23 @@ import { logout } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
-import { fill } from "../lib/i18n";
 
 /**
- * Quanto tempo de teste resta, à vista desde o primeiro dia.
+ * Marca quem comprou o Vitalício. Mais ninguém.
  *
- * É só um rótulo: não é tocável e não leva a lugar nenhum — ver TrialNotice
- * para o motivo (o app não pode oferecer compra nem apontar para onde comprar).
+ * Mostrava a contagem de dias de teste e, depois, um aviso vermelho de
+ * vencido. Os dois saíram com a trava dos 60 dias (2026-11-13): sem
+ * vencimento, estar no plano gratuito virou o estado normal do app, e
+ * carimbar isso no alto de toda tela seria só ruído.
+ *
+ * Continua sendo apenas um rótulo: não é tocável e não leva a lugar nenhum.
  */
 function PlanBadge({ access, colors, t }) {
-  if (!access) return null;
+  if (access?.plan !== "lifetime") return null;
 
-  const vitalicio = access.plan === "lifetime";
-  const vencido = !vitalicio && !access.active;
-
-  const rgb = vitalicio ? "57, 255, 20" : vencido ? "255, 7, 58" : "255, 217, 61";
-  const cor = vitalicio
-    ? colors.accentGreenText
-    : vencido
-      ? colors.accentRedText
-      : colors.warningText;
-
-  const texto = vitalicio
-    ? t("trialBadgeLifetime")
-    : vencido
-      ? t("trialBadgeExpired")
-      : fill(t("trialBadgeDays"), { n: access.trialDaysLeft ?? 0 });
+  const rgb = "57, 255, 20";
+  const cor = colors.accentGreenText;
+  const texto = t("trialBadgeLifetime");
 
   return (
     <View

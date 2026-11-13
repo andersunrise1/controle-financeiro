@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { corsOptions, jsonResponse } from "@/lib/cors";
-import { canWrite, TRIAL_ENDED_MESSAGE } from "@/lib/access";
 import { getDb, Transaction } from "@/lib/db";
 import { DEFAULT_CATEGORY, isValidCategory, isValidUnit } from "@/lib/categories";
 import { isValidDateString } from "@/lib/validators";
@@ -57,9 +56,6 @@ export async function POST(request: NextRequest) {
     return jsonResponse(request, { error: "Não autenticado." }, 401);
   }
 
-    if (!canWrite(user.id)) {
-      return jsonResponse(request, { error: TRIAL_ENDED_MESSAGE }, 402);
-    }
 
   try {
     const body = await request.json();
@@ -153,9 +149,6 @@ export async function PUT(request: NextRequest) {
     return jsonResponse(request, { error: "Não autenticado." }, 401);
   }
 
-    if (!canWrite(user.id)) {
-      return jsonResponse(request, { error: TRIAL_ENDED_MESSAGE }, 402);
-    }
 
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
@@ -270,9 +263,6 @@ export async function DELETE(request: NextRequest) {
     return jsonResponse(request, { error: "Não autenticado." }, 401);
   }
 
-    if (!canWrite(user.id)) {
-      return jsonResponse(request, { error: TRIAL_ENDED_MESSAGE }, 402);
-    }
 
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
