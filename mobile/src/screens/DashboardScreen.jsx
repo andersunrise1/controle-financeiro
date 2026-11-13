@@ -14,14 +14,19 @@ import CategoryChart from "../components/CategoryChart";
 import CurrencyConverter from "../components/CurrencyConverter";
 import LoadError from "../components/LoadError";
 import TrialNotice from "../components/TrialNotice";
+import BannerAdSlot from "../components/BannerAdSlot";
 import { getTransactions, getRecurringTransactions } from "../services/api";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
+import { useSaveInterstitialAd } from "../hooks/useSaveInterstitialAd";
 
 // Mirrors app/dashboard/page.tsx's finance-core sections.
 export default function DashboardScreen() {
   const { t } = useLocale();
   const { colors } = useTheme();
+  const { access } = useAuth();
+  const { mostrarSePuder } = useSaveInterstitialAd(access);
   const styles = getStyles(colors);
   const scrollRef = useRef(null);
   const [transactions, setTransactions] = useState([]);
@@ -54,6 +59,14 @@ export default function DashboardScreen() {
     setLoading(true);
     loadData();
   }, [loadData]);
+
+  // Recarrega os dados PRIMEIRO e só então oferece o anúncio de tela cheia:
+  // na ordem inversa, a pessoa fecharia o anúncio e veria por um instante o
+  // saldo antigo, sem o lançamento que acabou de fazer.
+  const aposSalvar = useCallback(async () => {
+    await loadData();
+    mostrarSePuder();
+  }, [loadData, mostrarSePuder]);
 
   // useFocusEffect (not a plain useEffect) — bottom-tab screens stay
   // mounted when you switch tabs, so a plain mount-only effect would leave
@@ -89,7 +102,7 @@ export default function DashboardScreen() {
               totalExpense={summary.totalExpense}
             />
             <TransactionForm
-              onSuccess={loadData}
+              onSuccess={aposSalvar}
               editingTransaction={editingTransaction}
               onCancelEdit={() => setEditingTransaction(null)}
             />
@@ -98,6 +111,12 @@ export default function DashboardScreen() {
             <CurrencyConverter />
             <ClusteredChart transactions={transactions} />
             <CategoryChart transactions={transactions} />
+            {/* A faixa fica aqui, e não no fim da rolagem, porque este é o
+                ponto por onde todo mundo passa: quem quer ver as transações
+                precisa rolar até aqui. E fica longe do formulário de salvar
+                (lá em cima) — perto dele, o anúncio roubaria o toque de quem
+                está lançando uma despesa. */}
+            <BannerAdSlot />
             <TransactionList
               transactions={transactions}
               onDelete={loadData}

@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, ActivityIndicator } from "react-native";
+import { initializeAds } from "../services/ads";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
@@ -17,6 +19,15 @@ const Stack = createNativeStackNavigator();
 export default function AppNavigator() {
   const { user, isReady } = useAuth();
   const { theme, colors } = useTheme();
+
+  // Consentimento e início do SDK de anúncio, uma vez por sessão. Não depende
+  // de estar logado — nem de haver anúncio para mostrar depois: quem tem o
+  // Vitalício simplesmente não vê nenhum (shouldShowAds). Sem `await` e sem
+  // estado: a abertura do app não espera por isto, e a função já engole os
+  // próprios erros.
+  useEffect(() => {
+    initializeAds();
+  }, []);
 
   if (!isReady) {
     return (

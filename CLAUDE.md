@@ -281,6 +281,63 @@ Antes, o gráfico "Gastos por Ano" do Dashboard sempre mostrava embaixo o "ano q
 
 Verificado ao vivo, ponta a ponta, nas duas plataformas: registrei uma conta de teste, semeei gastos em 2023/2024/2025 diretamente no banco, confirmei que o estado padrão mostra o ano de maior gasto com a barra em destaque, cliquei em 2023 e depois 2025 e confirmei que o texto e o destaque visual acompanham corretamente em cada clique — testado nos dois temas (claro/escuro) no mobile (preview mobile-web) e no site.
 
+## Anúncios no app (Google AdMob) — 2026-11-13, mobile
+
+Pedido do usuário para monetizar o app além da venda do Vitalício. **O modelo de
+negócio não mudou**: os 60 dias de teste e o travamento em somente-leitura
+continuam exatamente como estavam. O anúncio aparece para quem não tem o
+Vitalício, durante o teste e depois dele.
+
+O detalhe que decide tudo está em `mobile/src/services/ads.js`: `shouldShowAds()`
+é o único lugar que responde se alguém vê anúncio — falso no iOS (não existe
+build), falso para `access.plan === "lifetime"`, e falso enquanto o plano ainda
+não carregou (melhor o anúncio entrar um instante depois do que piscar na tela
+de quem pagou para não vê-lo).
+
+**Faixa** (`BannerAdSlot.jsx`) no Dashboard e no Mercado, posicionada logo antes
+do histórico de transações: é por onde todo mundo passa ao rolar, e fica longe do
+formulário de lançamento lá em cima — encostar anúncio em botão de salvar é como
+se produz clique acidental. Formato *inline*, não o ancorado, porque ela vive
+dentro do ScrollView e não grudada no rodapé.
+
+**Tela cheia** (`useSaveInterstitialAd.js`) só depois de salvar um lançamento, e
+só no Dashboard. Duas decisões com motivo:
+
+- *Só depois de salvar* — é o único ponto em que a pessoa terminou o que veio
+  fazer. Anúncio na abertura do app (formato *App Open*) foi descartado: atingiria
+  toda sessão, inclusive a de quem só quer lançar R$ 12 de pão.
+- *Só no Dashboard* — o Mercado também salva lançamento, mas as duas telas ficam
+  montadas juntas (são abas), então pré-carregar o anúncio nas duas significaria
+  pedir dois para um intervalo que só deixa exibir um. Pedido que não vira
+  exibição piora o *match rate* da conta no AdMob.
+
+O intervalo mínimo é de 4 horas, guardado no aparelho (AsyncStorage). O hook
+consulta o intervalo **antes** de pedir o anúncio, não depois — pedir e deixar a
+exibição ser barrada é justamente o desperdício acima. Também não recarrega
+depois de exibir: o próximo só poderia aparecer 4 horas mais tarde, e é raro
+alguém ficar esse tempo com o app aberto.
+
+Como `expo-iap` no TechSpeaking, este pacote não tem implementação de web e
+derruba o empacotamento inteiro. Por isso `ads.js`, `BannerAdSlot.jsx` e
+`useSaveInterstitialAd.js` têm irmãos `.web` que o Metro resolve no lugar deles —
+e **os imports desses três são sem extensão** (`"../services/ads"`), porque a
+troca por plataforma do Metro não acontece em import com extensão explícita.
+
+**Verificado** no `npm run web`, contra o backend local: o empacotamento sobrevive
+ao pacote nativo, a tela de login carrega sem nenhum erro de anúncio no console,
+e com uma conta nova o Dashboard e o Mercado montam normalmente — salvei uma
+transação de R$ 42,50 pelo caminho novo (`aposSalvar` → recarrega os dados →
+oferece o anúncio) e o saldo e o histórico atualizaram certo, console limpo.
+**Não verificado: o anúncio aparecendo.** Isso precisa de Android real ou
+emulador, que esta máquina não tem.
+
+Ainda com os identificadores de **teste** do Google: não existe conta do AdMob
+criada. Os passos para criar e trocar os dois identificadores estão em
+`mobile/ADMOB.md`. Vale lembrar o que foi dito ao decidir isto: faixa de anúncio
+rende perto de R$ 0,05–0,15 por mês por usuário diário, então empatar com **uma**
+venda de R$ 19,90 levaria anos — anúncio é colchão em escala, a venda continua
+sendo a remuneração.
+
 ## Problemas conhecidos
 
 **"Erro interno do servidor" em qualquer rota que toca o banco (register/login/transactions)**: o módulo nativo `better-sqlite3` foi compilado para a versão do Node instalada quando `npm install` rodou (junho/2026) — se o Node da máquina for atualizado depois disso, o binário fica com `NODE_MODULE_VERSION` incompatível e todo `require('better-sqlite3')` falha (`ERR_DLOPEN_FAILED`). A rota engole o erro num `catch` genérico sem logar nada, então o único sintoma visível é o 500 no frontend. Corrigido em 2026-08-15 rodando:

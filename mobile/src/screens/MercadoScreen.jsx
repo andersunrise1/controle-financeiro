@@ -11,6 +11,7 @@ import MercadoMonthlyChart from "../components/MercadoMonthlyChart";
 import MercadoChart from "../components/MercadoChart";
 import TransactionList from "../components/TransactionList";
 import LoadError from "../components/LoadError";
+import BannerAdSlot from "../components/BannerAdSlot";
 import { getTransactions } from "../services/api";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
@@ -98,6 +99,12 @@ export default function MercadoScreen() {
 
             <MercadoMonthlyChart transactions={mercadoTransactions} year={year} />
             <MercadoChart transactions={scopedTransactions} />
+
+            {/* Mesma posição do Dashboard: antes do histórico, por onde todo
+                mundo passa, e longe do campo de lançamento rápido lá em cima.
+                Aqui só a faixa — a tela cheia fica no Dashboard, ver
+                useSaveInterstitialAd. */}
+            <BannerAdSlot />
 
             <TransactionList
               transactions={scopedTransactions}
