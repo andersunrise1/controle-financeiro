@@ -1,12 +1,24 @@
 # Anúncios (Google AdMob)
 
-O código já está pronto e sobe sem quebrar nada, usando os identificadores de
-**teste** publicados pelo próprio Google. O que falta é a conta real do AdMob
-e a troca de dois identificadores — passos 1 a 3 aqui.
+**A conta existe desde 2026-11-24 e os identificadores reais já estão no
+código.** O app lá dentro se chama "DIVISA" (Android), com dois blocos:
 
-**Uma conta do AdMob serve os dois apps.** Se o TechSpeaking já tiver conta
-criada, não crie outra: cada app entra como um app novo dentro da mesma conta,
-com seus próprios blocos de anúncio.
+| | Identificador |
+| --- | --- |
+| App ID | `ca-app-pub-1938532240303090~7918288854` |
+| Banner | `ca-app-pub-1938532240303090/5824723965` |
+| Intersticial | `ca-app-pub-1938532240303090/4162876678` |
+
+Não são segredos — vão dentro do app, que qualquer um pode abrir. O que é
+secreto é o acesso à conta do Google, não estes números.
+
+**Falta** informar os dados de faturamento no AdMob (perfil de pagamentos):
+sem eles a análise da conta nem começa, e sem análise aprovada o app não
+veicula anúncio de verdade. Isso é cadastro bancário, feito pelo dono.
+
+**Uma conta do AdMob serve os dois apps.** O TechSpeaking ainda está com os
+identificadores de teste e precisa entrar nesta mesma conta como um app
+separado, com seus próprios blocos — não crie outra conta.
 
 ## O que foi decidido, e por quê
 
@@ -32,39 +44,32 @@ com seus próprios blocos de anúncio.
   toda sessão, inclusive a de quem só quer lançar R$ 12 de pão — num app
   de uso rápido e diário, é o caminho mais curto para a desinstalação.
 
-## 1. Criar a conta
+## Como foi feito, e o que repetir para o TechSpeaking
 
-1. Entre em [admob.google.com](https://admob.google.com) com a mesma conta
-   Google do Play Console (não é obrigatório, mas simplifica).
-2. Aceite os termos e preencha país e dados de pagamento. Isso é necessário
-   para **receber**, não para testar.
+1. Conta criada em [admob.google.com](https://admob.google.com) com a mesma
+   conta Google do Play Console. País de pagamento **Brasil** — esse campo
+   não pode ser trocado depois.
+2. Apps → Adicionar app → Android. Na pergunta "o app está disponível em uma
+   app store compatível?", o DIVISA entrou como **Não**, porque ainda não
+   está publicado. Quando estiver, dá para vincular ao pacote
+   `com.divisa.mobile` — e aí o app passa por uma revisão do Google que
+   libera a veiculação plena. O TechSpeaking, que já está na loja, deve
+   entrar como **Sim** e ser vinculado direto.
+3. Dentro do app, dois blocos: um **Banner** e um **Intersticial**. Repare
+   que o App ID usa `~` e os blocos usam `/` — é fácil trocar um pelo outro.
 
-## 2. Cadastrar o app e criar os blocos
-
-1. Apps → Add app. Se o DIVISA já estiver publicado, dá para vincular
-   buscando o pacote `com.divisa.mobile`; se ainda não, escolha "No" e
-   cadastre à mão (dá para vincular à ficha da loja depois).
-2. Anote o **App ID** (formato `ca-app-pub-XXXXXXXX~XXXXXXXX`, com `~`).
-3. Ad units → Add ad unit, crie dois:
-   - **Banner** — a faixa do Dashboard e do Mercado.
-   - **Interstitial** — a tela cheia depois de salvar um lançamento.
-4. Anote o **Ad unit ID** de cada um (formato
-   `ca-app-pub-XXXXXXXX/XXXXXXXX`, com `/` — repare que é diferente do App
-   ID acima).
-
-## 3. Trocar os identificadores no código
-
-Dois lugares, os dois hoje com valores de teste:
+Onde os identificadores entram no código, se um dia precisarem mudar:
 
 1. `app.json`, no bloco do plugin `react-native-google-mobile-ads` →
-   `androidAppId`, com o App ID do passo 2.2. O `iosAppId` pode continuar
-   com o valor de teste: sem build de iOS ele não é usado, e deixá-lo
-   preenchido só evita um aviso em cada build.
-2. `src/services/ads.js` → `AD_UNIT_IDS.banner` e `AD_UNIT_IDS.interstitial`,
-   com os dois IDs do passo 2.4.
+   `androidAppId`. O `iosAppId` segue com o valor de teste do Google de
+   propósito: sem build de iOS ele não é usado, e deixá-lo preenchido só
+   evita um aviso em cada build.
+2. `src/services/ads.js` → `AD_UNIT_IDS`. Para voltar aos de teste durante o
+   desenvolvimento, basta `USAR_ANUNCIO_DE_TESTE = true` no mesmo arquivo.
 
-As duas mudanças exigem **build novo** (`eas build --platform android`), não
-`eas update`: isso é configuração nativa, não JavaScript.
+Qualquer mudança nesses dois lugares exige **build novo**
+(`eas build --platform android`), não `eas update`: é configuração nativa,
+não JavaScript.
 
 ## 4. Testar sem se queimar
 

@@ -6,19 +6,22 @@ import mobileAds, { AdsConsent, TestIds } from "react-native-google-mobile-ads";
 // executá-lo, não receita.
 const PLATAFORMA_COM_ANUNCIO = Platform.OS === "android";
 
-// TODO: trocar pelos identificadores reais da conta do AdMob quando ela
-// existir (ver ../ADMOB.md). Estes são os de TESTE publicados pelo próprio
-// Google, seguros para subir como provisórios: mostram anúncio de teste e
-// não geram receita nem risco.
+// Identificadores REAIS da conta do AdMob (criada em 2026-11-24). O app
+// correspondente lá é "DIVISA"; ver ../ADMOB.md.
 //
-// Aviso que vale repetir: nunca clicar no próprio anúncio real. O Google
-// bane conta do AdMob por "tráfego inválido" mesmo quando o clique foi sem
-// intenção — por isso o padrão aqui fica no identificador de teste até a
-// verificação final num aparelho registrado.
-export const AD_UNIT_IDS = {
-  banner: TestIds.BANNER,
-  interstitial: TestIds.INTERSTITIAL,
-};
+// Em desenvolvimento, use os de teste: `USAR_ANUNCIO_DE_TESTE = true` troca os
+// dois de uma vez. Isso importa mais do que parece — **nunca clique no próprio
+// anúncio real**. O Google bane conta do AdMob por "tráfego inválido" mesmo
+// quando o clique foi sem intenção, e não há recurso fácil. Anúncio de teste
+// vem marcado "Test Ad" na tela e pode ser tocado à vontade.
+const USAR_ANUNCIO_DE_TESTE = false;
+
+export const AD_UNIT_IDS = USAR_ANUNCIO_DE_TESTE
+  ? { banner: TestIds.BANNER, interstitial: TestIds.INTERSTITIAL }
+  : {
+      banner: "ca-app-pub-1938532240303090/5824723965",
+      interstitial: "ca-app-pub-1938532240303090/4162876678",
+    };
 
 /**
  * Único lugar que decide se anúncio aparece.
