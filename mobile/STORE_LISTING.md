@@ -69,11 +69,19 @@ TAMBÉM NO NAVEGADOR
 Sua conta é a mesma no celular e no site. Lance pelo computador, confira pelo
 celular.
 
+GRATUITO, COM ANÚNCIOS
+
+O app é gratuito e se mantém com anúncios. Nada é bloqueado depois de um
+período: você usa tudo, sempre.
+
 PRIVACIDADE
 
-O DIVISA não pede nenhuma permissão do seu aparelho: sem localização, sem
-contatos, sem câmera, sem fotos. Não tem anúncio e não tem rastreamento. Não
-nos conectamos ao seu banco — tudo que aparece no app foi você que digitou.
+O DIVISA não pede localização, contatos, câmera nem fotos. Não nos conectamos
+ao seu banco — tudo que aparece no app foi você que digitou.
+
+Os anúncios são exibidos pelo Google AdMob, que coleta dados de publicidade
+conforme a política dele. O que você registra no app — seus lançamentos, seus
+valores — nunca é compartilhado com anunciantes.
 
 Você pode excluir sua conta e todos os seus dados de dentro do próprio app, a
 qualquer momento, sem precisar pedir para ninguém.
@@ -85,14 +93,34 @@ Política de privacidade: https://divisa-sigma.vercel.app/privacidade
 
 ## Recursos gráficos
 
+Tudo pronto em **`store-assets/`** (gerado em 2026-11-24):
+
 | Recurso | Arquivo | Medida |
 | --- | --- | --- |
-| Ícone | `assets/icon-divisa-1024.png` (reduzir para 512) | 512×512 |
-| Feature graphic | gerado, `feature-graphic.png` | 1024×500 |
-| Screenshots | 6 capturas do app real | 1080×2160 |
+| Ícone | `store-assets/icone-512.png` | 512×512 |
+| Capa (feature graphic) | `store-assets/capa-1024x500.png` | 1024×500 |
+| Captura 1 | `store-assets/01-saldo.png` | 1080×1920 |
+| Captura 2 | `store-assets/02-mercado.png` | 1080×1920 |
+| Captura 3 | `store-assets/03-produtos.png` | 1080×1920 |
+| Captura 4 | `store-assets/04-categorias.png` | 1080×1920 |
+| Captura 5 | `store-assets/05-conversor.png` | 1080×1920 |
 
-Os screenshots foram tirados do aplicativo em funcionamento, com dados de
-demonstração — não são montagens. Mínimo exigido: 2. Máximo: 8.
+**Suba as capturas nessa ordem.** A primeira é a que aparece na busca, e
+por isso é o saldo: é o que a pessoa quer ver num app de finanças. A
+segunda e a terceira são a aba Mercado, que é o diferencial e o que
+nenhum concorrente genérico mostra.
+
+As telas são o app real rodando, com uma conta de demonstração de 11 meses
+— não são montagens. Cada arte põe o print numa moldura de aparelho sobre
+o degradê da marca, com uma frase de benefício no topo. Mínimo exigido pelo
+Google: 2 capturas. Máximo: 8.
+
+Para refazer (se a interface mudar): os dados de demonstração e a
+composição foram feitos por script, mas fora do repositório. O caminho é
+popular uma conta local, capturar as telas em viewport de celular e compor
+em 1080×1920. O trabalhoso não é compor, é ter dados que encham os
+gráficos: com poucos meses o gráfico do Mercado abre cortando a primeira
+barra.
 
 ---
 
@@ -100,8 +128,13 @@ demonstração — não são montagens. Mínimo exigido: 2. Máximo: 8.
 
 - **Categoria:** Finanças
 - **Público-alvo:** maiores de 18 (o app não se destina a crianças)
-- **Contém anúncios:** Não
-- **Compras no app:** Não
+- **Contém anúncios:** **Sim** — AdMob, desde 2026-11-24
+- **Compras no app:** Não (a compra do Vitalício acontece no site; quando o
+  Play Billing existir, isto vira "Sim")
+
+Declarar "não contém anúncios" num app que exibe anúncios é motivo de
+suspensão, não um detalhe de formulário. Esta ficha dizia "Não" até
+2026-11-24 porque o app realmente não tinha anúncio nenhum.
 
 ---
 
@@ -136,30 +169,45 @@ estiver publicado, porque cada atualização passa por revisão de novo.
 
 ## Formulário de Segurança de Dados
 
-Aqui a resposta honesta é curta, porque o app realmente coleta pouco.
+São duas coletas com naturezas diferentes, e o formulário precisa refletir
+as duas. **Esta seção mudou em 2026-11-24, quando o AdMob entrou.**
+
+O que o próprio DIVISA coleta:
 
 | Pergunta | Resposta |
 | --- | --- |
 | Coleta dados? | Sim |
 | Quais? | E-mail, nome e as informações financeiras que o usuário digita |
 | Para quê? | Funcionamento do app (mostrar os dados de volta ao usuário) |
-| Compartilha com terceiros? | Não |
+| Compartilha com terceiros? | Não — nada do que o usuário registra vai para anunciante |
 | Dados criptografados em trânsito? | Sim (HTTPS) |
 | Usuário pode pedir exclusão? | Sim — existe dentro do app |
 | Coleta localização, contatos, fotos, arquivos? | Não |
-| Anúncios ou rastreamento? | Não |
 
-Isso é verificável no próprio `.aab` gerado: o manifesto final declara duas
-permissões, `INTERNET` e `ACCESS_NETWORK_STATE` (esta vem do `expo-updates`,
-para checar se há conexão antes de buscar uma atualização). Nenhuma das duas
-é sensível nem gera pedido ao usuário, e o projeto não tem nenhum SDK de
-análise ou publicidade.
+O que o **AdMob** coleta, e que precisa ser declarado como **compartilhado**
+com terceiros (é o Google que recebe):
+
+| Pergunta | Resposta |
+| --- | --- |
+| ID de publicidade | **Sim** |
+| Localização aproximada | Sim |
+| Interações no app | Sim |
+| Diagnóstico / registros de falha | Sim |
+
+É a mesma declaração usada no TECHSPEAKING em 12/11, pelo mesmo motivo: o
+AdMob é o mesmo SDK nos dois.
+
+**Permissões.** Antes do AdMob o manifesto final tinha só `INTERNET` e
+`ACCESS_NETWORK_STATE`. O `react-native-google-mobile-ads` acrescenta
+`com.google.android.gms.permission.AD_ID` — é ela que sustenta a resposta
+"ID de publicidade: Sim" acima. Convém reconferir o manifesto do `.aab`
+novo antes de enviar, em vez de confiar nesta nota.
 
 As quatro permissões que o React Native e o `expo-file-system` acrescentavam
 por padrão — `SYSTEM_ALERT_WINDOW`, `READ/WRITE_EXTERNAL_STORAGE` e `VIBRATE`
-— estão bloqueadas em `app.json` e foram confirmadas ausentes no manifesto
-final. Isso importa porque `SYSTEM_ALERT_WINDOW` ("sobrepor outros apps")
-apareceria na ficha da loja, e num app de finanças isso afasta gente.
+— seguem bloqueadas em `app.json`. Isso importa porque `SYSTEM_ALERT_WINDOW`
+("sobrepor outros apps") apareceria na ficha da loja, e num app de finanças
+isso afasta gente.
 
 ---
 
