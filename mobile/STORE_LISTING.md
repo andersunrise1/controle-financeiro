@@ -144,13 +144,19 @@ O DIVISA exige login. Se o Google não receber uma conta de teste, o revisor
 abre o app, vê uma tela de login que não consegue passar, e **rejeita a
 submissão**. É uma das causas mais comuns de rejeição de primeira viagem.
 
-No Play Console: **Conteúdo do app → Acesso ao app → "Todas as
-funcionalidades exigem credenciais"**, e informe:
+No Play Console: **Conteúdo do app → Detalhes do login → "Sim"**, e informe
+a conta **`revisor@divisa.app`**.
 
-```
-E-mail: revisor@divisa.app
-Senha:  DivisaReview2026
-```
+**A senha não está escrita aqui, de propósito.** Este repositório é público:
+até 2026-11-24 a senha ficava neste arquivo, à vista de qualquer um no
+GitHub. Ela foi trocada, e a nova vive em dois lugares só — no campo
+"Detalhes do login" do Play Console, e com o dono. Quem precisar dela
+consulta o Console; quem a perder usa "Esqueci minha senha" no site e
+atualiza o Console depois.
+
+Vale lembrar que remover a senha daqui não a apaga do histórico do Git: a
+antiga continua nos commits antigos, públicos. O que neutralizou o problema
+foi a troca, não a remoção.
 
 A conta já existe em produção e já tem 22 lançamentos de três meses, mais uma
 recorrência — o revisor abre e vê o app com conteúdo, saldo e gráficos, em vez

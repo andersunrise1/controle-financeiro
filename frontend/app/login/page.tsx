@@ -124,12 +124,19 @@ export default function LoginPage() {
             </Link>
           </p>
 
-          <p className="mt-5 text-center">
+          <p className="mt-5 flex items-center justify-center gap-3 text-center">
             <Link
               href="/privacidade"
               className="text-xs text-[color:var(--text-muted)] underline"
             >
               {t("privacyPolicyLink")}
+            </Link>
+            <span className="text-xs text-[color:var(--text-faint)]">·</span>
+            <Link
+              href="/termos"
+              className="text-xs text-[color:var(--text-muted)] underline"
+            >
+              {t("termsOfServiceLink")}
             </Link>
           </p>
         </div>
