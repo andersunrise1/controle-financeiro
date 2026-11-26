@@ -19,6 +19,10 @@ backups/
 *.db-wal
 *.db-shm
 
+# Chave da conta de serviço do Google Play (verificação de compra no app).
+# É uma credencial: quem a tiver fala com a API do Google como se fosse nós.
+google-play-service-account*.json
+
 # Debug
 npm-debug.log*
 

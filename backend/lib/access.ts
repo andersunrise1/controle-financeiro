@@ -73,6 +73,48 @@ export function grantLifetimeAccess(userId: number, paymentId?: string | null): 
 }
 
 /**
+ * Libera o acesso vitalício por compra feita **dentro do app**, pelo Google
+ * Play Billing. Só a rota de verificação chama isto, e só depois de o próprio
+ * Google ter confirmado a compra.
+ *
+ * Resultado possível:
+ * - `"liberado"` — acesso concedido (ou reconcedido, se já era desta conta)
+ * - `"token_de_outra_conta"` — aquele comprovante já liberou outra conta
+ *
+ * Esse segundo caso é a defesa contra reuso: um `purchaseToken` é só um texto,
+ * e nada impede alguém de mandar o mesmo de outra conta para ganhar acesso de
+ * graça. O Google continuaria respondendo "comprado" — ele é verdadeiro, só
+ * não é daquela pessoa. A trava é aqui, não lá.
+ *
+ * Fora isso é idempotente de propósito: o app reenvia a verificação quando o
+ * aparelho fica sem rede no meio da compra, e repetir não pode quebrar nada.
+ * `paid_at` usa COALESCE pelo mesmo motivo de grantLifetimeAccess — a data da
+ * compra é a primeira, não a da última tentativa.
+ */
+export function grantLifetimeAccessFromGooglePlay(
+  userId: number,
+  purchaseToken: string
+): "liberado" | "token_de_outra_conta" {
+  const db = getDb();
+
+  const dono = db
+    .prepare("SELECT id FROM users WHERE google_play_purchase_token = ?")
+    .get(purchaseToken) as { id: number } | undefined;
+
+  if (dono && dono.id !== userId) return "token_de_outra_conta";
+
+  db.prepare(
+    `UPDATE users
+        SET plan = 'lifetime',
+            paid_at = COALESCE(paid_at, datetime('now')),
+            google_play_purchase_token = ?
+      WHERE id = ?`
+  ).run(purchaseToken, userId);
+
+  return "liberado";
+}
+
+/**
  * Libera o acesso vitalício de graça, pela tela de admin — parceiros de
  * divulgação, ou correção de um engano.
  *

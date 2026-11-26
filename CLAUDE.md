@@ -392,6 +392,98 @@ usuário que existe a compra — ele não pode mostrar preço nem apontar para o
 site, por política do Google. Enquanto o Play Billing não entrar, a conversão
 pelo app é zero. As duas coisas precisam andar juntas.
 
+## Compra dentro do app — Google Play Billing, backend (2026-11-26)
+
+Fecha a pendência acima pelo lado do servidor. Segundo caminho de compra do
+vitalício, ao lado do Mercado Pago, levando ao mesmo `plan = 'lifetime'`:
+quem compra pelo app tem o site liberado, e vice-versa.
+
+`lib/googlePlay.ts` (novo, dependência `googleapis`) fala com a Android
+Publisher API; `POST /api/payment/google-play/verify` é a rota que o app
+chama depois de uma compra. `grantLifetimeAccessFromGooglePlay` em
+`access.ts` grava o acesso, com coluna própria
+`users.google_play_purchase_token` — não reaproveita `mp_payment_id` porque
+os dois provedores emitem identificadores sem relação e têm APIs de reembolso
+diferentes; juntá-los faria o atendimento adivinhar de onde veio a compra.
+Passo a passo de configuração em `backend/GOOGLE_PLAY_BILLING.md`.
+
+**A decisão de projeto que mais importa aqui:** o servidor nunca acredita no
+app. O aparelho manda só um `purchaseToken`, e quem diz se aquilo é uma
+compra real é o Google, consultado direto. Além disso, o mesmo comprovante
+não pode liberar duas contas — um token é só um texto, e reenviá-lo de outra
+conta faria o Google responder "comprado" com toda razão, porque é verdade,
+só não é daquela pessoa. Essa trava é nossa, não dele.
+
+A ordem das verificações na rota não é acidental: o atalho de "já é
+vitalício" vem **antes** do 503 de não-configurado, porque só lê o nosso
+banco. A primeira versão tinha o inverso, e o teste expôs o efeito — quem já
+tinha comprado pelo site recebia "não configurado" e seria mandado ao suporte
+à toa.
+
+O `acknowledge` roda depois de o acesso já estar gravado, nunca antes: o
+Google estorna sozinho compra não confirmada em 3 dias, mas confirmar sem
+gravar deixaria alguém pagando por nada.
+
+**Verificado contra o servidor rodando de verdade** (este projeto não tem
+framework de teste; a verificação sempre foi assim): 401 sem auth, 400 sem
+comprovante e com comprovante em branco, 503 sem configuração, o atalho de
+quem já é vitalício, a liberação de fato (`plan` vira `lifetime`), a
+repetição inofensiva da mesma chamada — importa porque o app reenvia quando o
+aparelho perde rede no meio da compra — e a trava de reuso devolvendo 409 com
+a segunda conta intacta em `trial`.
+
+**Não verificado:** nenhuma compra real. Falta a conta de serviço do Google
+Cloud, o produto `divisa_vitalicio` no Play Console e um build numa faixa de
+teste. Mesmo padrão de todo serviço externo deste projeto antes de existir
+credencial.
+
+**Não feito:** reembolso de compra do Play pela tela de admin (API separada,
+`orders.refund`); o código atual só desfaz pagamento do Mercado Pago. E o
+lado do app, que é o próximo passo.
+
+## Next.js 16.3.7 → 16.4.6, por segurança (2026-11-26)
+
+Veio de uma pergunta do usuário sobre as vulnerabilidades que o `npm audit`
+acusava. A primeira leitura foi curta demais e precisou ser corrigida: olhei
+só o título da crítica ("cache leak em `use cache` aninhado"), confirmei que
+o projeto não usa `use cache` em lugar nenhum e quase concluí que nada
+alcançava o app. A lista completa desmentiu isso — **várias não dependem de
+`use cache`**:
+
+- Execução remota de código não autenticada na API de otimização de imagem
+  com SVG (≤ 16.4.0)
+- Exposição de cookie HttpOnly por cabeçalho interno — e é o cookie de sessão
+- Envenenamento de cache e injeção de resposta entre clientes em aplicações
+  **self-hosted**, que é exatamente o caso do backend na Railway
+
+Lição para a próxima: ler a lista inteira de advisories de um pacote, nunca
+só a de maior severidade. A crítica pode ser a irrelevante.
+
+Os dois pacotes (`backend` e `frontend`) subiram para `next@16.4.6` +
+`eslint-config-next@16.4.6`, mais `npm audit fix` (não-quebrante). **Os dois
+foram de 15 para 0 vulnerabilidades.** `googleapis`, instalado no mesmo dia,
+não contribuiu com nenhuma.
+
+O que ficou claro ao investigar, e evita repetir o trabalho: `zod` vinha do
+`eslint-plugin-react-hooks` e nunca roda em produção; a maior parte do resto
+(`brace-expansion`, `minimatch`, `js-yaml`, `browserslist`) é cadeia de build,
+onde explorar exigiria controlar a entrada do próprio compilador. O único de
+runtime além do Next era o `nodemailer`.
+
+**Verificado depois da subida:** `tsc --noEmit` limpo nos dois pacotes;
+`npm run build` completo nos dois (o backend lista a rota nova
+`/api/payment/google-play/verify`; o frontend gera as 19 páginas); lint do
+frontend nos mesmos 8 erros `react-hooks/set-state-in-effect` e 2 avisos
+`no-img-element` já documentados, nenhum novo. Com o servidor rodando de
+fato na 16.4.6: cadastro, login, `/api/auth/me`, `/api/transactions`,
+`/api/payment/checkout` e os três caminhos da rota do Play Billing, todos
+com o código esperado.
+
+**Armadilha do ambiente:** `TaskStop` mata o `npm`, não o processo `node`
+filho — o servidor antigo continua segurando a porta 3001 e o próximo
+`npm run dev` morre com `EADDRINUSE`. Matar pelo PID que detém a porta
+(`Get-NetTCPConnection -LocalPort 3001`) antes de subir outro.
+
 ## Problemas conhecidos
 
 **"Erro interno do servidor" em qualquer rota que toca o banco (register/login/transactions)**: o módulo nativo `better-sqlite3` foi compilado para a versão do Node instalada quando `npm install` rodou (junho/2026) — se o Node da máquina for atualizado depois disso, o binário fica com `NODE_MODULE_VERSION` incompatível e todo `require('better-sqlite3')` falha (`ERR_DLOPEN_FAILED`). A rota engole o erro num `catch` genérico sem logar nada, então o único sintoma visível é o 500 no frontend. Corrigido em 2026-08-15 rodando:

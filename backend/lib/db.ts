@@ -158,6 +158,19 @@ export function getDb(): Database.Database {
       db.exec("ALTER TABLE users ADD COLUMN mp_payment_id TEXT");
     }
 
+    // Segundo caminho de compra, dentro do app Android (Play Billing).
+    //
+    // Coluna própria em vez de reaproveitar mp_payment_id: os dois provedores
+    // emitem identificadores de formatos sem relação, e o reembolso de cada um
+    // é feito numa API diferente. Guardar os dois no mesmo campo faria o
+    // atendimento ter de adivinhar de onde veio a compra.
+    //
+    // Serve também de trava contra reuso: o mesmo purchaseToken não pode
+    // liberar duas contas (ver grantLifetimeAccessFromGooglePlay).
+    if (!userColumns.some((c) => c.name === "google_play_purchase_token")) {
+      db.exec("ALTER TABLE users ADD COLUMN google_play_purchase_token TEXT");
+    }
+
     // The day-of-month a monthly/yearly rule was originally set to. Without
     // it, next_run_date is the only memory of the intended day — so a rule
     // set for the 31st gets clamped to Feb 28 and then stays on the 28th
@@ -201,6 +214,7 @@ export interface User {
   plan: Plan;
   paid_at: string | null;
   mp_payment_id: string | null;
+  google_play_purchase_token: string | null;
 }
 
 export interface Transaction {
