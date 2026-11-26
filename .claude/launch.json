@@ -14,9 +14,12 @@
       "port": 3001
     },
     {
-      "name": "mobile-web",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "C:\\Users\\ander\\OneDrive\\Desktop\\Controle Financeiro\\mobile", "exec", "--", "expo", "start", "--web", "--port", "8082"],
+      "name": "divisa-mobile-web",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "cd /d \"C:\\Users\\ander\\OneDrive\\Desktop\\Controle Financeiro\\mobile\" && npx expo start --web --port 8082"
+      ],
       "port": 8082
     }
   ]

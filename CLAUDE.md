@@ -438,8 +438,46 @@ teste. Mesmo padrão de todo serviço externo deste projeto antes de existir
 credencial.
 
 **Não feito:** reembolso de compra do Play pela tela de admin (API separada,
-`orders.refund`); o código atual só desfaz pagamento do Mercado Pago. E o
-lado do app, que é o próximo passo.
+`orders.refund`); o código atual só desfaz pagamento do Mercado Pago.
+
+### O lado do app (mesmo dia)
+
+`VitalicioScreen.jsx` (+ `.web.jsx`) com `expo-iap`, alcançável pelo card
+"Remover anúncios" na tela de Conta. Rota registrada em `MainTabs` **sem
+aba**: o `TopTabBar` tem lista própria e já carrega cinco itens. Detalhes em
+`mobile/GOOGLE_PLAY_BILLING.md`.
+
+Duas coisas que não são escolha de estilo:
+
+- **O preço vem do Google**, via `produto.displayPrice`. Um produto no app
+  tem o valor fixado no Play Console; nosso código nunca o vê nem o controla.
+  Mostrar nosso próprio número arriscaria anunciar um preço diferente do
+  cobrado.
+- **O import em `MainTabs.jsx` é sem extensão** (`"../screens/VitalicioScreen"`).
+  É o que faz o Metro escolher a variante web, onde `expo-iap` não existe.
+  Com `.jsx` explícito a resolução por plataforma não acontece e o build web
+  quebra.
+
+**Ordem imposta pelo Play Console**, confirmada na tela: Produtos únicos diz
+*"Para incluir produtos únicos, você precisa adicionar a permissão BILLING ao
+APK"*. Não dá para criar o produto antes — é código → build → upload numa
+faixa → só então criar `divisa_vitalicio`.
+
+**Verificado** com Metro e backend rodando: o app abre e navega sem erro de
+console; o card aparece na Conta e leva à tela; a variante web renderiza sem
+preço nem botão, sem quebrar; o **bundle Android** é gerado e contém
+`divisa_vitalicio` (a tela nativa e o `expo-iap` compilam e resolvem, sem
+aparelho); o **bundle web** tem zero ocorrências de `divisa_vitalicio` e de
+`ExpoIap`, provando a separação no nível do bundle, não só na tela.
+
+**Não verificado: nenhuma compra real** — precisa do produto no Play Console,
+conta de testador de licença, a conta de serviço no servidor e um build numa
+faixa de teste em aparelho Android.
+
+Também corrigido aqui: `.claude/launch.json` tinha `npm --prefix` para o
+preview do mobile, que **não** muda o diretório de execução, e o nome
+`mobile-web` colidia com o do projeto irmão (o preview subia o do
+TechSpeaking). Agora é `divisa-mobile-web` com `cmd /c cd /d ...`.
 
 ## Next.js 16.3.7 → 16.4.6, por segurança (2026-11-26)
 

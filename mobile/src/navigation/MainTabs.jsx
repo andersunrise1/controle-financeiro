@@ -4,6 +4,10 @@ import MercadoScreen from "../screens/MercadoScreen";
 import FeedbackScreen from "../screens/FeedbackScreen";
 import AccountScreen from "../screens/AccountScreen";
 import AdminScreen from "../screens/AdminScreen";
+// Sem a extensão de propósito: é o que faz o Metro escolher
+// VitalicioScreen.web.jsx na web, onde o expo-iap não existe. Com ".jsx"
+// explícito a resolução por plataforma não acontece e o build web quebra.
+import VitalicioScreen from "../screens/VitalicioScreen";
 import { useAuth } from "../context/AuthContext";
 
 const Tab = createBottomTabNavigator();
@@ -29,6 +33,10 @@ export default function MainTabs() {
       <Tab.Screen name="Mercado" component={MercadoScreen} />
       <Tab.Screen name="Feedback" component={FeedbackScreen} />
       <Tab.Screen name="Conta" component={AccountScreen} />
+      {/* Rota sem aba: o TopTabBar tem lista própria e não mostra esta. Fica
+          aqui para ser alcançável por navigation.navigate a partir da Conta,
+          sem apertar ainda mais uma barra que já tem cinco itens. */}
+      <Tab.Screen name="Vitalicio" component={VitalicioScreen} />
       {user?.isAdmin && <Tab.Screen name="Admin" component={AdminScreen} />}
     </Tab.Navigator>
   );

@@ -9,6 +9,7 @@ import {
   Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 import TopNavBar from "../components/TopNavBar";
 import TopTabBar from "../components/TopTabBar";
 import TextField from "../components/TextField";
@@ -26,7 +27,8 @@ import { PRIVACY_POLICY_URL } from "../lib/links";
 // create an account. Two steps on purpose: the first press only reveals the
 // confirmation, so the destructive action is never one tap away.
 export default function AccountScreen() {
-  const { user, setUser, setAccess } = useAuth();
+  const navigation = useNavigation();
+  const { user, access, setUser, setAccess } = useAuth();
   const { locale, t } = useLocale();
   const { colors } = useTheme();
   const styles = getStyles(colors);
@@ -95,6 +97,20 @@ export default function AccountScreen() {
             </Text>
           </View>
 
+          {/* Ponto de entrada da compra. Fica na Conta, e não numa aba
+              própria, porque é aqui que o plano da pessoa já é assunto — e a
+              barra superior já tem cinco itens. Some para quem já comprou:
+              não há nada a oferecer a quem já tem. */}
+          {access?.plan !== "lifetime" ? (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>{t("vitalicioCardTitle")}</Text>
+              <Text style={styles.cardText}>{t("vitalicioCardText")}</Text>
+              <Button3D fullWidth onPress={() => navigation.navigate("Vitalicio")}>
+                {t("vitalicioCardButton")}
+              </Button3D>
+            </View>
+          ) : null}
+
           <View style={styles.dangerCard}>
             <Text style={styles.dangerTitle}>{t("deleteAccountTitle")}</Text>
             <Text style={styles.dangerText}>
@@ -161,6 +177,11 @@ function getStyles(colors) {
       fontSize: 17,
       fontWeight: "700",
       color: colors.textPrimary,
+    },
+    cardText: {
+      fontSize: 13,
+      lineHeight: 19,
+      color: colors.textSecondary,
     },
     row: {
       flexDirection: "row",

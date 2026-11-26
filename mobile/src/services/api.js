@@ -256,6 +256,23 @@ export async function deleteAccount(password) {
   return result;
 }
 
+/**
+ * Manda ao servidor o comprovante que o Google devolveu, para liberar o
+ * Vitalício.
+ *
+ * O app não decide nada aqui: ele só repassa o `purchaseToken`. Quem confirma
+ * se aquilo é compra real é o backend, perguntando direto à API do Google —
+ * este código roda num aparelho que o usuário controla e não serve de prova.
+ *
+ * Devolve `{ plan }`, para a tela saber o resultado sem uma segunda chamada.
+ */
+export async function verifyGooglePlayPurchase(purchaseToken) {
+  return apiFetch("/api/payment/google-play/verify", {
+    method: "POST",
+    body: JSON.stringify({ purchaseToken }),
+  });
+}
+
 export function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
